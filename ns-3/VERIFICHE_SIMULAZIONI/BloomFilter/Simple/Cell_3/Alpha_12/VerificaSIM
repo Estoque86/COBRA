@@ -1,0 +1,60 @@
+-e 
+
+-e START SIM 1
+mer  4 dic 2013, 15.17.13, CET
+-e 
+
+-e START SIM 5
+mer  4 dic 2013, 15.17.48, CET
+-e 
+
+-e START SIM 8
+mer  4 dic 2013, 15.18.23, CET
+END SIM 5
+mer  4 dic 2013, 15.24.16, CET
+-e 
+
+-e START SIM 6
+mer  4 dic 2013, 15.24.16, CET
+END SIM 1
+mer  4 dic 2013, 15.25.22, CET
+-e 
+
+-e START SIM 2
+mer  4 dic 2013, 15.25.22, CET
+END SIM 8
+mer  4 dic 2013, 15.26.16, CET
+-e 
+
+-e START SIM 9
+mer  4 dic 2013, 15.26.16, CET
+END SIM 6
+mer  4 dic 2013, 15.30.31, CET
+-e 
+
+-e START SIM 7
+mer  4 dic 2013, 15.30.31, CET
+END SIM 2
+mer  4 dic 2013, 15.32.16, CET
+-e 
+
+-e START SIM 3
+mer  4 dic 2013, 15.32.16, CET
+END SIM 9
+mer  4 dic 2013, 15.33.58, CET
+-e 
+
+-e START SIM 10
+mer  4 dic 2013, 15.33.58, CET
+END SIM 7
+mer  4 dic 2013, 15.37.47, CET
+END SIM 3
+mer  4 dic 2013, 15.39.11, CET
+-e 
+
+-e START SIM 4
+mer  4 dic 2013, 15.39.11, CET
+END SIM 10
+mer  4 dic 2013, 15.41.08, CET
+END SIM 4
+mer  4 dic 2013, 15.45.25, CET

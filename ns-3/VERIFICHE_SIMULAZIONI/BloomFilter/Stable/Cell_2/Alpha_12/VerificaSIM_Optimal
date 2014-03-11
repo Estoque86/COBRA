@@ -1,0 +1,60 @@
+-e 
+
+-e START SIM 1
+gio 28 nov 2013, 11.03.28, CET
+END SIM 1
+gio 28 nov 2013, 11.08.04, CET
+-e 
+
+-e START SIM 2
+gio 28 nov 2013, 11.08.04, CET
+END SIM 2
+gio 28 nov 2013, 11.12.40, CET
+-e 
+
+-e START SIM 3
+gio 28 nov 2013, 11.12.40, CET
+END SIM 3
+gio 28 nov 2013, 11.19.02, CET
+-e 
+
+-e START SIM 4
+gio 28 nov 2013, 11.19.02, CET
+END SIM 4
+gio 28 nov 2013, 11.23.48, CET
+-e 
+
+-e START SIM 5
+gio 28 nov 2013, 15.39.37, CET
+-e 
+
+-e START SIM 8
+gio 28 nov 2013, 15.40.13, CET
+END SIM 5
+gio 28 nov 2013, 15.45.02, CET
+-e 
+
+-e START SIM 6
+gio 28 nov 2013, 15.45.02, CET
+END SIM 8
+gio 28 nov 2013, 15.45.23, CET
+-e 
+
+-e START SIM 9
+gio 28 nov 2013, 15.45.23, CET
+END SIM 6
+gio 28 nov 2013, 15.50.15, CET
+-e 
+
+-e START SIM 7
+gio 28 nov 2013, 15.50.15, CET
+END SIM 9
+gio 28 nov 2013, 15.51.51, CET
+-e 
+
+-e START SIM 10
+gio 28 nov 2013, 15.51.51, CET
+END SIM 7
+gio 28 nov 2013, 15.55.58, CET
+END SIM 10
+gio 28 nov 2013, 15.57.07, CET

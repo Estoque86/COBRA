@@ -1,0 +1,17 @@
+#!/bin/bash
+
+rm /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/RISULTATI/DATA/Data_INVIATI/*
+rm /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/RISULTATI/DATA/Data_RICEVUTI/APP/*
+rm /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/RISULTATI/DATA/Data_RICEVUTI/Data*
+
+rm /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/RISULTATI/DOWNLOAD/FILE/*
+rm /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/RISULTATI/DOWNLOAD/FIRST/*
+
+rm /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/RISULTATI/INTEREST/Interest_AGGREGATI/*
+rm /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/RISULTATI/INTEREST/Interest_ELIMINATI/FILE/*
+rm /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/RISULTATI/INTEREST/Interest_ELIMINATI/Interest*
+rm /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/RISULTATI/INTEREST/Interest_INVIATI/APP/*
+rm /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/RISULTATI/INTEREST/Interest_INVIATI/Interest*
+rm /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/RISULTATI/INTEREST/Interest_RICEVUTI/*
+rm /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/RISULTATI/INTEREST/Interest_RITRASMESSI/*
+

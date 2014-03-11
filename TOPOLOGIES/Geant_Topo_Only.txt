@@ -1,0 +1,85 @@
+# any empty lines and lines starting with '#' symbol is ignored
+#
+# The file should contain exactly two sections: router and link, each starting with the corresponding keyword
+#
+# router section defines topology nodes and their relative positions (e.g., to use in visualizer)
+router
+
+# TOTAL CORE NODES 		=  22
+# TOTAL EDGE NODE 		=  73
+# TOTAL NUMBER OF NODES =  95
+
+# each line in this section represents one router and should have the following data
+# node  comment     yPos    xPos
+Core0    NA          2       6
+Core1    NA          3       5
+Core2    NA          4       5
+Core3    NA          5       4
+Core4    NA          7       3
+Core5    NA          6       5
+Core6    NA          7       5
+Core7    NA          8       5
+Core8    NA          9       5
+Core9    NA          10      5
+Core10   NA          11      5
+Core11   NA          12      5
+Core12   NA          13      5
+Core13   NA          14      6
+Core14   NA          15      6
+Core15   NA          16      5
+Core16   NA          16      6
+Core17   NA          17      5
+Core18   NA          18      5
+Core19   NA          19      6
+Core20   NA          20      6
+Core21   NA          21      6
+
+# Note that `node` can be any string. It is possible to access to the node by name using Names::Find, see examples.
+
+# link section defines point-to-point links between nodes and characteristics of these links
+link
+
+# Each line should be in the following format (only first two are required, the rest can be omitted)
+# srcNode   dstNode     bandwidth   metric  delay   queue
+# bandwidth: link bandwidth
+# metric: routing metric
+# delay:  link delay
+# queue:  MaxPackets for transmission queue on the link (both directions)
+
+Core0       Core1       100Mbps       1       24ms    20
+Core10      Core9       100Mbps       1       1ms     20
+Core11      Core10      100Mbps       1       0.4ms   20
+Core12      Core11      100Mbps       1       1ms     20
+Core12      Core3       100Mbps       1       1.2ms   20
+Core12      Core9       100Mbps       1       0.7ms   20
+Core13      Core12      100Mbps       1       23ms    20
+Core14      Core13      100Mbps       1       19ms    20
+Core14      Core5       100Mbps       1       5ms     20
+Core15      Core1       100Mbps       1       0.7ms   20
+Core15      Core12      100Mbps       1       2.28ms  20
+Core15      Core14      100Mbps       1       2.5ms   20
+Core15      Core4       100Mbps       1       2.5ms   20
+Core16      Core14      100Mbps       1       5ms     20
+Core17      Core1       100Mbps       1       4ms     20
+Core17      Core15      100Mbps       1       5ms     20
+Core17      Core16      100Mbps       1       2ms     20
+Core18      Core14      100Mbps       1       1ms     20
+Core18      Core17      100Mbps       1       3.5ms   20
+Core18      Core4       100Mbps       1       3ms     20
+Core19      Core18      100Mbps       1       1ms     20
+Core2       Core1       100Mbps       1       5ms     20
+Core20      Core18      100Mbps       1       1ms     20
+Core20      Core19      100Mbps       1       0.5ms   20
+Core21      Core0       100Mbps       1       22ms    20
+Core21      Core14      100Mbps       1       1.2ms   20
+Core21      Core20      100Mbps       1       0.5ms   20
+Core21      Core4       100Mbps       1       2ms     20
+Core3       Core1       100Mbps       1       2.4ms   20
+Core3       Core2       100Mbps       1       5ms     20
+Core4       Core3       100Mbps       1       0.5ms   20
+Core5       Core3       100Mbps       1       3ms     20
+Core6       Core5       100Mbps       1       3ms     20
+Core7       Core4       100Mbps       1       1ms     20
+Core7       Core6       100Mbps       1       1ms     20
+Core8       Core7       100Mbps       1       1ms     20
+Core9       Core8       100Mbps       1       0.5ms     20

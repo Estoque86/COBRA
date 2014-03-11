@@ -1,0 +1,304 @@
+# any empty lines and lines starting with '#' symbol is ignored
+#
+# The file should contain exactly two sections: router and link, each starting with the corresponding keyword
+#
+# router section defines topology nodes and their relative positions (e.g., to use in visualizer)
+router
+
+# TOTAL CORE NODES 		=  22
+# TOTAL EDGE NODE 		=  73
+# TOTAL NUMBER OF NODES =  95
+
+# each line in this section represents one router and should have the following data
+# node  comment     yPos    xPos
+Core0    NA          2       6
+Core1    NA          3       5
+Core2    NA          4       5
+Core3    NA          5       4
+Core4    NA          7       3
+Core5    NA          6       5
+Core6    NA          7       5
+Core7    NA          8       5
+Core8    NA          9       5
+Core9    NA          10      5
+Core10   NA          11      5
+Core11   NA          12      5
+Core12   NA          13      5
+Core13   NA          14      6
+Core14   NA          15      6
+Core15   NA          16      5
+Core16   NA          16      6
+Core17   NA          17      5
+Core18   NA          18      5
+Core19   NA          19      6
+Core20   NA          20      6
+Core21   NA          21      6
+
+Edge0_0   NA          1       10
+Edge0_1   NA          2       10
+Edge0_2   NA          3       10
+
+Edge1_0   NA          2       1
+Edge1_1   NA          3       1
+Edge1_2   NA          4       1
+
+Edge2_0   NA          3       10
+Edge2_1   NA          4       10
+Edge2_2   NA          5       10
+Edge2_3   NA          5.5     10
+Edge2_4   NA          6       10
+
+Edge3_0   NA          4       1
+Edge3_1   NA          5       1
+Edge3_2   NA          6       1
+
+Edge4_0   NA          5       10
+Edge4_1   NA          6       10
+Edge4_2   NA          7       10
+Edge4_3   NA          8       10
+
+Edge5_0   NA          4       1
+Edge5_1   NA          5       1
+Edge5_2   NA          6       1
+Edge5_3   NA          7       1
+
+Edge6_0   NA          6       10
+Edge6_1   NA          7       10
+Edge6_2   NA          8       10
+
+Edge7_0   NA          6       1
+Edge7_1   NA          7       1
+Edge7_2   NA          8       1
+Edge7_3   NA          9       1
+
+Edge8_0   NA          8       10
+Edge8_1   NA          9       10
+Edge8_2   NA          10      10
+
+Edge9_0   NA          9       1
+Edge9_1   NA          10      1
+Edge9_2   NA          11      1
+
+Edge10_0   NA          9      10
+Edge10_1   NA          10     10
+Edge10_2   NA          11     10
+Edge10_3   NA          12     10
+Edge10_4   NA          12.5   10
+Edge10_5   NA          13     10
+
+Edge11_0   NA          11       10
+Edge11_1   NA          12       10
+Edge11_2   NA          13       10
+
+Edge12_0   NA          12       1
+Edge12_1   NA          13       1
+Edge12_2   NA          14       1
+
+Edge13_0   NA          11       10
+Edge13_1   NA          12       10
+Edge13_2   NA          13       10
+Edge13_3   NA          14       10
+Edge13_4   NA          15       10
+
+Edge14_0   NA          14       1
+Edge14_1   NA          15       1
+Edge14_2   NA          16       1
+
+Edge15_0   NA          15       10
+Edge15_1   NA          16       10
+Edge15_2   NA          17       10
+Edge15_3   NA          18       10
+
+Edge16_0   NA          14       1
+Edge16_1   NA          15       1
+Edge16_2   NA          16       1
+Edge16_3   NA          17       1
+
+Edge17_0   NA          16       10
+Edge17_1   NA          17       10
+Edge17_2   NA          18       10
+
+Edge18_0   NA          16       1
+Edge18_1   NA          17       1
+Edge18_2   NA          18       1
+Edge18_3   NA          19       1
+
+Edge19_0   NA          18       10
+Edge19_1   NA          19       10
+Edge19_2   NA          20       10
+
+#Edge20_0   NA          19       1
+#Edge20_1   NA          20      1
+#Edge20_2   NA          21      1
+
+#Edge21_0   NA          18      10
+#Edge21_1   NA          19     10
+#Edge21_2   NA          20     10
+#Edge21_3   NA          21     10
+#Edge21_4   NA          21.5   10
+#Edge21_5   NA          22     10
+
+
+
+
+
+
+
+
+
+
+
+# Note that `node` can be any string. It is possible to access to the node by name using Names::Find, see examples.
+
+# link section defines point-to-point links between nodes and characteristics of these links
+link
+
+# Each line should be in the following format (only first two are required, the rest can be omitted)
+# srcNode   dstNode     bandwidth   metric  delay   queue
+# bandwidth: link bandwidth
+# metric: routing metric
+# delay:  link delay
+# queue:  MaxPackets for transmission queue on the link (both directions)
+
+Core0       Core1       100Mbps       1       24ms    20
+Core10      Core9       100Mbps       1       1ms     20
+Core11      Core10      100Mbps       1       0.4ms   20
+Core12      Core11      100Mbps       1       1ms     20
+Core12      Core3       100Mbps       1       1.2ms   20
+Core12      Core9       100Mbps       1       0.7ms   20
+Core13      Core12      100Mbps       1       23ms    20
+Core14      Core13      100Mbps       1       19ms    20
+Core14      Core5       100Mbps       1       5ms     20
+Core15      Core1       100Mbps       1       0.7ms   20
+Core15      Core12      100Mbps       1       2.28ms  20
+Core15      Core14      100Mbps       1       2.5ms   20
+Core15      Core4       100Mbps       1       2.5ms   20
+Core16      Core14      100Mbps       1       5ms     20
+Core17      Core1       100Mbps       1       4ms     20
+Core17      Core15      100Mbps       1       5ms     20
+Core17      Core16      100Mbps       1       2ms     20
+Core18      Core14      100Mbps       1       1ms     20
+Core18      Core17      100Mbps       1       3.5ms   20
+Core18      Core4       100Mbps       1       3ms     20
+Core19      Core18      100Mbps       1       1ms     20
+Core2       Core1       100Mbps       1       5ms     20
+Core20      Core18      100Mbps       1       1ms     20
+Core20      Core19      100Mbps       1       0.5ms   20
+Core21      Core0       100Mbps       1       22ms    20
+Core21      Core14      100Mbps       1       1.2ms   20
+Core21      Core20      100Mbps       1       0.5ms   20
+Core21      Core4       100Mbps       1       2ms     20
+Core3       Core1       100Mbps       1       2.4ms   20
+Core3       Core2       100Mbps       1       5ms     20
+Core4       Core3       100Mbps       1       0.5ms   20
+Core5       Core3       100Mbps       1       3ms     20
+Core6       Core5       100Mbps       1       3ms     20
+Core7       Core4       100Mbps       1       1ms     20
+Core7       Core6       100Mbps       1       1ms     20
+Core8       Core7       100Mbps       1       1ms     20
+Core9       Core8       100Mbps       1       0.5ms     20
+
+Edge0_0     Core0       30Mbps        1       2ms     20
+Edge0_1     Core0       30Mbps        1       2ms     20
+Edge0_2     Core0       30Mbps        1       2ms     20
+
+Edge1_0     Core1       30Mbps        1       2ms     20
+Edge1_1     Core1       30Mbps        1       2ms     20
+Edge1_2     Core1       30Mbps        1       2ms     20
+
+Edge2_0     Core2       30Mbps        1       2ms     20
+Edge2_1     Core2       30Mbps        1       2ms     20
+Edge2_2     Core2       30Mbps        1       2ms     20
+Edge2_3     Core2       30Mbps        1       2ms     20
+Edge2_4     Core2       30Mbps        1       2ms     20
+
+Edge3_0     Core3       30Mbps        1       2ms     20
+Edge3_1     Core3       30Mbps        1       2ms     20
+Edge3_2     Core3       30Mbps        1       2ms     20
+
+Edge4_0     Core4       30Mbps        1       2ms     20
+Edge4_1     Core4       30Mbps        1       2ms     20
+Edge4_2     Core4       30Mbps        1       2ms     20
+Edge4_3     Core4       30Mbps        1       2ms     20
+
+Edge5_0     Core5       30Mbps        1       2ms     20
+Edge5_1     Core5       30Mbps        1       2ms     20
+Edge5_2     Core5       30Mbps        1       2ms     20
+Edge5_3     Core5       30Mbps        1       2ms     20
+
+Edge6_0     Core6       30Mbps        1       2ms     20
+Edge6_1     Core6       30Mbps        1       2ms     20
+Edge6_2     Core6       30Mbps        1       2ms     20
+
+Edge7_0     Core7       30Mbps        1       2ms     20
+Edge7_1     Core7       30Mbps        1       2ms     20
+Edge7_2     Core7       30Mbps        1       2ms     20
+Edge7_3     Core7       30Mbps        1       2ms     20
+
+Edge8_0     Core8       30Mbps        1       2ms     20
+Edge8_1     Core8       30Mbps        1       2ms     20
+Edge8_2     Core8		30Mbps        1       2ms     20
+
+Edge9_0     Core9       30Mbps        1       2ms     20
+Edge9_1     Core9       30Mbps        1       2ms     20
+Edge9_2     Core9       30Mbps        1       2ms     20
+
+Edge10_0     Core10       30Mbps        1       2ms     20
+Edge10_1     Core10       30Mbps        1       2ms     20
+Edge10_2     Core10       30Mbps        1       2ms     20
+Edge10_3     Core10       30Mbps        1       2ms     20
+Edge10_4     Core10       30Mbps        1       2ms     20
+Edge10_5     Core10       30Mbps        1       2ms     20
+
+Edge11_0     Core11       30Mbps        1       2ms     20
+Edge11_1     Core11       30Mbps        1       2ms     20
+Edge11_2     Core11       30Mbps        1       2ms     20
+
+Edge12_0     Core12       30Mbps        1       2ms     20
+Edge12_1     Core12       30Mbps        1       2ms     20
+Edge12_2     Core12       30Mbps        1       2ms     20
+
+Edge13_0     Core13       30Mbps        1       2ms     20
+Edge13_1     Core13       30Mbps        1       2ms     20
+Edge13_2     Core13       30Mbps        1       2ms     20
+Edge13_3     Core13       30Mbps        1       2ms     20
+Edge13_4     Core13       30Mbps        1       2ms     20
+
+Edge14_0     Core14       30Mbps        1       2ms     20
+Edge14_1     Core14       30Mbps        1       2ms     20
+Edge14_2     Core14       30Mbps        1       2ms     20
+
+Edge15_0     Core15       30Mbps        1       2ms     20
+Edge15_1     Core15       30Mbps        1       2ms     20
+Edge15_2     Core15       30Mbps        1       2ms     20
+Edge15_3     Core15       30Mbps        1       2ms     20
+
+Edge16_0     Core16       30Mbps        1       2ms     20
+Edge16_1     Core16       30Mbps        1       2ms     20
+Edge16_2     Core16       30Mbps        1       2ms     20
+Edge16_3     Core16       30Mbps        1       2ms     20
+
+Edge17_0     Core17       30Mbps        1       2ms     20
+Edge17_1     Core17       30Mbps        1       2ms     20
+Edge17_2     Core17       30Mbps        1       2ms     20
+
+Edge18_0     Core18       30Mbps        1       2ms     20
+Edge18_1     Core18       30Mbps        1       2ms     20
+Edge18_2     Core18       30Mbps        1       2ms     20
+Edge18_3     Core18       30Mbps        1       2ms     20
+
+Edge19_0     Core19       30Mbps        1       2ms     20
+Edge19_1     Core19       30Mbps        1       2ms     20
+Edge19_2     Core19       30Mbps        1       2ms     20
+
+#Edge20_0     Core20       30Mbps        1       2ms     20
+#Edge20_1     Core20       30Mbps        1       2ms     20
+#Edge20_2     Core20       30Mbps        1       2ms     20
+
+#Edge21_0     Core21       30Mbps        1       2ms     20
+#Edge21_1     Core21       30Mbps        1       2ms     20
+#Edge21_2     Core21       30Mbps        1       2ms     20
+#Edge21_3     Core21       30Mbps        1       2ms     20
+#Edge21_4     Core21       30Mbps        1       2ms     20
+#Edge21_5     Core21       30Mbps        1       2ms     20
+

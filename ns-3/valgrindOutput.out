@@ -1,0 +1,753 @@
+Waf: Entering directory `/media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build'
+Waf: Leaving directory `/media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build'
+'build' finished successfully (0.554s)
+==5408== Memcheck, a memory error detector
+==5408== Copyright (C) 2002-2012, and GNU GPL'd, by Julian Seward et al.
+==5408== Using Valgrind-3.8.1 and LibVEX; rerun with -h for copyright info
+==5408== Command: /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/scratch/bloom-filter-routing-scenario --valoreAlpha=1 --contentCatalogFib=104450 --desiredPfpFib=0.05 --cellWidthBfFib=2 --bfScope=fib --bfTypeFib=stable --bfFibInitMethod=optimal --cacheToCatalog=0.0001 --simType=3 --ns3::ndn::ConsumerCbr::Randomize=uniform --ns3::ndn::Consumer::LifeTime=2s --ns3::ndn::Consumer::RetxTimer=25ms --RngRun=1 --RngSeed=1
+==5408== 
+--5408-- Valgrind options:
+--5408--    -v
+--5408--    --leak-check=full
+--5408--    --show-possibly-lost=no
+--5408-- Contents of /proc/version:
+--5408--   Linux version 2.6.32-21-generic (buildd@yellow) (gcc version 4.4.3 (Ubuntu 4.4.3-4ubuntu5) ) #32-Ubuntu SMP Fri Apr 16 08:09:38 UTC 2010
+--5408-- Arch and hwcaps: AMD64, amd64-sse3-cx16-avx
+--5408-- Page sizes: currently 4096, max supported 4096
+--5408-- Valgrind library directory: /usr/local/lib/valgrind
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/scratch/bloom-filter-routing-scenario
+--5408-- Reading syms from /lib/ld-2.11.1.so
+--5408--   Considering /lib/ld-2.11.1.so ..
+--5408--   .. CRC mismatch (computed f7ae097b wanted a9b86b80)
+--5408--   Considering /usr/lib/debug/lib/ld-2.11.1.so ..
+--5408--   .. CRC is valid
+--5408-- Reading syms from /usr/local/lib/valgrind/memcheck-amd64-linux
+--5408--    object doesn't have a dynamic symbol table
+--5408-- Scheduler: using generic scheduler lock implementation.
+--5408-- Reading suppressions file: /usr/local/lib/valgrind/default.supp
+==5408== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-5408-by-root-on-???
+==5408== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-5408-by-root-on-???
+==5408== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-5408-by-root-on-???
+==5408== 
+==5408== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==5408== don't want to do, unless you know exactly what you're doing,
+==5408== or are doing some strange experiment):
+==5408==   /usr/local/lib/valgrind/../../bin/vgdb --pid=5408 ...command...
+==5408== 
+==5408== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==5408==   /path/to/gdb /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/scratch/bloom-filter-routing-scenario
+==5408== and then give GDB the following command
+==5408==   target remote | /usr/local/lib/valgrind/../../bin/vgdb --pid=5408
+==5408== --pid is optional if only one valgrind process is running
+==5408== 
+--5408-- REDIR: 0x40183b0 (strlen) redirected to 0x3806c6e1 (vgPlain_amd64_linux_REDIR_FOR_strlen)
+--5408-- Reading syms from /usr/local/lib/valgrind/vgpreload_core-amd64-linux.so
+--5408-- Reading syms from /usr/local/lib/valgrind/vgpreload_memcheck-amd64-linux.so
+--5408-- REDIR: 0x4018220 (index) redirected to 0x4c2a230 (index)
+--5408-- REDIR: 0x40182a0 (strcmp) redirected to 0x4c2b280 (strcmp)
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/libns3-dev-test-debug.so
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/libns3-dev-csma-layout-debug.so
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/libns3-dev-point-to-point-layout-debug.so
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/libns3-dev-netanim-debug.so
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/libns3-dev-lte-debug.so
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/libns3-dev-spectrum-debug.so
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/libns3-dev-antenna-debug.so
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/libns3-dev-aodv-debug.so
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/libns3-dev-dsdv-debug.so
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/libns3-dev-dsr-debug.so
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/libns3-dev-mesh-debug.so
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/libns3-dev-olsr-debug.so
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/libns3-dev-csma-debug.so
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/libns3-dev-wimax-debug.so
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/libns3-dev-applications-debug.so
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/libns3-dev-virtual-net-device-debug.so
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/libns3-dev-uan-debug.so
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/libns3-dev-energy-debug.so
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/libns3-dev-flow-monitor-debug.so
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/libns3-dev-ndnSIM-debug.so
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/libns3-dev-nix-vector-routing-debug.so
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/libns3-dev-tap-bridge-debug.so
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/libns3-dev-internet-debug.so
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/libns3-dev-bridge-debug.so
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/libns3-dev-point-to-point-debug.so
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/libns3-dev-mpi-debug.so
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/libns3-dev-wifi-debug.so
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/libns3-dev-buildings-debug.so
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/libns3-dev-propagation-debug.so
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/libns3-dev-mobility-debug.so
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/libns3-dev-config-store-debug.so
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/libns3-dev-tools-debug.so
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/libns3-dev-stats-debug.so
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/libns3-dev-emu-debug.so
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/libns3-dev-fd-net-device-debug.so
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/libns3-dev-topology-read-debug.so
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/libns3-dev-network-debug.so
+--5408-- Reading syms from /media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/ns-3/build/libns3-dev-core-debug.so
+--5408-- Reading syms from /lib/librt-2.11.1.so
+--5408--   Considering /lib/librt-2.11.1.so ..
+--5408--   .. CRC mismatch (computed 8fbc67b2 wanted c6419430)
+--5408--   Considering /usr/lib/debug/lib/librt-2.11.1.so ..
+--5408--   .. CRC is valid
+--5408-- Reading syms from /usr/lib/libxml2.so.2.7.6
+--5408--   Considering /usr/lib/libxml2.so.2.7.6 ..
+--5408--   .. CRC mismatch (computed 282bcc59 wanted 72a4c879)
+--5408--    object doesn't have a symbol table
+--5408-- Reading syms from /media/DATI/tortelli/boost_1_51_0/lib/libboost_graph.so.1.51.0
+--5408-- Reading syms from /media/DATI/tortelli/boost_1_51_0/lib/libboost_system.so.1.51.0
+--5408-- Reading syms from /media/DATI/tortelli/boost_1_51_0/lib/libboost_signals.so.1.51.0
+--5408-- Reading syms from /media/DATI/tortelli/boost_1_51_0/lib/libboost_filesystem.so.1.51.0
+--5408-- Reading syms from /usr/lib/libstdc++.so.6.0.17
+--5408--    object doesn't have a symbol table
+--5408-- Reading syms from /lib/libm-2.11.1.so
+--5408--   Considering /lib/libm-2.11.1.so ..
+--5408--   .. CRC mismatch (computed 934fbf89 wanted b1c94dab)
+--5408--   Considering /usr/lib/debug/lib/libm-2.11.1.so ..
+--5408--   .. CRC is valid
+--5408-- Reading syms from /lib/libgcc_s.so.1
+--5408--   Considering /lib/libgcc_s.so.1 ..
+--5408--   .. CRC mismatch (computed 8e970c47 wanted af2195a6)
+--5408--    object doesn't have a symbol table
+--5408-- Reading syms from /lib/libpthread-2.11.1.so
+--5408--   Considering /lib/libpthread-2.11.1.so ..
+--5408--   .. CRC mismatch (computed d460a184 wanted 81aea168)
+--5408--   Considering /usr/lib/debug/lib/libpthread-2.11.1.so ..
+--5408--   .. CRC is valid
+--5408-- Reading syms from /lib/libc-2.11.1.so
+--5408--   Considering /lib/libc-2.11.1.so ..
+--5408--   .. CRC mismatch (computed 6b23738b wanted c0dae497)
+--5408--   Considering /usr/lib/debug/lib/libc-2.11.1.so ..
+--5408--   .. CRC is valid
+--5408-- Reading syms from /lib/libdl-2.11.1.so
+--5408--   Considering /lib/libdl-2.11.1.so ..
+--5408--   .. CRC mismatch (computed 06532688 wanted 2f6eef4b)
+--5408--   Considering /usr/lib/debug/lib/libdl-2.11.1.so ..
+--5408--   .. CRC is valid
+--5408-- Reading syms from /lib/libz.so.1.2.3.3
+--5408--   Considering /lib/libz.so.1.2.3.3 ..
+--5408--   .. CRC mismatch (computed 86f1fa27 wanted 5f1ca823)
+--5408--    object doesn't have a symbol table
+--5408-- Reading syms from /media/DATI/tortelli/boost_1_51_0/lib/libboost_regex.so.1.51.0
+--5408-- REDIR: 0xe8e2100 (__GI_strrchr) redirected to 0x4c29ff0 (__GI_strrchr)
+--5408-- REDIR: 0xe8e0610 (strlen) redirected to 0x4a2274e (_vgnU_ifunc_wrapper)
+--5408-- REDIR: 0xe985e00 (__strlen_sse42) redirected to 0x4c2a5a0 (strlen)
+--5408-- REDIR: 0xdf02150 (operator new(unsigned long)) redirected to 0x4c2962f (operator new(unsigned long))
+--5408-- REDIR: 0xe8e4290 (memcpy) redirected to 0x4c2b840 (memcpy)
+--5408-- REDIR: 0xe8e0640 (__GI_strlen) redirected to 0x4c2a5c0 (__GI_strlen)
+--5408-- REDIR: 0xe8debd0 (strcmp) redirected to 0x4a2274e (_vgnU_ifunc_wrapper)
+--5408-- REDIR: 0xe984f60 (__strcmp_sse42) redirected to 0x4c2b1e0 (strcmp)
+--5408-- REDIR: 0xe8e2890 (bcmp) redirected to 0x4a2274e (_vgnU_ifunc_wrapper)
+--5408-- REDIR: 0xe98eb60 (__memcmp_sse4_1) redirected to 0x4c2c2d0 (bcmp)
+--5408-- REDIR: 0xdf00460 (operator delete(void*)) redirected to 0x4c28695 (operator delete(void*))
+--5408-- REDIR: 0xe8db990 (calloc) redirected to 0x4c27e29 (calloc)
+--5408-- REDIR: 0xe8e2cc0 (memmove) redirected to 0x4c2c750 (memmove)
+--5408-- REDIR: 0xe8e2e80 (memset) redirected to 0x4c2c6b0 (memset)
+--5408-- REDIR: 0xe8e2810 (memchr) redirected to 0x4c2b320 (memchr)
+--5408-- REDIR: 0xe8d9b20 (malloc) redirected to 0x4c29b4a (malloc)
+--5408-- REDIR: 0xe8e5870 (strchrnul) redirected to 0x4c2cc00 (strchrnul)
+--5408-- REDIR: 0xe8db410 (free) redirected to 0x4c28aaf (free)
+--5408-- REDIR: 0xdf02260 (operator new[](unsigned long)) redirected to 0x4c28fb2 (operator new[](unsigned long))
+--5408-- REDIR: 0xdf00490 (operator delete[](void*)) redirected to 0x4c281e5 (operator delete[](void*))
+The total number of nodes is:	22
+CHOSEN REPOSITORY:	17
+CHOSEN REPOSITORY:	12
+--5408-- REDIR: 0xe8e39b0 (mempcpy) redirected to 0x4c2cd20 (mempcpy)
+*** BF STABLE *** Number of Interfaces INIT:	2
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	651269
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	1302554
+*** BF STABLE *** DECREM POS:	16
+*** BF STABLE *** Number of Interfaces INIT:	5
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	651269
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	1302554
+*** BF STABLE *** DECREM POS:	16
+*** BF STABLE *** Number of Interfaces INIT:	2
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	651269
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	1302554
+*** BF STABLE *** DECREM POS:	16
+*** BF STABLE *** Number of Interfaces INIT:	5
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	651269
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	1302554
+*** BF STABLE *** DECREM POS:	16
+*** BF STABLE *** Number of Interfaces INIT:	5
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	651269
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	1302554
+*** BF STABLE *** DECREM POS:	16
+*** BF STABLE *** Number of Interfaces INIT:	3
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	651269
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	1302554
+*** BF STABLE *** DECREM POS:	16
+*** BF STABLE *** Number of Interfaces INIT:	2
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	651269
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	1302554
+*** BF STABLE *** DECREM POS:	16
+*** BF STABLE *** Number of Interfaces INIT:	3
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	651269
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	1302554
+*** BF STABLE *** DECREM POS:	16
+*** BF STABLE *** Number of Interfaces INIT:	2
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	651269
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	1302554
+*** BF STABLE *** DECREM POS:	16
+*** BF STABLE *** Number of Interfaces INIT:	3
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	651269
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	1302554
+*** BF STABLE *** DECREM POS:	16
+*** BF STABLE *** Number of Interfaces INIT:	2
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	651269
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	1302554
+*** BF STABLE *** DECREM POS:	16
+*** BF STABLE *** Number of Interfaces INIT:	2
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	651269
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	1302554
+*** BF STABLE *** DECREM POS:	16
+*** BF STABLE *** Number of Interfaces INIT:	5
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	651269
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	1302554
+*** BF STABLE *** DECREM POS:	16
+*** BF STABLE *** Number of Interfaces INIT:	2
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	651269
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	1302554
+*** BF STABLE *** DECREM POS:	16
+*** BF STABLE *** Number of Interfaces INIT:	6
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	651269
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	1302554
+*** BF STABLE *** DECREM POS:	16
+*** BF STABLE *** Number of Interfaces INIT:	5
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	651269
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	1302554
+*** BF STABLE *** DECREM POS:	16
+*** BF STABLE *** Number of Interfaces INIT:	2
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	651269
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	1302554
+*** BF STABLE *** DECREM POS:	16
+*** BF STABLE *** Number of Interfaces INIT:	4
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	651269
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	1302554
+*** BF STABLE *** DECREM POS:	16
+*** BF STABLE *** Number of Interfaces INIT:	5
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	651269
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	1302554
+*** BF STABLE *** DECREM POS:	16
+*** BF STABLE *** Number of Interfaces INIT:	2
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	651269
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	1302554
+*** BF STABLE *** DECREM POS:	16
+*** BF STABLE *** Number of Interfaces INIT:	3
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	651269
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	1302554
+*** BF STABLE *** DECREM POS:	16
+*** BF STABLE *** Number of Interfaces INIT:	4
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	651269
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	1302554
+*** BF STABLE *** DECREM POS:	16
+The number of consumer is:	20
+==5408== Syscall param open(filename) points to unaddressable byte(s)
+==5408==    at 0xE936C20: __open_nocancel (syscall-template.S:82)
+==5408==    by 0xE8D177E: _IO_file_fopen@@GLIBC_2.2.5 (fileops.c:232)
+==5408==    by 0xE8C5B25: __fopen_internal (iofopen.c:93)
+==5408==    by 0xDF1E53E: std::__basic_file<char>::open(char const*, std::_Ios_Openmode, int) (in /usr/lib/libstdc++.so.6.0.17)
+==5408==    by 0xDF58187: std::basic_filebuf<char, std::char_traits<char> >::open(char const*, std::_Ios_Openmode) (in /usr/lib/libstdc++.so.6.0.17)
+==5408==    by 0xDF592FF: std::basic_ifstream<char, std::char_traits<char> >::open(char const*, std::_Ios_Openmode) (in /usr/lib/libstdc++.so.6.0.17)
+==5408==    by 0x41F74F: main (bloom-filter-routing-scenario.cc:524)
+==5408==  Address 0xf5c59f8 is 24 bytes inside a block of size 128 free'd
+==5408==    at 0x4C2871C: operator delete(void*) (vg_replace_malloc.c:480)
+==5408==    by 0xDF5EE8F: std::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string() (in /usr/lib/libstdc++.so.6.0.17)
+==5408==    by 0x41F6C1: main (bloom-filter-routing-scenario.cc:519)
+==5408== 
+Il Valore di Alpha è:1
+Il Valore di Alpha è:1
+Il Valore di Alpha è:1
+Il Valore di Alpha è:1
+Il Valore di Alpha è:1
+Il Valore di Alpha è:1
+Il Valore di Alpha è:1
+Il Valore di Alpha è:1
+Il Valore di Alpha è:1
+Il Valore di Alpha è:1
+Il Valore di Alpha è:1
+Il Valore di Alpha è:1
+Il Valore di Alpha è:1
+Il Valore di Alpha è:1
+Il Valore di Alpha è:1
+Il Valore di Alpha è:1
+Il Valore di Alpha è:1
+Il Valore di Alpha è:1
+Il Valore di Alpha è:1
+Il Valore di Alpha è:1
+NODE:	9	 APP-LAYER RECEIVED DATA:	/93	2001447
+--5408-- memcheck GC: 1000 nodes, 0 survivors (  0.0%)
+NODE:	3	 APP-LAYER RECEIVED DATA:	/55178	2002448
+NODE:	4	 APP-LAYER RECEIVED DATA:	/55	2003495
+NODE:	16	 APP-LAYER RECEIVED DATA:	/2	2004047
+NODE:	15	 APP-LAYER RECEIVED DATA:	/22564	2004608
+NODE:	8	 APP-LAYER RECEIVED DATA:	/12172	2005993
+NODE:	18	 APP-LAYER RECEIVED DATA:	/2	2007047
+NODE:	1	 APP-LAYER RECEIVED DATA:	/4	2008047
+NODE:	19	 APP-LAYER RECEIVED DATA:	/2	2008093
+NODE:	5	 APP-LAYER RECEIVED DATA:	/5644	2008496
+NODE:	2	 APP-LAYER RECEIVED DATA:	/654	2012495
+NODE:	14	 APP-LAYER RECEIVED DATA:	/28683	2018545
+--5408-- memcheck GC: 1000 nodes, 0 survivors (  0.0%)
+NODE:	6	 APP-LAYER RECEIVED DATA:	/1	2035543
+NODE:	20	 APP-LAYER RECEIVED DATA:	/1	2039635
+NODE:	13	 APP-LAYER RECEIVED DATA:	/1	2046047
+NODE:	11	 APP-LAYER RECEIVED DATA:	/2	2053247
+--5408-- memcheck GC: 1000 nodes, 0 survivors (  0.0%)
+--5408-- memcheck GC: 1000 nodes, 0 survivors (  0.0%)
+NODE:	21	 APP-LAYER RECEIVED DATA:	/3	3223486
+--5408-- memcheck GC: 1000 nodes, 0 survivors (  0.0%)
+NODE:	0	 APP-LAYER RECEIVED DATA:	/52157	3943893
+--5408-- memcheck GC: 1000 nodes, 0 survivors (  0.0%)
+NODE:	7	 APP-LAYER RECEIVED DATA:	/10	3999200
+NODE:	10	 APP-LAYER RECEIVED DATA:	/2660	4363449
+--5408-- memcheck GC: 1000 nodes, 0 survivors (  0.0%)
+--5408-- memcheck GC: 1000 nodes, 0 survivors (  0.0%)
+--5408-- memcheck GC: 1000 nodes, 0 survivors (  0.0%)
+--5408-- memcheck GC: 1000 nodes, 0 survivors (  0.0%)
+--5408-- memcheck GC: 1000 nodes, 0 survivors (  0.0%)
+--5408-- memcheck GC: 1000 nodes, 0 survivors (  0.0%)
+--5408-- memcheck GC: 1000 nodes, 0 survivors (  0.0%)
+--5408-- memcheck GC: 1000 nodes, 0 survivors (  0.0%)
+--5408-- memcheck GC: 1000 nodes, 0 survivors (  0.0%)
+--5408-- memcheck GC: 1000 nodes, 0 survivors (  0.0%)
+--5408-- memcheck GC: 1000 nodes, 0 survivors (  0.0%)
+--5408-- memcheck GC: 1000 nodes, 0 survivors (  0.0%)
+--5408-- memcheck GC: 1000 nodes, 0 survivors (  0.0%)
+--5408-- memcheck GC: 1000 nodes, 0 survivors (  0.0%)
+--5408-- memcheck GC: 1000 nodes, 0 survivors (  0.0%)
+--5408-- memcheck GC: 1000 nodes, 0 survivors (  0.0%)
+--5408-- memcheck GC: 1000 nodes, 0 survivors (  0.0%)
+--5408-- memcheck GC: 1000 nodes, 0 survivors (  0.0%)
+--5408-- memcheck GC: 1000 nodes, 0 survivors (  0.0%)
+--5408-- memcheck GC: 1000 nodes, 0 survivors (  0.0%)
+--5408-- memcheck GC: 1000 nodes, 0 survivors (  0.0%)
+--5408-- memcheck GC: 1000 nodes, 0 survivors (  0.0%)
+--5408-- memcheck GC: 1000 nodes, 0 survivors (  0.0%)
+--5408-- memcheck GC: 1000 nodes, 0 survivors (  0.0%)
+--5408-- memcheck GC: 1000 nodes, 0 survivors (  0.0%)
+--5408-- memcheck GC: 1000 nodes, 0 survivors (  0.0%)
+--5408-- memcheck GC: 1000 nodes, 0 survivors (  0.0%)
+--5408-- memcheck GC: 1000 nodes, 0 survivors (  0.0%)
+--5408-- memcheck GC: 1000 nodes, 0 survivors (  0.0%)
+--5408-- memcheck GC: 1000 nodes, 0 survivors (  0.0%)
+Node #1
+/183
+/2364
+/1169
+/287
+/2593
+/196
+/21
+/255
+/89390
+/2
+
+Node #2
+/331
+/287
+/2593
+/196
+/10
+/21
+/255
+/89390
+/4
+/160
+
+Node #3
+/33
+/37
+/211
+/126
+/70
+/47101
+/2364
+/123
+/196
+/21
+
+Node #4
+/217
+/4
+/354
+/196
+/52
+/21
+/1405
+/10209
+/27946
+/2223
+
+Node #5
+/100
+/3715
+/331
+/287
+/2593
+/8
+/10
+/10209
+/4
+/160
+
+Node #6
+/217
+/1
+/354
+/52
+/8
+/10
+/1405
+/17
+/27946
+/2223
+
+Node #7
+/162
+/1
+/4
+/4694
+/421
+/218
+/20011
+/8
+/10
+/17
+
+Node #8
+/233
+/62
+/218
+/20011
+/100
+/331
+/2593
+/8
+/10
+/160
+
+Node #9
+/5782
+/797
+/42286
+/4694
+/211
+/20789
+/233
+/100
+/2593
+/160
+
+Node #10
+/5782
+/797
+/4694
+/211
+/20789
+/1
+/233
+/380
+/2593
+/116
+
+Node #11
+/797
+/1878
+/4694
+/20789
+/233
+/380
+/2593
+/1646
+/116
+/1
+
+Node #12
+/1
+/20789
+/233
+/380
+/24879
+/19838
+/4
+/2593
+/1646
+/116
+
+Node #13
+
+Node #14
+/52
+/196
+/21
+/255
+/1405
+/10209
+/89390
+/17
+/27946
+/2223
+
+Node #15
+/2430
+/56
+/21
+/1405
+/255
+/10209
+/89390
+/17
+/27946
+/2223
+
+Node #16
+/158
+/8
+/1646
+/10
+/3191
+/21
+/255
+/89390
+/4
+/160
+
+Node #17
+/1169
+/31685
+/3046
+/6556
+/477
+/287
+/8
+/2430
+/56
+/57444
+
+Node #18
+
+Node #19
+/94
+/3046
+/3715
+/477
+/287
+/2430
+/2
+/56
+/10209
+/89390
+
+Node #20
+/12
+/180
+/8
+/1
+/11493
+/2
+/33058
+/3
+/8569
+/10
+
+Node #21
+/123
+/258
+/2
+/22
+/183
+/10
+/16
+/287
+/1
+/89390
+
+Node #22
+/183
+/2364
+/1169
+/287
+/2593
+/196
+/21
+/255
+/89390
+/2
+
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+==5408== 
+==5408== HEAP SUMMARY:
+==5408==     in use at exit: 57,549,671 bytes in 1,049,599 blocks
+==5408==   total heap usage: 2,356,270 allocs, 1,306,671 frees, 219,418,871 bytes allocated
+==5408== 
+==5408== Searching for pointers to 1,049,599 not-freed blocks
+==5408== Checked 25,287,040 bytes
+==5408== 
+==5408== 78 (24 direct, 54 indirect) bytes in 1 blocks are definitely lost in loss record 40 of 260
+==5408==    at 0x4C296B1: operator new(unsigned long) (vg_replace_malloc.c:298)
+==5408==    by 0x950CDA0: __gnu_cxx::new_allocator<std::_List_node<std::string> >::allocate(unsigned long, void const*) (new_allocator.h:94)
+==5408==    by 0x950CCC5: std::_List_base<std::string, std::allocator<std::string> >::_M_get_node() (stl_list.h:335)
+==5408==    by 0x950CB6E: std::list<std::string, std::allocator<std::string> >::_M_create_node(std::string const&) (stl_list.h:482)
+==5408==    by 0x950C9E6: std::list<std::string, std::allocator<std::string> >::_M_insert(std::_List_iterator<std::string>, std::string const&) (stl_list.h:1525)
+==5408==    by 0x950C2A9: std::list<std::string, std::allocator<std::string> >::push_back(std::string const&) (stl_list.h:997)
+==5408==    by 0x962EE06: ns3::ndn::Name& ns3::ndn::Name::Add<std::string>(std::string const&) (ndn-name.h:284)
+==5408==    by 0x962E3AF: ns3::ndn::operator>>(std::istream&, ns3::ndn::Name&) (ndn-name.cc:206)
+==5408==    by 0x962D82A: ns3::ndn::Name::Name(std::string const&) (ndn-name.cc:60)
+==5408==    by 0x42963F: ns3::Ptr<ns3::ndn::Name> ns3::Create<ns3::ndn::Name, std::string>(std::string) (ptr.h:239)
+==5408==    by 0x41F86C: main (bloom-filter-routing-scenario.cc:536)
+==5408== 
+==5408== 760 (16 direct, 744 indirect) bytes in 1 blocks are definitely lost in loss record 144 of 260
+==5408==    at 0x4C29BCC: malloc (vg_replace_malloc.c:270)
+==5408==    by 0xCDAF74B: ns3::Object::Object() (object.cc:96)
+==5408==    by 0xA296C2D: ns3::RttEstimator::RttEstimator() (rtt-estimator.cc:129)
+==5408==    by 0xA298DDF: ns3::RttMeanDeviation::RttMeanDeviation() (rtt-estimator.cc:277)
+==5408==    by 0x94FD295: ns3::Ptr<ns3::RttMeanDeviation> ns3::CreateObject<ns3::RttMeanDeviation>() (object.h:393)
+==5408==    by 0x94F7BF5: ns3::ndn::ConsumerRtx::ConsumerRtx() (ndn-consumer-rtx.cc:140)
+==5408==    by 0x94F4808: ns3::ndn::ConsumerCbr::ConsumerCbr() (ndn-consumer-cbr.cc:75)
+==5408==    by 0x94F4E31: ns3::TypeId ns3::TypeId::AddConstructor<ns3::ndn::ConsumerCbr>()::Maker::Create() (type-id.h:392)
+==5408==    by 0x54F1233: ns3::FunctorCallbackImpl<ns3::ObjectBase* (*)(), ns3::ObjectBase*, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty>::operator()() (callback.h:166)
+==5408==    by 0xC9A329C: ns3::Callback<ns3::ObjectBase*, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty>::operator()() const (callback.h:407)
+==5408==    by 0xCE14FB0: ns3::ObjectFactory::Create() const (object-factory.cc:93)
+==5408==    by 0x9526625: ns3::Ptr<ns3::ndn::App> ns3::ObjectFactory::Create<ns3::ndn::App>() const (object-factory.h:149)
+==5408== 
+==5408== 51,425 (80 direct, 51,345 indirect) bytes in 2 blocks are definitely lost in loss record 229 of 260
+==5408==    at 0x4C296B1: operator new(unsigned long) (vg_replace_malloc.c:298)
+==5408==    by 0x961D804: ns3::Ptr<ns3::MemPtrCallbackImpl<ns3::ndn::AppFace*, bool (ns3::ndn::Face::*)(ns3::Ptr<ns3::Packet const> const&), bool, ns3::Ptr<ns3::Packet const> const&, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty> > ns3::Create<ns3::MemPtrCallbackImpl<ns3::ndn::AppFace*, bool (ns3::ndn::Face::*)(ns3::Ptr<ns3::Packet const> const&), bool, ns3::Ptr<ns3::Packet const> const&, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty>, ns3::ndn::AppFace*, bool (ns3::ndn::Face::*)(ns3::Ptr<ns3::Packet const> const&)>(ns3::ndn::AppFace*, bool (ns3::ndn::Face::*)(ns3::Ptr<ns3::Packet const> const&)) (ptr.h:245)
+==5408==    by 0x961D76A: ns3::Callback<bool, ns3::Ptr<ns3::Packet const> const&, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty>::Callback<ns3::ndn::AppFace*, bool (ns3::ndn::Face::*)(ns3::Ptr<ns3::Packet const> const&)>(ns3::ndn::AppFace* const&, bool (ns3::ndn::Face::*)(ns3::Ptr<ns3::Packet const> const&)) (callback.h:382)
+==5408==    by 0x961D6F9: ns3::Callback<bool, ns3::Ptr<ns3::Packet const> const&, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty> ns3::MakeCallback<ns3::ndn::Face, ns3::ndn::AppFace*, bool, ns3::Ptr<ns3::Packet const> const&>(bool (ns3::ndn::Face::*)(ns3::Ptr<ns3::Packet const> const&), ns3::ndn::AppFace*) (callback.h:519)
+==5408==    by 0x961C95A: ns3::ndn::AppFace::RegisterProtocolHandler(ns3::Callback<void, ns3::Ptr<ns3::ndn::Face> const&, ns3::Ptr<ns3::Packet const> const&, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty>) (ndn-app-face.cc:94)
+==5408==    by 0x962783A: ns3::ndn::L3Protocol::AddFace(ns3::Ptr<ns3::ndn::Face> const&) (ndn-l3-protocol.cc:163)
+==5408==    by 0x94E82B7: ns3::ndn::App::StartApplication() (ndn-app.cc:141)
+==5408==    by 0x94F882F: ns3::ndn::ConsumerRtx::StartApplication() (ndn-consumer-rtx.cc:225)
+==5408==    by 0xC968F62: ns3::EventImpl* ns3::MakeEvent<void (ns3::Application::*)(), ns3::Application*>(void (ns3::Application::*)(), ns3::Application*)::EventMemberImpl0::Notify() (make-event.h:96)
+==5408==    by 0xCD89AD0: ns3::EventImpl::Invoke() (event-impl.cc:45)
+==5408==    by 0xCD8DB08: ns3::DefaultSimulatorImpl::ProcessOneEvent() (default-simulator-impl.cc:138)
+==5408==    by 0xCD8DD33: ns3::DefaultSimulatorImpl::Run() (default-simulator-impl.cc:193)
+==5408== 
+==5408== 74,024 (48 direct, 73,976 indirect) bytes in 3 blocks are definitely lost in loss record 230 of 260
+==5408==    at 0x4C29BCC: malloc (vg_replace_malloc.c:270)
+==5408==    by 0xCDAF74B: ns3::Object::Object() (object.cc:96)
+==5408==    by 0xC967819: ns3::Application::Application() (application.cc:56)
+==5408==    by 0x94E70CE: ns3::ndn::App::App() (ndn-app.cc:69)
+==5408==    by 0x94F78BD: ns3::ndn::ConsumerRtx::ConsumerRtx() (ndn-consumer-rtx.cc:136)
+==5408==    by 0x94F4808: ns3::ndn::ConsumerCbr::ConsumerCbr() (ndn-consumer-cbr.cc:75)
+==5408==    by 0x94F4E31: ns3::TypeId ns3::TypeId::AddConstructor<ns3::ndn::ConsumerCbr>()::Maker::Create() (type-id.h:392)
+==5408==    by 0x54F1233: ns3::FunctorCallbackImpl<ns3::ObjectBase* (*)(), ns3::ObjectBase*, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty>::operator()() (callback.h:166)
+==5408==    by 0xC9A329C: ns3::Callback<ns3::ObjectBase*, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty, ns3::empty>::operator()() const (callback.h:407)
+==5408==    by 0xCE14FB0: ns3::ObjectFactory::Create() const (object-factory.cc:93)
+==5408==    by 0x9526625: ns3::Ptr<ns3::ndn::App> ns3::ObjectFactory::Create<ns3::ndn::App>() const (object-factory.h:149)
+==5408==    by 0x9526209: ns3::ndn::AppHelper::InstallPriv(ns3::Ptr<ns3::Node>) (ndn-app-helper.cc:97)
+==5408== 
+==5408== 370,141 (240 direct, 369,901 indirect) bytes in 15 blocks are definitely lost in loss record 237 of 260
+==5408==    at 0x4C29BCC: malloc (vg_replace_malloc.c:270)
+==5408==    by 0xCDAF74B: ns3::Object::Object() (object.cc:96)
+==5408==    by 0x96201E4: ns3::ndn::Face::Face(ns3::Ptr<ns3::Node>) (ndn-face.cc:79)
+==5408==    by 0x961C0A6: ns3::ndn::AppFace::AppFace(ns3::Ptr<ns3::ndn::App>) (ndn-app-face.cc:56)
+==5408==    by 0x94EA4C3: ns3::Ptr<ns3::ndn::AppFace> ns3::CreateObject<ns3::ndn::AppFace, ns3::ndn::App*>(ns3::ndn::App*) (object.h:399)
+==5408==    by 0x94E821E: ns3::ndn::App::StartApplication() (ndn-app.cc:138)
+==5408==    by 0x94F882F: ns3::ndn::ConsumerRtx::StartApplication() (ndn-consumer-rtx.cc:225)
+==5408==    by 0xC968F62: ns3::EventImpl* ns3::MakeEvent<void (ns3::Application::*)(), ns3::Application*>(void (ns3::Application::*)(), ns3::Application*)::EventMemberImpl0::Notify() (make-event.h:96)
+==5408==    by 0xCD89AD0: ns3::EventImpl::Invoke() (event-impl.cc:45)
+==5408==    by 0xCD8DB08: ns3::DefaultSimulatorImpl::ProcessOneEvent() (default-simulator-impl.cc:138)
+==5408==    by 0xCD8DD33: ns3::DefaultSimulatorImpl::Run() (default-simulator-impl.cc:193)
+==5408==    by 0xCD8A868: ns3::Simulator::Run() (simulator.cc:160)
+==5408== 
+==5408== 28,034,012 (40 direct, 28,033,972 indirect) bytes in 1 blocks are definitely lost in loss record 260 of 260
+==5408==    at 0x4C296B1: operator new(unsigned long) (vg_replace_malloc.c:298)
+==5408==    by 0x9699F8E: ns3::Ptr<ns3::ndn::rp::EntryImpl<ns3::ndn::rp::RepoImpl<ns3::ndn::ndnSIM::persistent_policy_traits> > > ns3::Create<ns3::ndn::rp::EntryImpl<ns3::ndn::rp::RepoImpl<ns3::ndn::ndnSIM::persistent_policy_traits> >, ns3::ndn::rp::RepoImpl<ns3::ndn::ndnSIM::persistent_policy_traits>*, ns3::Ptr<ns3::ndn::ContentObject const>, ns3::Ptr<ns3::Packet const> >(ns3::ndn::rp::RepoImpl<ns3::ndn::ndnSIM::persistent_policy_traits>*, ns3::Ptr<ns3::ndn::ContentObject const>, ns3::Ptr<ns3::Packet const>) (ptr.h:251)
+==5408==    by 0x96991E4: ns3::ndn::rp::RepoImpl<ns3::ndn::ndnSIM::persistent_policy_traits>::Add(ns3::Ptr<ns3::ndn::ContentObject const>, ns3::Ptr<ns3::Packet const>) (repo-impl.h:190)
+==5408==    by 0x41F9DC: main (bloom-filter-routing-scenario.cc:543)
+==5408== 
+==5408== LEAK SUMMARY:
+==5408==    definitely lost: 448 bytes in 23 blocks
+==5408==    indirectly lost: 28,529,992 bytes in 526,546 blocks
+==5408==      possibly lost: 28,041,071 bytes in 522,593 blocks
+==5408==    still reachable: 978,160 bytes in 437 blocks
+==5408==         suppressed: 0 bytes in 0 blocks
+==5408== Reachable blocks (those to which a pointer was found) are not shown.
+==5408== To see them, rerun with: --leak-check=full --show-reachable=yes
+==5408== 
+==5408== ERROR SUMMARY: 95 errors from 94 contexts (suppressed: 2 from 2)
+==5408== 
+==5408== 2 errors in context 1 of 94:
+==5408== Syscall param open(filename) points to unaddressable byte(s)
+==5408==    at 0xE936C20: __open_nocancel (syscall-template.S:82)
+==5408==    by 0xE8D177E: _IO_file_fopen@@GLIBC_2.2.5 (fileops.c:232)
+==5408==    by 0xE8C5B25: __fopen_internal (iofopen.c:93)
+==5408==    by 0xDF1E53E: std::__basic_file<char>::open(char const*, std::_Ios_Openmode, int) (in /usr/lib/libstdc++.so.6.0.17)
+==5408==    by 0xDF58187: std::basic_filebuf<char, std::char_traits<char> >::open(char const*, std::_Ios_Openmode) (in /usr/lib/libstdc++.so.6.0.17)
+==5408==    by 0xDF592FF: std::basic_ifstream<char, std::char_traits<char> >::open(char const*, std::_Ios_Openmode) (in /usr/lib/libstdc++.so.6.0.17)
+==5408==    by 0x41F74F: main (bloom-filter-routing-scenario.cc:524)
+==5408==  Address 0xf5c59f8 is 24 bytes inside a block of size 128 free'd
+==5408==    at 0x4C2871C: operator delete(void*) (vg_replace_malloc.c:480)
+==5408==    by 0xDF5EE8F: std::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string() (in /usr/lib/libstdc++.so.6.0.17)
+==5408==    by 0x41F6C1: main (bloom-filter-routing-scenario.cc:519)
+==5408== 
+--5408-- 
+--5408-- used_suppression:      2 U1004-ARM-_dl_relocate_object
+==5408== 
+==5408== ERROR SUMMARY: 95 errors from 94 contexts (suppressed: 2 from 2)
