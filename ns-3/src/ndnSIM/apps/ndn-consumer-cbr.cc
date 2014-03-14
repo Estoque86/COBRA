@@ -45,7 +45,7 @@ ConsumerCbr::GetTypeId (void)
 {
   static TypeId tid = TypeId ("ns3::ndn::ConsumerCbr")
     .SetGroupName ("Ndn")
-    .SetParent<ConsumerRtx> ()
+    .SetParent<ConsumerRtxZipf> ()
     .AddConstructor<ConsumerCbr> ()
 
     .AddAttribute ("Frequency", "Frequency of interest packets",
@@ -96,7 +96,7 @@ ConsumerCbr::ScheduleNextPacket ()
   if (m_firstTime)
     {
       m_sendEvent = Simulator::Schedule (Seconds (0.0),
-                                         &ConsumerRtx::SendPacket, this);
+                                         &ConsumerRtxZipf::SendPacket, this);
       m_firstTime = false;
     }
   else if (!m_sendEvent.IsRunning ())
@@ -105,7 +105,7 @@ ConsumerCbr::ScheduleNextPacket ()
                                          Seconds(1.0 / m_frequency)
                                        :
                                          Seconds(m_random->GetValue ()),
-                                       &ConsumerRtx::SendPacket, this);
+                                       &ConsumerRtxZipf::SendPacket, this);
 }
 
 void

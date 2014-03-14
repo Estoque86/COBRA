@@ -31,7 +31,7 @@ namespace ndn {
  * @ingroup ndn
  * \brief Ndn application for sending out Interest packets at a "constant" rate (Poisson process)
  */
-class ConsumerCbr: public ConsumerRtx
+class ConsumerCbr: public ConsumerRtxZipf
 {
 public: 
   static TypeId GetTypeId ();
