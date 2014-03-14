@@ -112,7 +112,7 @@ public:
 
    virtual ~BloomFilterBase();
 
-   void MakeBfInitialization();
+   void MakeBfInitialization(bool flag);
 
    /**
    *   Initialization functions for the Stable and Simple Bloom Filters (Basic or Counting).

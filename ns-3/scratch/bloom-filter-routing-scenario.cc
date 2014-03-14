@@ -50,36 +50,18 @@ NS_LOG_COMPONENT_DEFINE ("ndn.NewRouting");
 
 std::vector<std::vector<bool> > readAdjMat (std::string adj_mat_file_name);
 std::vector<std::vector<double> > readCordinatesFile (std::string node_coordinates_file_name);
-void InterestScartatiFailureTrace(Ptr<OutputStreamWrapper> stream);
-void InterestInviatiRicevutiTrace(Ptr<OutputStreamWrapper> stream, Ptr<const InterestHeader> header, Ptr<const Face> face);
-void DataInviatiTrace(Ptr<OutputStreamWrapper> stream, Ptr<const ContentObjectHeader> header, bool local, Ptr<const Face> face);
-void DataRicevutiTrace(Ptr<OutputStreamWrapper> stream, Ptr<const ContentObjectHeader> header, Ptr<const Face> face);
-void DataInCaheAppTrace(Ptr<OutputStreamWrapper> stream, Ptr<const ContentObjectHeader> header);
-void UpdateD0D1InviatiTrace(Ptr<OutputStreamWrapper> stream, uint32_t locOrForw, uint32_t numInterf);
-void UpdateD0D1InviatiTrace_Old(Ptr<OutputStreamWrapper> stream);
-void UpdateD0D1RicevutiTrace(Ptr<OutputStreamWrapper> stream, Ptr<const Face> face);
-void PercD0D1Trace(Ptr<OutputStreamWrapper> stream, const std::vector<double>* componenti);
-void EntryExpTrace(Ptr<OutputStreamWrapper> stream, Ptr<const InterestHeader> header);
 
-//void DownloadTimeTrace(Ptr<OutputStreamWrapper> stream, const std::string* header, int64_t time_sent, int64_t time, uint32_t dist);
-void DownloadTimeFileTrace(Ptr<OutputStreamWrapper> stream, const std::string* header, int64_t time_sent, int64_t time, uint32_t dist);
-
-void UncompleteFileTrace(Ptr<OutputStreamWrapper> stream, const std::string* header, int64_t time_sent);
-
-void InterestEliminatiTrace(Ptr<OutputStreamWrapper> stream, const std::string* header, int64_t time_sent);
-
-void InterestInviatiAppTrace(Ptr<OutputStreamWrapper> stream, const std::string* interest);
 
 // ***  FUNZIONI PER IL NUOVO TRACING
-void InterestTrace(Ptr<OutputStreamWrapper> stream, Ptr<const Interest> header, Ptr<const Face> face, std::string eventType);
-void DataTrace(Ptr<OutputStreamWrapper> stream, Ptr<const ContentObject> header, bool local, Ptr<const Face> face, std::string eventType);
-void DataAppTrace(Ptr<OutputStreamWrapper> stream, Ptr<const ContentObject> header, std::string eventType);
-void InterestAppTrace(Ptr<OutputStreamWrapper> stream, const std::string* header, int64_t time_sent, std::string eventType);
-void DownloadTimeTrace(Ptr<OutputStreamWrapper> stream, const std::string* header, int64_t time_sent, int64_t downloadTime, uint32_t dist, std::string eventType);
+void InterestTrace(Ptr<OutputStreamWrapper> stream, Ptr<const Interest> header, Ptr<const Face> face, std::string eventType, std::string nodeType);
+void DataTrace(Ptr<OutputStreamWrapper> stream, Ptr<const ContentObject> header, Ptr<const Face> face, std::string eventType, std::string nodeType);
+void DataAppTrace(Ptr<OutputStreamWrapper> stream, Ptr<const ContentObject> header, std::string eventType, std::string nodeType);
+void InterestAppTrace(Ptr<OutputStreamWrapper> stream, const std::string* header, int64_t time_sent, std::string eventType, std::string nodeType);
+void DownloadTimeTrace(Ptr<OutputStreamWrapper> stream, const std::string* header, int64_t time_sent, int64_t downloadTime, uint32_t dist, std::string eventType, std::string nodeType);
 
 
 int
-main (int argc, char *argv[19])
+main (int argc, char *argv[21])
 {
   struct rlimit newlimit;
   const struct rlimit * newlimitP;
@@ -87,8 +69,7 @@ main (int argc, char *argv[19])
   newlimit.rlim_cur = 2000;
   newlimit.rlim_max = 2000;
   newlimitP = &newlimit;
-  //pid_t pid = 0;
-  //prlimit(pid,RLIMIT_NOFILE,newlimitP,&oldlimit);
+
   setrlimit(RLIMIT_NOFILE,newlimitP);
 
   static ns3::GlobalValue g_simRun ("g_simRun",
@@ -114,13 +95,14 @@ main (int argc, char *argv[19])
 
 
 
-  //uint32_t nGrid = 3;
   Time finishTime = Seconds (11500.0);
 
 
   // ** [MT] ** Parameters passed with command line
   uint64_t contentCatalogCache = 0;          // Estimated Content Catalog Cardinality to dimension the Bloom Filter of the Cache.
   uint64_t contentCatalogFib = 0;            // Estimated Content Catalog Cardinality to dimension the Bloom Filter for the FIB.
+  double cacheToCatalog = 0;            	 // The cacheSize/contentCatalogFib ratio.
+  double alpha = 1;							 // Zipf's Exponent
   double desiredPfpCache = 0.001;			 // Desired Probability of False Positives for the BF of the Cache.
   double desiredPfpFib = 0.001;			 	 // Desired Probability of False Positives for the BF for the FIB.
   uint32_t cellWidthBfCache = 1;             // Number of bits per cell of the BF of the Cache.
@@ -134,12 +116,14 @@ main (int argc, char *argv[19])
   uint64_t customLengthBfFib = 1000;       	 // Custom Length [bit] of the BF for the FIB.
   uint32_t customHashesBfCache = 1;       	 // Custom number of Hash Functions of the BF of the cache.
   uint32_t customHashesBfFib = 1;       	 // Custom number of Hash Functions of the BFs for the FIB.
-  double cacheToCatalog = 0;            	 // The cacheSize/contentCatalogFib ratio.
   uint32_t simType = 1;                 	 // Simulation Scenario:
   	  	  	  	  	  	  	  	  	    	 // 1 = FLOODING  (Default)
   	  	  	  	  	  	  	  	  	  		 // 2 = BEST ROUTE
   	  	  	  	  	  	  	  	  	    	 // 3 = BF
-  double alpha = 1;
+
+  std::string networkType = "";              // Type of simulated network (Network Name)
+  std::string topologyImport = "";			 // How to create the network (Annotated or Adjacency)
+
 
 
   CommandLine cmd;
@@ -160,16 +144,17 @@ main (int argc, char *argv[19])
   cmd.AddValue ("customHashesBfFib", "Custom number of Hash Functions of the BFs for the FIB", customHashesBfFib);
   cmd.AddValue ("cacheToCatalog", "Cache to Catalog Ratio", cacheToCatalog);
   cmd.AddValue ("simType", "Chosen Simulation Scenario", simType);
-  cmd.AddValue ("valoreAlpha", "Zipf's Parameter", alpha);
+  cmd.AddValue ("alpha", "Zipf's Parameter", alpha);
+  cmd.AddValue ("networkType", "Type of Simulated Network", networkType);
+  cmd.AddValue ("topologyImport", "How to create the topology (Annotated or Adjacency)", topologyImport);
 
   cmd.Parse (argc, argv);
 
   uint64_t simRun = SeedManager::GetRun();
-  //NS_LOG_UNCOND("SIMULATION RUN:\t" << simRun);
   std::stringstream ss;
-  std::string runNumber;
+  std::string simRunStr;
   ss << simRun;
-  runNumber = ss.str();
+  simRunStr = ss.str();
   ss.str("");
 
 
@@ -181,7 +166,63 @@ main (int argc, char *argv[19])
   // ** [MT] ** Calculate the cache size according to the specified ratio.
   uint32_t cacheSize = round((double)contentCatalogFib * cacheToCatalog);
   ss << cacheSize;
-  std::string CACHE_SIZE = ss.str();
+  std::string cacheSizeStr = ss.str();
+  ss.str("");
+
+  // ***** Obtaining parameters strings
+  std::string bfScopeStr, bfFibInitMethodStr, contentCatalogFibStr, desiredPfpFibStr, cellWidthBfFibStr, customLengthBfFibStr, customHashesBfFibStr;
+  std::string bfCacheInitMethodStr, contentCatalogCacheStr, desiredPfpCacheStr, cellWidthBfCacheStr, customLengthBfCacheStr, customHashesBfCacheStr;
+
+  ss << bfScope;
+  bfScopeStr = ss.str();
+  ss.str("");
+
+  ss << bfFibInitMethod;
+  bfFibInitMethodStr = ss.str();
+  ss.str("");
+
+  ss << bfCacheInitMethod;
+  bfCacheInitMethodStr = ss.str();
+  ss.str("");
+
+  ss << contentCatalogFib;
+  contentCatalogFibStr = ss.str();
+  ss.str("");
+
+  ss << contentCatalogCache;
+  contentCatalogCacheStr = ss.str();
+  ss.str("");
+
+  ss << desiredPfpFib;
+  desiredPfpFibStr = ss.str();
+  ss.str("");
+
+  ss << desiredPfpCache;
+  desiredPfpCacheStr = ss.str();
+  ss.str("");
+
+  ss << cellWidthBfFib;
+  cellWidthBfFibStr = ss.str();
+  ss.str("");
+
+  ss << cellWidthBfCache;
+  cellWidthBfCacheStr = ss.str();
+  ss.str("");
+
+  ss << customLengthBfFib;
+  customLengthBfFibStr = ss.str();
+  ss.str("");
+
+  ss << customLengthBfCache;
+  customLengthBfCacheStr = ss.str();
+  ss.str("");
+
+  ss << customHashesBfFib;
+  customHashesBfFibStr = ss.str();
+  ss.str("");
+
+  ss << customHashesBfCache;
+  customHashesBfCacheStr = ss.str();
   ss.str("");
 
 
@@ -195,13 +236,13 @@ main (int argc, char *argv[19])
   {
   case(1):
 	 simulationType = "Flooding";
-  	 ss << simulationType << "_alpha_" << alpha << "_" << SeedManager::GetRun();
+  	 ss << "_N=" << networkType << "_S=" << simulationType << "_C=" << cacheToCatalog  << "_A=" << alpha << "R_" << SeedManager::GetRun();
   	 stringScenario = ss.str();
   	 ss.str("");
      break;
   case(3):
 	 simulationType = "BloomFilter";
-	 ss << simulationType << "_alpha_" << alpha << "_" << "cell_" << cellWidthBfFib << "_run_" << SeedManager::GetRun();
+	 ss << "_N=" << networkType << "_S=" << simulationType << "_C=" << cacheToCatalog  << "_D=" << cellWidthBfFib << "_A=" << alpha << "R_" << SeedManager::GetRun();
 	 stringScenario = ss.str();
      ss.str("");
      break;
@@ -211,136 +252,298 @@ main (int argc, char *argv[19])
 	 break;
   }
 
+  // *******************************************
 
-  // ** [MT] ** Create topology by reading topology file
-  AnnotatedTopologyReader topologyReader ("", 10);
-  topologyReader.SetFileName ("/media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/TOPOLOGIES/Geant_Topo_Only.txt");
-  topologyReader.Read ();
+  // ***********  TOPOLOGY CREATION  ************
 
-  // ** [MT] ** Total number of nodes in the simulated topology
-  uint32_t numNodes = topologyReader.GetNodes().GetN();
-  NS_LOG_UNCOND("The total number of nodes is:\t" << numNodes);
-  
-  // ** [MT] ** Extract and dimension random repos
+  uint32_t numCoreNodes;
+  std::string topoPath;
+  NodeContainer coreNodes, repoNodes, clientNodes;
 
-  uint32_t numRepo = 2;
-  UniformVariable m_SeqRng (0, numNodes-1);                              // The maximum random number is equal to the number of nodes
-  bool complete = false;
+  std::string linkRateCore ("10Gbps");
+  std::string linkDelayCore ("5ms");
+  std::string txBuffer("40");
 
-  std::vector<uint32_t>* repositoriesID = new std::vector<uint32_t>(numRepo) ;      // So far there are 2 Repos for each scenario
-  for(uint32_t i=0; i<repositoriesID->size(); i++)
+  std::string linkRateEdge ("1Gbps");      // Links connecting core with repos and/or clients
+  std::string linkDelayEdge ("15ms");
+
+  if(topologyImport.compare("Annotated")==0)
   {
-	  repositoriesID->operator[](i) = numNodes+1;
+	  AnnotatedTopologyReader topologyReader ("", 10);
+	  const char* topoPathCh;
+	  ss << "../TOPOLOGIES/" << topologyImport << "/" << networkType << ".txt";
+	  topoPathCh = ss.str().c_str();
+	  ss.str("");
+	  //topologyReader.SetFileName ("../TOPOLOGIES/Geant_Topo_Only.txt");
+	  topologyReader.SetFileName (topoPathCh);
+	  topologyReader.Read ();
+	  numCoreNodes = topologyReader.GetNodes().GetN();
+  }
+  else if(topologyImport.compare("Adjacency")==0)
+  {
+	  // Creazione con lettura da matrice di adiacenza..settare numero totale nodi.
+
+	  ss << "../TOPOLOGIES/" << topologyImport << "/" << networkType << ".txt";
+	  topoPath = ss.str();
+	  ss.str("");
+
+	  std::vector<std::vector<bool> > adjMatrix = readAdjMat (topoPath);
+	  numCoreNodes = adjMatrix.size();
+
+	  coreNodes.Create(numCoreNodes);
+
+	  // NB: Si potrebbe aggiungere una procedura di selezione random dove vengono settati gli
+	  //     Error Rate di alcuni link.
+
+	  PointToPointHelper p2p;
+	  p2p.SetDeviceAttribute ("DataRate", StringValue (linkRateCore));
+	  p2p.SetChannelAttribute ("Delay", StringValue (linkDelayCore));
+
+	  // Create Links between Nodes
+	  uint32_t linkCount = 0;
+
+	  for (size_t i = 0; i < adjMatrix.size (); i++)
+	  {
+		  for (size_t j = 0; j < adjMatrix[i].size (); j++)
+	      {
+			  if (adjMatrix[i][j] == 1)
+	          {
+				  NodeContainer n_links = NodeContainer (coreNodes.Get (i), coreNodes.Get (j));
+	              NetDeviceContainer n_devs = p2p.Install (n_links);
+	              linkCount++;
+	              // NB: Forse servirà settare gli attributi di Link della classe TopologyReader (tipo FromNode, ToNode)
+
+	              PointerValue txQueue;
+
+	              n_devs.Get(0)->GetAttribute ("TxQueue", txQueue);
+	              NS_ASSERT (txQueue.Get<DropTailQueue> () != 0);
+	              txQueue.Get<DropTailQueue> ()->SetAttribute ("MaxPackets", StringValue (txBuffer));
+
+	              n_devs.Get(1)->GetAttribute ("TxQueue", txQueue);
+	              NS_ASSERT (txQueue.Get<DropTailQueue> () != 0);
+	              txQueue.Get<DropTailQueue> ()->SetAttribute ("MaxPackets", StringValue (txBuffer));
+	          }
+	      }
+	  }
+
+	  NS_LOG_INFO ("Number of links in the adjacency matrix is: " << linkCount);
+  }
+  else
+  {
+	  std::cout << "Please choose between \"Annotated or Adjacency\" to create the topology!";
+	  exit(1);
   }
 
-  uint32_t repo_num = 0;
-  uint32_t rand_repo;
+  // ** Total number of nodes in the simulated topology
+  //uint32_t numNodes = topologyReader.GetNodes().GetN();
+  NS_LOG_UNCOND("The total number of core nodes is:\t" << numCoreNodes);
+  
+  // ******************************************************
 
-  while(!complete)
+  // **********  REPOSITORY RANDOM PLACEMENT  ******************
+
+  // Both the number of repositories and their attachments are extracted casually.
+  uint32_t maxNumRepo = 3;
+  UniformVariable m_SeqRngRepoAttach (0, numCoreNodes-1);     // The maximum random number is equal to the number of core nodes
+  UniformVariable m_SeqRngNumRepo (1, maxNumRepo);
+
+  bool completeRepo = false;
+
+  uint32_t numRandRepo = (uint32_t)m_SeqRngNumRepo.GetValue();
+
+  std::vector<uint32_t>* repoAttachesID = new std::vector<uint32_t>(numRandRepo) ;
+  for(uint32_t i=0; i<repoAttachesID->size(); i++)
+  {
+	  repoAttachesID->operator[](i) = numCoreNodes+1;
+  }
+
+
+  uint32_t repoAttachNum = 0;
+  uint32_t randRepoAttach;
+
+  while(!completeRepo)
   {
 	  bool already_extracted = false;
 	  while(!already_extracted)
 	  {
 
-		  rand_repo = (uint32_t)m_SeqRng.GetValue();
-		  for(uint32_t i=0; i<repositoriesID->size(); i++)
+		  randRepoAttach = (uint32_t)m_SeqRngRepoAttach.GetValue();
+		  for(uint32_t i=0; i<repoAttachesID->size(); i++)
 		  {
-			  if(repositoriesID->operator[](i)==rand_repo)
+			  if(repoAttachesID->operator[](i)==randRepoAttach)
 			  {
 				already_extracted = true;
 				break;
 			  }
 		  }
 		  if(already_extracted==true)
-			already_extracted = false;        //per far continuare il ciclo
+			already_extracted = false;        // It keeps going
 		  else
 			already_extracted = true;
 	  }
-	  repositoriesID->operator[](repo_num) = rand_repo;
-	  NS_LOG_UNCOND("CHOSEN REPOSITORY:\t" << repositoriesID->operator[](repo_num));
-	  repo_num = repo_num + 1;
-	  if(repo_num == repositoriesID->size())
-		complete = true;
+	  repoAttachesID->operator[](repoAttachNum) = randRepoAttach;
+	  NS_LOG_UNCOND("CHOSEN REPOSITORY ATTACHMENT:\t" << repoAttachesID->operator[](repoAttachNum));
+	  repoAttachNum = repoAttachNum + 1;
+	  if(repoAttachNum == repoAttachesID->size())
+		completeRepo = true;
   }
 
-  std::string REPO_SIZE;
-  std::string PATH_REPO;
-  uint32_t RepoSize;
+  // Creation and Attachment of Repo Nodes
 
-  RepoSize = (uint32_t)((contentCatalogFib/2) + 1);
-  ss << RepoSize;
-  std::string repoSizeString = ss.str();
-  ss.str("");
-  //PATH_REPO= "/media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/SEED_COPIES/NEW/repository2_";         // Two files (2_1 e 2_2) with equal number of contents.
+  repoNodes.Create(numRandRepo);
+
+  PointToPointHelper p2p;
+  p2p.SetDeviceAttribute ("DataRate", StringValue (linkRateEdge));
+  p2p.SetChannelAttribute ("Delay", StringValue (linkDelayEdge));
+
+  for(uint32_t i=0; i<repoAttachesID->size(); i++)
+  {
+	  // Create Links between Core Nodes and Repos
+	  uint32_t linkCountRepos = 0;
+
+	  NodeContainer n_links = NodeContainer (coreNodes.Get (repoAttachesID->operator[](i)), repoNodes.Get (i));
+	  NetDeviceContainer n_devs = p2p.Install (n_links);
+	  linkCountRepos++;
+
+	  PointerValue txQueue;
+
+	  n_devs.Get(0)->GetAttribute ("TxQueue", txQueue);
+	  NS_ASSERT (txQueue.Get<DropTailQueue> () != 0);
+	  txQueue.Get<DropTailQueue> ()->SetAttribute ("MaxPackets", StringValue (txBuffer));
+
+	  n_devs.Get(1)->GetAttribute ("TxQueue", txQueue);
+	  NS_ASSERT (txQueue.Get<DropTailQueue> () != 0);
+	  txQueue.Get<DropTailQueue> ()->SetAttribute ("MaxPackets", StringValue (txBuffer));
+  }
+
+  // Calculate the Repo Size according to the number of extracted repos
+  uint32_t repoSize;
+  std::string repoSizeStr;
+  std::string pathRepo;
+
+  switch(numRandRepo)
+  {
+  case(1):
+		repoSize = contentCatalogFib;
+        ss << repoSize;
+		repoSizeStr = ss.str();
+		ss.str("");
+		pathRepo= "../boh/repository1_1.txt";       // One Repo stores all the contents.
+	    break;
+  case(2):
+		repoSize = round(contentCatalogFib/2) + 1;
+        ss << repoSize;
+		repoSizeStr = ss.str();
+		ss.str("");
+		pathRepo= "../boh/repository2_";            // Two Repos
+		break;
+  case(3):
+		//RepoSize = round(contentCatalog/3) + 3;
+        repoSize = round(contentCatalogFib/3) + 3;
+        ss << repoSize;
+		repoSizeStr = ss.str();
+		ss.str("");
+		pathRepo= "../boh/repository3_";            // Three Repos
+		break;
+  default:
+	  NS_LOG_UNCOND("Number of Repos not supported!\t" << numRandRepo);
+	  exit(1);
+	  break;
+  }
+
+  // ************************************************************
+
+  // *************   CLIENT RANDOM PLACEMENT   *******************
+
+  // Both the number of clients and their attachments are extracted casually.
+  uint32_t numClients = round((numCoreNodes/100)*60);     // 60% of the core nodes has a client attached
+
+  bool completeClients = false;
+
+  std::vector<uint32_t>* clientAttachesID = new std::vector<uint32_t>(numClients) ;
+  for(uint32_t i=0; i<clientAttachesID->size(); i++)
+  {
+	  clientAttachesID->operator[](i) = numCoreNodes+1;
+  }
 
 
-  std::string SCOPE, INIT, CATALOG, PFP, WIDTH, CUSTOMLENGTH, CUSTOMHASHES;
-  std::string INITCACHE, CATALOGCACHE, PFPCACHE, WIDTHCACHE, CUSTOMLENGTHCACHE, CUSTOMHASHESCACHE;
+  uint32_t clientAttachNum = 0;
+  uint32_t randClientAttach;
 
-  ss << bfScope;
-  SCOPE = ss.str();
-  ss.str("");
+  while(!completeClients)
+  {
+	  bool already_extracted = false;
+	  while(!already_extracted)
+	  {
 
-  ss << bfFibInitMethod;
-  INIT = ss.str();
-  ss.str("");
+		  randClientAttach = (uint32_t)m_SeqRngRepoAttach.GetValue();
+		  for(uint32_t i=0; i<clientAttachesID->size(); i++)
+		  {
+			  if(clientAttachesID->operator[](i)==randClientAttach)
+			  {
+				already_extracted = true;
+				break;
+			  }
+			  for(uint32_t j=0; j<repoAttachesID->size(); j++)
+			  {
+				  if(repoAttachesID->operator[](j)==randClientAttach)
+				  {
+					  already_extracted = true;
+					  break;
+				  }
+			  }
+		  }
+		  if(already_extracted==true)
+			already_extracted = false;        // It keeps going
+		  else
+			already_extracted = true;
+	  }
+	  clientAttachesID->operator[](clientAttachNum) = randClientAttach;
+	  NS_LOG_UNCOND("CHOSEN CLIENT ATTACHMENT:\t" << clientAttachesID->operator[](clientAttachNum));
+	  clientAttachNum = clientAttachNum + 1;
+	  if(clientAttachNum == clientAttachesID->size())
+		completeClients = true;
+  }
 
-  ss << bfCacheInitMethod;
-  INITCACHE = ss.str();
-  ss.str("");
+  // Creation and Attachment of Repo Nodes
 
-  ss << contentCatalogFib;
-  CATALOG = ss.str();
-  ss.str("");
+  clientNodes.Create(numClients);
 
-  ss << contentCatalogCache;
-  CATALOGCACHE = ss.str();
-  ss.str("");
+  //PointToPointHelper p2p;
+  p2p.SetDeviceAttribute ("DataRate", StringValue (linkRateEdge));
+  p2p.SetChannelAttribute ("Delay", StringValue (linkDelayEdge));
 
-  ss << desiredPfpFib;
-  PFP = ss.str();
-  ss.str("");
+  for(uint32_t i=0; i<clientAttachesID->size(); i++)
+  {
+	  // Create Links between Core Nodes and Repos
+	  uint32_t linkCountClients = 0;
 
-  ss << desiredPfpCache;
-  PFPCACHE = ss.str();
-  ss.str("");
+	  NodeContainer n_links = NodeContainer (coreNodes.Get (clientAttachesID->operator[](i)), clientNodes.Get (i));
+	  NetDeviceContainer n_devs = p2p.Install (n_links);
+	  linkCountClients++;
 
-  ss << cellWidthBfFib;
-  WIDTH = ss.str();
-  ss.str("");
+	  PointerValue txQueue;
 
-  ss << cellWidthBfCache;
-  WIDTHCACHE = ss.str();
-  ss.str("");
+	  n_devs.Get(0)->GetAttribute ("TxQueue", txQueue);
+	  NS_ASSERT (txQueue.Get<DropTailQueue> () != 0);
+	  txQueue.Get<DropTailQueue> ()->SetAttribute ("MaxPackets", StringValue (txBuffer));
 
-  ss << customLengthBfFib;
-  CUSTOMLENGTH = ss.str();
-  ss.str("");
+	  n_devs.Get(1)->GetAttribute ("TxQueue", txQueue);
+	  NS_ASSERT (txQueue.Get<DropTailQueue> () != 0);
+	  txQueue.Get<DropTailQueue> ()->SetAttribute ("MaxPackets", StringValue (txBuffer));
+  }
 
-  ss << customLengthBfCache;
-  CUSTOMLENGTHCACHE = ss.str();
-  ss.str("");
+  // *******************************************
 
-  ss << customHashesBfFib;
-  CUSTOMHASHES = ss.str();
-  ss.str("");
-
-  ss << customHashesBfCache;
-  CUSTOMHASHESCACHE = ss.str();
-  ss.str("");
-
-
-
-
-  // ** [MT] ** INSTALL THE NDN STACK
+  // **********  INSTALL THE NDN STACK   ****************
 
   NS_LOG_INFO ("Installing Ndn stack on all nodes");
   ndn::StackHelper ndnHelper;
 
-  // ** [MT] ** Change the Forwarding Strategy according to the simulated scenario
+  // Change the Forwarding Strategy according to the simulated scenario
   if(simType == 3)
   {
-	  ndnHelper.SetForwardingStrategy("ns3::ndn::fw::SelectiveFlooding");                  // ** [MT] ** Selective flooding for BF scenario
+	  ndnHelper.SetForwardingStrategy("ns3::ndn::fw::SelectiveFlooding");     // Selective flooding for BF scenario
 	  ndnHelper.SetDefaultRoutes(true);
   }
   else if(simType == 1)
@@ -350,54 +553,59 @@ main (int argc, char *argv[19])
   }
 
 
-  NodeContainer producerNodes;
-  NodeContainer consumerNodes;
+//  NodeContainer producerNodes;
+//  NodeContainer consumerNodes;
 
-  for(uint32_t i = 0; i < numRepo; i++)
+  std::vector<uint32_t>* reposID = new std::vector<uint32_t>(numRandRepo) ;
+
+  uint32_t i = 0;
+  for (NodeContainer::Iterator nodeRepo = repoNodes.Begin(); nodeRepo != repoNodes.End(); ++nodeRepo)
   {
-	  producerNodes.Add(NodeList::GetNode(repositoriesID->operator[](i)));
+	  reposID->operator[](i) = (*nodeRepo)->GetId();
+ 	  i++;
   }
+
 
   for (NodeList::Iterator node = NodeList::Begin (); node != NodeList::End (); node ++)
   {
 	  bool rep = false;
-	  for (uint32_t j = 0; j < numRepo; j++)
+	  for (uint32_t j = 0; j < numRandRepo; j++)
 	  {
-		  if ((*node)->GetId() == repositoriesID->operator[](j))
+		  if ((*node)->GetId() == reposID->operator [](j))
 			  rep = true;
 	  }
 	  if (rep)
 	  {
-		  // ** [MT] ** For Repo nodes: Cache Size = 0, that is they store only permanent copies.
+		  // **** For Repo nodes: Cache Size = 0, that is they store only permanent copies.
 		  ndnHelper.SetContentStore("ns3::ndn::cs::Lru", "MaxSize", "0");
-		  ndnHelper.SetRepository("ns3::ndn::rp::Persistent", "MaxSize", repoSizeString);
+		  ndnHelper.SetRepository("ns3::ndn::rp::Persistent", "MaxSize", repoSizeStr);
 	  }
 	  else
 	  {
-		  // ** [MT] ** For clients or routers: Repo Size = 0, that is they do not store permanent copies.
-		  ndnHelper.SetContentStore("ns3::ndn::cs::Lru", "MaxSize", CACHE_SIZE);
+		  // **** For Clients or Routers: Repo Size = 0, that is they do not store permanent copies.
+		  ndnHelper.SetContentStore("ns3::ndn::cs::Lru", "MaxSize", cacheSizeStr);
 		  ndnHelper.SetRepository("ns3::ndn::rp::Persistent", "MaxSize", "0");
-		  consumerNodes.Add((*node));
+		  //consumerNodes.Add((*node));
 	  }
 
-	  // *** Initialize Bloom Filters
+	  // *** Initialize Bloom Filters Parameters
       if (simType == 3)
       {
     	  if (bfScope.compare("fib") == 0)
     	  {
         	  if(bfTypeFib.compare("simple") == 0)
         	  {
-        		  ndnHelper.SetBfFib("ns3::ndn::BloomFilterSimple", "Scope", SCOPE, "InitMethod", INIT,
-        				  "ContentCatalog", CATALOG, "DesiredPfp", PFP,
-        				  "CellWidth", WIDTH, "FilterCustomLength", CUSTOMLENGTH,
-        				  "FilterCustomHashes", CUSTOMHASHES);
+        		  ndnHelper.SetBfFib("ns3::ndn::BloomFilterSimple", "Scope", bfScopeStr, "InitMethod", bfFibInitMethodStr,
+        				  "ContentCatalog", contentCatalogFibStr, "DesiredPfp", desiredPfpFibStr,
+        				  "CellWidth", cellWidthBfFibStr, "FilterCustomLength", customLengthBfFibStr,
+        				  "FilterCustomHashes", customHashesBfFibStr);
         	  }
         	  else if(bfTypeFib.compare("stable") == 0)
         	  {
-        		  ndnHelper.SetBfFib("ns3::ndn::BloomFilterStable", "Scope", SCOPE, "InitMethod", INIT,
-        				  "ContentCatalog", CATALOG, "DesiredPfp", PFP,
-        				  "CellWidth", WIDTH, "FilterCustomLength", CUSTOMLENGTH,
-        				  "FilterCustomHashes", CUSTOMHASHES);
+        		  ndnHelper.SetBfFib("ns3::ndn::BloomFilterStable", "Scope", bfScopeStr, "InitMethod", bfFibInitMethodStr,
+        				  "ContentCatalog", contentCatalogFibStr, "DesiredPfp", desiredPfpFibStr,
+        				  "CellWidth", cellWidthBfFibStr, "FilterCustomLength", customLengthBfFibStr,
+        				  "FilterCustomHashes", customHashesBfFibStr);
         	  }
         	  else
         	  {
@@ -409,17 +617,17 @@ main (int argc, char *argv[19])
     	  {
         	  if(bfTypeCache.compare("simple") == 0)
         	  {
-        		  ndnHelper.SetBfCache("ns3::ndn::BloomFilterSimple", "Scope", SCOPE, "InitMethod", INITCACHE,
-        				  "ContentCatalog", CATALOGCACHE, "DesiredPfp", PFPCACHE,
-        				  "CellWidth", WIDTHCACHE, "FilterCustomLength", CUSTOMLENGTHCACHE,
-        				  "FilterCustomHashes", CUSTOMHASHESCACHE);
+        		  ndnHelper.SetBfCache("ns3::ndn::BloomFilterSimple", "Scope", bfScopeStr, "InitMethod", bfCacheInitMethodStr,
+        				  "ContentCatalog", contentCatalogCacheStr, "DesiredPfp", desiredPfpCacheStr,
+        				  "CellWidth", cellWidthBfFibStr, "FilterCustomLength", customLengthBfCacheStr,
+        				  "FilterCustomHashes", customHashesBfCacheStr);
         	  }
         	  else if(bfTypeCache.compare("stable") == 0)
         	  {
-        		  ndnHelper.SetBfCache("ns3::ndn::BloomFilterStable", "Scope", SCOPE, "InitMethod", INITCACHE,
-        				  "ContentCatalog", CATALOGCACHE, "DesiredPfp", PFPCACHE,
-        				  "CellWidth", WIDTHCACHE, "FilterCustomLength", CUSTOMLENGTHCACHE,
-        				  "FilterCustomHashes", CUSTOMHASHESCACHE);
+        		  ndnHelper.SetBfCache("ns3::ndn::BloomFilterStable", "Scope", bfScopeStr, "InitMethod", bfCacheInitMethodStr,
+        				  "ContentCatalog", contentCatalogCacheStr, "DesiredPfp", desiredPfpCacheStr,
+        				  "CellWidth", cellWidthBfFibStr, "FilterCustomLength", customLengthBfCacheStr,
+        				  "FilterCustomHashes", customHashesBfCacheStr);
         	  }
         	  else
         	  {
@@ -431,17 +639,17 @@ main (int argc, char *argv[19])
     	  {
         	  if(bfTypeFib.compare("simple") == 0)
         	  {
-        		  ndnHelper.SetBfFib("ns3::ndn::BloomFilterSimple", "Scope", SCOPE, "InitMethod", INIT,
-        				  "ContentCatalog", CATALOG, "DesiredPfp", PFP,
-        				  "CellWidth", WIDTH, "FilterCustomLength", CUSTOMLENGTH,
-        				  "FilterCustomHashes", CUSTOMHASHES);
+        		  ndnHelper.SetBfFib("ns3::ndn::BloomFilterSimple", "Scope", bfScopeStr, "InitMethod", bfFibInitMethodStr,
+        				  "ContentCatalog", contentCatalogFibStr, "DesiredPfp", desiredPfpFibStr,
+        				  "CellWidth", cellWidthBfFibStr, "FilterCustomLength", customLengthBfFibStr,
+        				  "FilterCustomHashes", customHashesBfFibStr);
         	  }
         	  else if(bfTypeFib.compare("stable") == 0)
         	  {
-        		  ndnHelper.SetBfFib("ns3::ndn::BloomFilterStable", "Scope", SCOPE, "InitMethod", INIT,
-        				  "ContentCatalog", CATALOG, "DesiredPfp", PFP,
-        				  "CellWidth", WIDTH, "FilterCustomLength", CUSTOMLENGTH,
-        				  "FilterCustomHashes", CUSTOMHASHES);
+        		  ndnHelper.SetBfFib("ns3::ndn::BloomFilterStable", "Scope", bfScopeStr, "InitMethod", bfFibInitMethodStr,
+        				  "ContentCatalog", contentCatalogFibStr, "DesiredPfp", desiredPfpFibStr,
+        				  "CellWidth", cellWidthBfFibStr, "FilterCustomLength", customLengthBfFibStr,
+        				  "FilterCustomHashes", customHashesBfFibStr);
         	  }
         	  else
         	  {
@@ -450,17 +658,17 @@ main (int argc, char *argv[19])
         	  }
         	  if(bfTypeCache.compare("simple") == 0)
         	  {
-        		  ndnHelper.SetBfCache("ns3::ndn::BloomFilterSimple", "Scope", SCOPE, "InitMethod", INITCACHE,
-        				  "ContentCatalog", CATALOGCACHE, "DesiredPfp", PFPCACHE,
-        				  "CellWidth", WIDTHCACHE, "FilterCustomLength", CUSTOMLENGTHCACHE,
-        				  "FilterCustomHashes", CUSTOMHASHESCACHE);
+        		  ndnHelper.SetBfCache("ns3::ndn::BloomFilterSimple", "Scope", bfScopeStr, "InitMethod", bfCacheInitMethodStr,
+        				  "ContentCatalog", contentCatalogCacheStr, "DesiredPfp", desiredPfpCacheStr,
+        				  "CellWidth", cellWidthBfFibStr, "FilterCustomLength", customLengthBfCacheStr,
+        				  "FilterCustomHashes", customHashesBfCacheStr);
         	  }
         	  else if(bfTypeCache.compare("stable") == 0)
         	  {
-        		  ndnHelper.SetBfCache("ns3::ndn::BloomFilterStable", "Scope", SCOPE, "InitMethod", INITCACHE,
-        				  "ContentCatalog", CATALOGCACHE, "DesiredPfp", PFPCACHE,
-        				  "CellWidth", WIDTHCACHE, "FilterCustomLength", CUSTOMLENGTHCACHE,
-        				  "FilterCustomHashes", CUSTOMHASHESCACHE);
+        		  ndnHelper.SetBfCache("ns3::ndn::BloomFilterStable", "Scope", bfScopeStr, "InitMethod", bfCacheInitMethodStr,
+        				  "ContentCatalog", contentCatalogCacheStr, "DesiredPfp", desiredPfpCacheStr,
+        				  "CellWidth", cellWidthBfFibStr, "FilterCustomLength", customLengthBfCacheStr,
+        				  "FilterCustomHashes", customHashesBfCacheStr);
         	  }
         	  else
         	  {
@@ -478,205 +686,245 @@ main (int argc, char *argv[19])
       ndnHelper.Install((*node));
   }
 
+  // ********  Initializing Bloom Filters only for Core Nodes
+
+  NodeContainer bfNodes, nonBfNodes;
+
+  bfNodes.Add(coreNodes);
+  nonBfNodes.Add(repoNodes);
+  nonBfNodes.Add(clientNodes);
 
   if (simType == 3)
   {
-	  for (NodeList::Iterator node = NodeList::Begin (); node != NodeList::End (); node ++)
+	  for (NodeContainer::Iterator node = bfNodes.Begin(); node != bfNodes.End(); ++node)
 	  {
 		  if (bfScope.compare("fib") == 0)
 		  {
-			  (*node)->GetObject<ForwardingStrategy>()->GetBfFib()->MakeBfInitialization();
+			  (*node)->GetObject<ForwardingStrategy>()->GetBfFib()->MakeBfInitialization(true);
 		  }
 		  else if (bfScope.compare("cache") == 0)
 		  {
-			  (*node)->GetObject<ForwardingStrategy>()->GetBfCache()->MakeBfInitialization();
+			  (*node)->GetObject<ForwardingStrategy>()->GetBfCache()->MakeBfInitialization(true);
 		  }
 		  else
 		  {
-			  (*node)->GetObject<ForwardingStrategy>()->GetBfFib()->MakeBfInitialization();
-			  (*node)->GetObject<ForwardingStrategy>()->GetBfCache()->MakeBfInitialization();
+			  (*node)->GetObject<ForwardingStrategy>()->GetBfFib()->MakeBfInitialization(true);
+			  (*node)->GetObject<ForwardingStrategy>()->GetBfCache()->MakeBfInitialization(true);
 		  }
 	  }
   }
 
-  NS_LOG_UNCOND("The number of consumer is:\t" << consumerNodes.GetN());
+  if (simType == 3)
+  {
+	  for (NodeContainer::Iterator node = nonBfNodes.Begin(); node != nonBfNodes.End(); ++node)
+	  {
+		  if (bfScope.compare("fib") == 0)
+		  {
+			  (*node)->GetObject<ForwardingStrategy>()->GetBfFib()->MakeBfInitialization(false);
+		  }
+		  else if (bfScope.compare("cache") == 0)
+		  {
+			  (*node)->GetObject<ForwardingStrategy>()->GetBfCache()->MakeBfInitialization(false);
+		  }
+		  else
+		  {
+			  (*node)->GetObject<ForwardingStrategy>()->GetBfFib()->MakeBfInitialization(false);
+			  (*node)->GetObject<ForwardingStrategy>()->GetBfCache()->MakeBfInitialization(false);
+		  }
+	  }
+  }
 
 
-
-
-  // ** [MT] ** Initialize Repos with SEED copies. Content names are read from files.
+  // ********* Initialize Repos with SEED copies. Content names are read from files.
 
   std::string line;
   Ptr<Node> nd;
-  const char *PATH_COMPL;
+  const char *pathRepoCompl;
   std::ifstream fin;
 
-  //PATH_REPO= "/media/DATI/tortelli/COPIE_SEED/repository2_";         // Ci sono due file (2_1 e 2_2) con ugual numero di contenuti
-  PATH_REPO= "/media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/SEED_COPIES/NEW/repository2_";         // Ci sono due file (2_1 e 2_2) con ugual numero di contenuti
-
-  // I repository sono pi√π di uno
-  for(uint32_t i = 0; i < repositoriesID->size(); i++)
+  switch (numRandRepo)
   {
-     nd = NodeList::GetNode(repositoriesID->operator[](i));
-     ss << PATH_REPO << (i+1) << EXT;
-     PATH_COMPL = ss.str().c_str();
-     ss.str("");
+  case(1):
 
-     fin.open(PATH_COMPL);
-  	 if(!fin) {
-  	   	std::cout << "\nERRORE: Impossibile leggere dal file dei contenuti!\n" << PATH_COMPL << "\t" << repositoriesID->size() << "\n";
+	// ****  There is only one repo.
+	nd = NodeList::GetNode(reposID->operator[](0));
+  	pathRepoCompl = pathRepo.c_str();
+
+  	fin.open(pathRepoCompl);
+  	if(!fin) {
+  	   	std::cout << "\nERROR: Impossible to read for the file of contents!\n";
   	   	exit(0);
-  	 }
+  	}
 
-       	 // ** [MT] ** Read seed copies from file and insert them inside the repo.
-  	 while(std::getline(fin, line))
-  	 {
-  	    static ContentObjectTail tail;
-  	    Ptr<ContentObject> header = Create<ContentObject> ();
-  	    header->SetName (Create<Name>(line));
-  	    header->SetTimestamp (Simulator::Now ());
-  	    header->SetSignature(0);
-  	    Ptr<Packet> packet = Create<Packet> (512);
-  	    packet->AddHeader (*header);
-  	    packet->AddTrailer (tail);
+  	// **** Read seed copies from file and insert them inside the repo.
+  	while(std::getline(fin, line))
+  	{
+  		static ContentObjectTail tail;
+ 	    Ptr<ContentObject> header = Create<ContentObject> ();
+ 	    header->SetName (Create<Name>(line));
+ 	    header->SetTimestamp (Simulator::Now ());
+ 	    header->SetSignature(0);
+ 	    Ptr<Packet> packet = Create<Packet> (512);
+ 	    packet->AddHeader (*header);
+ 	    packet->AddTrailer (tail);
 
-  	    nd->GetObject<Repo> ()->Add (header, packet);
-  	 }
-  	 fin.close();
+ 	    nd->GetObject<Repo> ()->Add (header, packet);
+  	}
+  	fin.close();
+  	break;
+
+  case(2):
+  case(3):
+
+    // ****  There is more than one Repos
+    for(uint32_t i = 0; i < reposID->size(); i++)
+    {
+       nd = NodeList::GetNode(reposID->operator[](i));
+       ss << pathRepo << (i+1) << EXT;
+  	   pathRepoCompl = ss.str().c_str();
+       ss.str("");
+
+       fin.open(pathRepoCompl);
+  	   if(!fin) {
+  	       	std::cout << "\nERROR: Impossible to read from the file of Contents!\n" << pathRepoCompl << "\t" << reposID->size() << "\n";
+  	       	exit(0);
+  	   }
+
+  	   // **** Read seed copies from file and insert them inside the repo.
+  	   while(std::getline(fin, line))
+  	   {
+           static ContentObjectTail tail;
+  		   Ptr<ContentObject> header = Create<ContentObject> ();
+  		   header->SetName (Create<Name>(line));
+  		   header->SetTimestamp (Simulator::Now ());
+  		   header->SetSignature(0);
+
+  		   Ptr<Packet> packet = Create<Packet> (512);
+  		   packet->AddHeader (*header);
+  		   packet->AddTrailer (tail);
+
+  		   nd->GetObject<Repo> ()->Add (header, packet);
+  		}
+  		fin.close();
+     }
+     break;
   }
 
-//nd->Unref();
-//nd = 0;
 
-  // ** [MT] ** Install Ndn applications
+  // ****  Install Ndn Application Layers
   NS_LOG_INFO ("Installing Applications");
   std::string prefix = "/prefix";
 
-  ndn::AppHelper consumerHelper ("ns3::ndn::ConsumerCbr");                    // ***** CARATTERIZZAZIONE DELL'APPLICAZIONE CONSUMER
+  ndn::AppHelper consumerHelper ("ns3::ndn::ConsumerCbr");
   consumerHelper.SetPrefix (prefix);
-  consumerHelper.SetAttribute ("Frequency", StringValue ("1"));               // ***** FREQUENZA DI GENERAZIONE (/s) DEGLI INTEREST
+  consumerHelper.SetAttribute ("Frequency", StringValue ("1"));
   //consumerHelper.SetAttribute ("StartTime", TimeValue (Seconds (2.000000)));
-  ApplicationContainer consumers = consumerHelper.Install (consumerNodes);
+  ApplicationContainer consumers = consumerHelper.Install (clientNodes);
   consumers.Start (Seconds(2));
   //consumers.Stop(finishTime-Seconds(1));
 
 
-  // ** Settaggio della tipologia di nodo.
+  // **** Settaggio della tipologia di nodo.
 
-  for (NodeContainer::Iterator node_app = consumerNodes.Begin(); node_app != consumerNodes.End(); ++node_app)
+  for (NodeContainer::Iterator node_app = clientNodes.Begin(); node_app != repoNodes.End(); ++node_app)
   {
 	  (*node_app)->GetObject<ForwardingStrategy>()->SetNodeType("client");
   }
 
-  for (NodeContainer::Iterator node_prod = producerNodes.Begin(); node_prod != producerNodes.End(); ++node_prod)
+  for (NodeContainer::Iterator node_prod = repoNodes.Begin(); node_prod != repoNodes.End(); ++node_prod)
   {
 	  (*node_prod)->GetObject<ForwardingStrategy>()->SetNodeType("producer");
   }
 
+  for (NodeContainer::Iterator node_core = coreNodes.Begin(); node_core != repoNodes.End(); ++node_core)
+  {
+	  (*node_core)->GetObject<ForwardingStrategy>()->SetNodeType("core");
+  }
 
-  // ** [MT] ** NUOVO SISTEMA DI TRACING ***********************************************************************
 
-  //**** INTEREST (Inviati, Ricevuti, Aggregati)
+  // ************  NEW TRACING SYSTEM  **********************
+
+  // Output Layout:      Time[us]	EventType	NodeType	ContentID
+
+  //**** INTEREST
+  /*
+   * - [ FRW and RX ] Inoltrati e Ricevuti da Cache (dove per "Cache" si intendono le cache dei nodi client)
+   * - [ FRW and RX ] Inoltrati e Ricevuti da Core
+   * - [ RX ] Ricevuti da Repo
+   * - [ AGGR ] Aggregati ai nodi Core
+   *
+   */
   std::string fnInterest;
 
-  //**** DATA (Inviati e Ricevuti)
+  //**** DATA
+  /*
+   * - [ TX ] Generati da Repo, da cache di nodi Core o Client
+   * - [ FRW ] Inoltrati da nodi Core  (ad ogni FRW è associato un RX)
+   *
+   */
   std::string fnData;
 
-  //**** DATA RICEVUTI APP (Tracing a livello Applicativo - Data Ricevuti, compresi quelli provenienti dalla cache locale)
+  //**** DATA RICEVUTI APP (Tracing a livello Applicativo)
+  /*
+   * - [ RX ] Ricevuti da nodi Client (compresi DATA provenienti da cache locale)
+   */
   std::string fnDataApp;
 
-  //**** INTEREST APP (Tracing a livello Applicativo - Interest Ritrasmessi, Eliminati (Max Rtx), Eliminati File)
+  //**** INTEREST APP (Tracing a livello Applicativo)
   std::string fnInterestApp;
+  /*
+   * - [ TX ] Generati a livello applicativo da nodi client
+   * - [ RTX ] Ritrasmessi da nodi client
+   * - [ ELM ] Eliminati perchè raggiunto il max numero di ritrasmissioni
+   * - [ ELMFILE ] File scartato perchè incompleto
+   *
+   * Output Layout:  Time[us]	TimeSent[us]	EventType	NodeType	ContentID
+   */
 
-  //**** DOWNLOAD TIME (Tracing a livello Applicativo - Download Time, sia First Chunk che Complete File)
+  //**** DOWNLOAD TIME (Tracing a livello Applicativo)
+  /*
+   * - [ FIRST ] Seek Time
+   * - [ FILE ] File Download Time
+   *
+   */
   std::string fnDwnTime;
 
   
-  switch (simType)
-  {
-  case(1):
-  case(2):
 
-  	  ss << "RISULTATI_NEW/" <<  simulationType << "/INTEREST/Interest_Nodo_";
-      fnInterest = ss.str();
-      ss.str("");
+  ss << "RESULTS/" <<  simulationType << "/INTEREST/Interest" << stringScenario;
+  fnInterest = ss.str();
+  const char *filename_interest = fnInterest.c_str();
+  ss.str("");
 
-  	  ss << "RISULTATI_NEW/" <<  simulationType << "/DATA/Data_Nodo_";
-      fnData = ss.str();
-      ss.str("");
+  ss << "RESULTS/" <<  simulationType << "/DATA/Data" << stringScenario;
+  fnData = ss.str();
+  const char *filename_data = fnData.c_str();
+  ss.str("");
 
-  	  ss << "RISULTATI_NEW/" <<  simulationType << "/DATA/APP/DataRICEVUTI_APP_Nodo_";
-      fnDataApp = ss.str();
-      ss.str("");
+  ss << "RESULTS/" <<  simulationType << "/DATA/APP/DataAPP" << stringScenario;
+  fnDataApp = ss.str();
+  const char *filename_data_app = fnDataApp.c_str();
+  ss.str("");
 
-      ss << "RISULTATI_NEW/" <<  simulationType << "/INTEREST/APP/Interest_APP_Nodo_";
-      fnInterestApp = ss.str();
-      ss.str("");
+  ss << "RESULTS/" <<  simulationType << "/INTEREST/APP/InterestAPP" << stringScenario;
+  fnInterestApp = ss.str();
+  const char *filename_interest_app = fnInterestApp.c_str();
+  ss.str("");
 
-      ss << "RISULTATI_NEW/" <<  simulationType << "/DOWNLOAD/APP/DownloadTime_Nodo_";
-      fnDwnTime = ss.str();
-      ss.str("");
-
-      break;
-
-  case(3):
-
-  	  ss << "RISULTATI_NEW/" <<  simulationType << "/" << bfScope << "/" << bfTypeFib << "/INTEREST/Interest_Nodo_";
-      fnInterest = ss.str();
-      ss.str("");
-
-   	  ss << "RISULTATI_NEW/" <<  simulationType << "/" << bfScope << "/" << bfTypeFib << "/DATA/Data_Nodo_";
-      fnData = ss.str();
-      ss.str("");
-
-   	  ss << "RISULTATI_NEW/" <<  simulationType << "/" << bfScope << "/" << bfTypeFib << "/DATA/APP/DataRICEVUTI_APP_Nodo_";
-      fnDataApp = ss.str();
-      ss.str("");
-
-      ss << "RISULTATI_NEW/" <<  simulationType << "/" << bfScope << "/" << bfTypeFib << "/INTEREST/APP/Interest_APP_Nodo_";
-      fnInterestApp = ss.str();
-      ss.str("");
-
-      ss << "RISULTATI_NEW/" <<  simulationType << "/" << bfScope << "/" << bfTypeFib << "/DOWNLOAD/APP/DownloadTime_Nodo_";
-      fnDwnTime = ss.str();
-      ss.str("");
-
-      break;
-      
-  default:
-	 NS_LOG_UNCOND ("Inserire una FORWARDING STRATEGY VALIDA!!");
-	 exit(1);
-	 break;
-  }
-
-  //NS_LOG_UNCOND(fnInterest << "\n" << fnData << "\n" << fnDataApp << "\n" << fnInterestApp << "\n" << fnDwnTime << "\n");
+  ss << "RESULTS/" <<  simulationType << "/DOWNLOAD/APP/Download" << stringScenario;
+  fnDwnTime = ss.str();
+  const char *filename_download_time = fnDwnTime.c_str();
+  ss.str("");
 
 
   std::stringstream fname;
   AsciiTraceHelper asciiTraceHelper;
   for (NodeList::Iterator node = NodeList::Begin (); node != NodeList::End (); node ++)
   {
-	  // ************ NOMI FILE ******************
-
-	  // **** INTEREST
-	  fname << fnInterest << ((*node)->GetId()+1) << "." << stringScenario;
-	  std::string nome_file_interest = fname.str();
-	  const char *filename_interest = nome_file_interest.c_str();
-	  fname.str("");
-
-	  // **** DATA
-	  fname << fnData << ((*node)->GetId()+1) << "." << stringScenario;
-	  std::string nome_file_data = fname.str();
-	  const char *filename_data = nome_file_data.c_str();
-	  fname.str("");
 
 	  // ******** STREAM DI OUTPUT ***************
 	  Ptr<OutputStreamWrapper> streamInterest = asciiTraceHelper.CreateFileStream(filename_interest);
 	  Ptr<OutputStreamWrapper> streamData = asciiTraceHelper.CreateFileStream(filename_data);
-
-      // ** Scrittura del tipo di nodo all'inizio di ciascun file.
- 	  *streamData->GetStream() << (*node)->GetObject<ForwardingStrategy>()->GetNodeType() << std::endl;
- 	  *streamInterest->GetStream() << (*node)->GetObject<ForwardingStrategy>()->GetNodeType() << std::endl;
 
 	   // ***** ASSOCIAZIONE ALLE FUNZIONI CHE TRATTANO I VARI EVENTI DI TRACE *****
 	  (*node)->GetObject<ForwardingStrategy>()->TraceConnectWithoutContext("OutInterests", MakeBoundCallback(&InterestTrace, streamInterest));
@@ -687,37 +935,14 @@ main (int argc, char *argv[19])
   }
 
 
-  // ** [MT] ** App-Level Tracing -
+  // *****  App-Level Tracing -
 
-  for (NodeContainer::Iterator node_app = consumerNodes.Begin(); node_app != consumerNodes.End(); ++node_app)
+  for (NodeContainer::Iterator node_app = clientNodes.Begin(); node_app != clientNodes.End(); ++node_app)
   {
-	  // **** DATA APP
-	  fname << fnDataApp << ((*node_app)->GetId()+1) << "." << stringScenario;
-	  std::string nome_file_data_app = fname.str();
-	  const char *filename_data_app = nome_file_data_app.c_str();
-	  fname.str("");
-
-	  // **** INTEREST APP
-	  fname << fnInterestApp << ((*node_app)->GetId()+1) << "." << stringScenario;
-      std::string nome_file_interest_app = fname.str();
-      const char *filename_interest_app = nome_file_interest_app.c_str();
-      fname.str("");
-
-      // **** DOWNLOAD TIME
-      fname << fnDwnTime << ((*node_app)->GetId()+1) << "." << stringScenario;
-      std::string nome_file_download_time = fname.str();
-      const char *filename_download_time = nome_file_download_time.c_str();
-      fname.str("");
-
 	  // ******** STREAM DI OUTPUT APP ***************
       Ptr<OutputStreamWrapper> streamDataApp = asciiTraceHelper.CreateFileStream(filename_data_app);
 	  Ptr<OutputStreamWrapper> streamInterestApp = asciiTraceHelper.CreateFileStream(filename_interest_app);
       Ptr<OutputStreamWrapper> streamDownloadTime = asciiTraceHelper.CreateFileStream(filename_download_time);
-
-      // ** Scrittura del tipo di nodo all'inizio di ciascun file.
- 	  *streamDataApp->GetStream() << (*node_app)->GetObject<ForwardingStrategy>()->GetNodeType() << std::endl;
- 	  *streamInterestApp->GetStream() << (*node_app)->GetObject<ForwardingStrategy>()->GetNodeType() << std::endl;
- 	  *streamDownloadTime->GetStream() << (*node_app)->GetObject<ForwardingStrategy>()->GetNodeType() << std::endl;
 
       // ***** ASSOCIAZIONE ALLE FUNZIONI CHE TRATTANO I VARI EVENTI DI TRACE *****
       (*node_app)->GetObject<ForwardingStrategy>()->TraceConnectWithoutContext("DataInCacheApp", MakeBoundCallback(&DataAppTrace, streamDataApp));
@@ -730,10 +955,6 @@ main (int argc, char *argv[19])
   }
 
   // **************************************************************************************************************************
-
-
-  delete repositoriesID;
-
 
 
   Simulator::Stop (finishTime);
@@ -756,7 +977,40 @@ main (int argc, char *argv[19])
   return 0;
 }
 
-// ******* FUNZIONE PER LEGGERE IL FILE CHE DESCRIVE LA MATRICE DELLE ADIACENZE
+
+// *************************
+
+void InterestDataTrace(Ptr<OutputStreamWrapper> stream, Ptr<const Interest> header, Ptr<const Face> face, std::string eventType, std::string nodeType)
+{
+	*stream->GetStream() << Simulator::Now().GetMicroSeconds() << "\t" <<  eventType << "\t" << face->GetId() << "\t" << nodeType << "--\t"  << std::endl;
+}
+
+void DataTrace(Ptr<OutputStreamWrapper> stream, Ptr<const ContentObject> header, Ptr<const Face> face, std::string eventType, std::string nodeType)
+{
+	*stream->GetStream() << Simulator::Now().GetMicroSeconds() << "\t" <<  eventType << "\t" << face->GetId() << "\t" << nodeType << "--\t"  << std::endl;
+}
+
+void DataAppTrace(Ptr<OutputStreamWrapper> stream, Ptr<const ContentObject> header, std::string eventType, std::string nodeType)
+{
+	*stream->GetStream() << Simulator::Now().GetMicroSeconds() << "\t" <<  eventType << "\t" << nodeType << "--\t"  << std::endl;
+}
+
+void InterestAppTrace(Ptr<OutputStreamWrapper> stream, const std::string* header, int64_t time_sent, std::string eventType, std::string nodeType)
+{
+	*stream->GetStream() << Simulator::Now().GetMicroSeconds() << "\t" << time_sent << "\t" <<  eventType << "\t" << nodeType << "--\t" << std::endl;
+}
+
+void DownloadTimeTrace(Ptr<OutputStreamWrapper> stream, const std::string* header, int64_t time_sent, int64_t downloadTime, uint32_t dist, std::string eventType, std::string nodeType)
+{
+	*stream->GetStream() << Simulator::Now().GetMicroSeconds() << time_sent << "\t" <<  eventType << "\t" << nodeType << "\t" << "--\t" << downloadTime << "\t" << dist << std::endl;
+}
+
+
+
+
+
+
+// ******* READ ADJ MATRIX
 std::vector<std::vector<bool> > readAdjMat (std::string adj_mat_file_name)
 {
   std::ifstream adj_mat_file;
@@ -818,7 +1072,7 @@ std::vector<std::vector<bool> > readAdjMat (std::string adj_mat_file_name)
 
 }
 
-// ******* FUNZIONE PER LEGGERE IL FILE CHE DESCRIVE LE COORDINATE DEI NODI
+// ******* REA COORDINATE FILE
 std::vector<std::vector<double> > readCordinatesFile (std::string node_coordinates_file_name)
 {
   std::ifstream node_coordinates_file;
@@ -866,98 +1120,5 @@ std::vector<std::vector<double> > readCordinatesFile (std::string node_coordinat
   node_coordinates_file.close ();
   return coord_array;
 
-}
-
-void
-InterestInviatiRicevutiTrace(Ptr<OutputStreamWrapper> stream, Ptr<const Interest> header, Ptr<const Face> face)
-{
-	 *stream->GetStream() << Simulator::Now().GetMicroSeconds() << "\t" <<  header->GetName() << "\t" << face->GetId() << std::endl;
-	 //NS_LOG_UNCOND(Simulator::Now().GetSeconds() <<  header->GetName() << face->GetId());
-}
-
-void DataInviatiTrace(Ptr<OutputStreamWrapper> stream, Ptr<const ContentObject> header, bool local, Ptr<const Face> face)
-{
-	*stream->GetStream() << Simulator::Now().GetMicroSeconds() << "\t" <<  header->GetName() << "\t" << local << "\t" <<  face->GetId() << std::endl;
-}
-
-void DataRicevutiTrace(Ptr<OutputStreamWrapper> stream, Ptr<const ContentObject> header, Ptr<const Face> face)
-{
-	*stream->GetStream() << Simulator::Now().GetMicroSeconds() << "\t" <<  header->GetName() << "\t" <<  face->GetId() << std::endl;
-}
-
-
-void
-EntryExpTrace(Ptr<OutputStreamWrapper> stream, Ptr<const Interest> header)
-{
-	*stream->GetStream() << Simulator::Now().GetMicroSeconds() << "\t" <<  header->GetName() << std::endl;
-}
-
-/*void DownloadTimeTrace(Ptr<OutputStreamWrapper> stream, const std::string* header, int64_t time_sent, int64_t time, uint32_t dist)
-{
-	*stream->GetStream() << Simulator::Now().GetMicroSeconds() << "\t" <<  *header << "\t" << time_sent << "\t" << time << "\t" << dist << std::endl;
-}*/
-
-void DownloadTimeFileTrace(Ptr<OutputStreamWrapper> stream, const std::string* header, int64_t time_sent, int64_t time, uint32_t dist)
-{
-	*stream->GetStream() << Simulator::Now().GetMicroSeconds() << "\t" <<  *header << "\t" << time_sent << "\t" << time << "\t" << dist << std::endl;
-}
-
-
-//void UncompleteFileTrace(Ptr<OutputStreamWrapper> stream, Ptr<const ContentObjectHeader> header)
-//{
-//	*stream->GetStream() << Simulator::Now().GetNanoSeconds() << "\t" <<  header->GetName() << std::endl;
-//}
-
-void UncompleteFileTrace(Ptr<OutputStreamWrapper> stream, const std::string* header, int64_t time_sent)
-{
-	*stream->GetStream() << Simulator::Now().GetMicroSeconds() << "\t" <<  *header << "\t" << time_sent << "\t" << std::endl;
-}
-
-void DataScartatiTrace(Ptr<OutputStreamWrapper> stream, Ptr<const ContentObject> header, uint32_t dropUnsol)
-{
-	*stream->GetStream() << Simulator::Now().GetMicroSeconds() << "\t" <<  header->GetName() << "\t" << dropUnsol << std::endl;
-}
-
-void InterestEliminatiTrace(Ptr<OutputStreamWrapper> stream, const std::string* header, int64_t time_sent)
-{
-	*stream->GetStream() << Simulator::Now().GetMicroSeconds() << "\t" <<  *header << "\t" << time_sent << std::endl;
-}
-
-void InterestInviatiAppTrace(Ptr<OutputStreamWrapper> stream, const std::string* interest)
-{
-	*stream->GetStream() << Simulator::Now().GetMicroSeconds() << "\t" <<  *interest << std::endl;
-}
-
-void DataInCaheAppTrace(Ptr<OutputStreamWrapper> stream, Ptr<const ContentObject> header)
-{
-	*stream->GetStream() << Simulator::Now().GetMicroSeconds() << "\t" <<  header->GetName() << std::endl;
-}
-
-
-// *************************+
-
-void InterestTrace(Ptr<OutputStreamWrapper> stream, Ptr<const Interest> header, Ptr<const Face> face, std::string eventType)
-{
-	*stream->GetStream() << Simulator::Now().GetMicroSeconds() << "\t" <<  eventType << "\t" << "--\t" << face->GetId() << std::endl;
-}
-
-void DataTrace(Ptr<OutputStreamWrapper> stream, Ptr<const ContentObject> header, bool local, Ptr<const Face> face, std::string eventType)
-{
-	*stream->GetStream() << Simulator::Now().GetMicroSeconds() << "\t" <<  eventType << "\t" << "--\t" << local << "\t" <<  face->GetId() << std::endl;
-}
-
-void DataAppTrace(Ptr<OutputStreamWrapper> stream, Ptr<const ContentObject> header, std::string eventType)
-{
-	*stream->GetStream() << Simulator::Now().GetMicroSeconds() << "\t" <<  eventType << "\t" << "--\t" << std::endl;
-}
-
-void InterestAppTrace(Ptr<OutputStreamWrapper> stream, const std::string* header, int64_t time_sent, std::string eventType)
-{
-	*stream->GetStream() << Simulator::Now().GetMicroSeconds() << "\t" <<  eventType << "\t" << "--\t" << time_sent << std::endl;
-}
-
-void DownloadTimeTrace(Ptr<OutputStreamWrapper> stream, const std::string* header, int64_t time_sent, int64_t downloadTime, uint32_t dist, std::string eventType)
-{
-	*stream->GetStream() << Simulator::Now().GetMicroSeconds() << "\t" <<  eventType << "\t" << "--\t" << time_sent << "\t" << downloadTime << "\t" << dist << std::endl;
 }
 

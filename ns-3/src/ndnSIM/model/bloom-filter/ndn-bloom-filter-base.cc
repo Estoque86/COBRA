@@ -140,16 +140,16 @@ NS_LOG_UNCOND("DISTRUTTORE BLOOM STABLE!");
 		delete bfParam;
 }
 
-void BloomFilterBase::MakeBfInitialization()
+void BloomFilterBase::MakeBfInitialization(bool flag)
 {
 	randomSeed = (0xA5A5A5A5 + 1);
 
-        bfParam = new bfParameters (0, 0, 0, 0, 0, 0, 0.0, 0);
-        SetBloomFilterFlag(false);
+    bfParam = new bfParameters (0, 0, 0, 0, 0, 0, 0.0, 0);
+    //SetBloomFilterFlag(false);
 
-        numberOfInterfaces = m_forwardingStrategy->GetObject<Node>()->GetNDevices();
+    numberOfInterfaces = m_forwardingStrategy->GetObject<Node>()->GetNDevices();
 
-        if(numberOfInterfaces > 1)
+    if(flag)
 	{
 		SetBloomFilterFlag(true);
 
@@ -188,6 +188,8 @@ void BloomFilterBase::MakeBfInitialization()
 	    	}
 	    }
 	}
+    else
+    	SetBloomFilterFlag(false);
 
 }
 
