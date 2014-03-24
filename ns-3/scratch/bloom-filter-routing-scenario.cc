@@ -61,7 +61,7 @@ void DownloadTimeTrace(Ptr<OutputStreamWrapper> stream, const std::string* heade
 
 
 int
-main (int argc, char *argv[21])
+main (int argc, char *argv[23])
 {
   struct rlimit newlimit;
   const struct rlimit * newlimitP;
@@ -95,14 +95,13 @@ main (int argc, char *argv[21])
 
 
 
-  Time finishTime = Seconds (11500.0);
-
-
   // ** [MT] ** Parameters passed with command line
   uint64_t contentCatalogCache = 0;          // Estimated Content Catalog Cardinality to dimension the Bloom Filter of the Cache.
   uint64_t contentCatalogFib = 0;            // Estimated Content Catalog Cardinality to dimension the Bloom Filter for the FIB.
   double cacheToCatalog = 0;            	 // The cacheSize/contentCatalogFib ratio.
   double alpha = 1;							 // Zipf's Exponent
+  uint32_t lambda = 1;						 // Request rate per each client
+  uint32_t clientPerc = 50;    			     // Percentage of core nodes with an attached client.
   double desiredPfpCache = 0.001;			 // Desired Probability of False Positives for the BF of the Cache.
   double desiredPfpFib = 0.001;			 	 // Desired Probability of False Positives for the BF for the FIB.
   uint32_t cellWidthBfCache = 1;             // Number of bits per cell of the BF of the Cache.
@@ -120,6 +119,8 @@ main (int argc, char *argv[21])
   	  	  	  	  	  	  	  	  	    	 // 1 = FLOODING  (Default)
   	  	  	  	  	  	  	  	  	  		 // 2 = BEST ROUTE
   	  	  	  	  	  	  	  	  	    	 // 3 = BF
+
+  double simDuration = 100.0;				 // Duration of the Simulation [s].
 
   std::string networkType = "";              // Type of simulated network (Network Name)
   std::string topologyImport = "";			 // How to create the network (Annotated or Adjacency)
@@ -145,10 +146,15 @@ main (int argc, char *argv[21])
   cmd.AddValue ("cacheToCatalog", "Cache to Catalog Ratio", cacheToCatalog);
   cmd.AddValue ("simType", "Chosen Simulation Scenario", simType);
   cmd.AddValue ("alpha", "Zipf's Parameter", alpha);
+  cmd.AddValue ("lambda", "Request Rate", lambda);
+  cmd.AddValue ("clientPerc", "Percentage of Core Nodes with an attached Client", clientPerc);
   cmd.AddValue ("networkType", "Type of Simulated Network", networkType);
   cmd.AddValue ("topologyImport", "How to create the topology (Annotated or Adjacency)", topologyImport);
+  cmd.AddValue ("simDuration", "Duration of the Simulation", simDuration);
 
   cmd.Parse (argc, argv);
+
+  Time finishTime = Seconds (simDuration);
 
   uint64_t simRun = SeedManager::GetRun();
   std::stringstream ss;
@@ -168,6 +174,27 @@ main (int argc, char *argv[21])
   ss << cacheSize;
   std::string cacheSizeStr = ss.str();
   ss.str("");
+
+  // *** Obtaining general parameter strings
+  std::string alphaStr;
+  ss << alpha;
+  alphaStr = ss.str();
+  ss.str("");
+
+  uint32_t plateau = 0;
+  std::string plateauStr = "0";
+
+  std::string catalogCardinalityStr;
+  ss << contentCatalogFib;
+  catalogCardinalityStr = ss.str();
+  ss.str("");
+
+  std::string lambdaStr;
+  ss << lambda;
+  lambdaStr = ss.str();
+  ss.str("");
+
+
 
   // ***** Obtaining parameters strings
   std::string bfScopeStr, bfFibInitMethodStr, contentCatalogFibStr, desiredPfpFibStr, cellWidthBfFibStr, customLengthBfFibStr, customHashesBfFibStr;
@@ -260,6 +287,8 @@ main (int argc, char *argv[21])
   std::string topoPath;
   NodeContainer coreNodes, repoNodes, clientNodes;
 
+  AnnotatedTopologyReader topologyReader ("", 10);
+
   std::string linkRateCore ("10Gbps");
   std::string linkDelayCore ("5ms");
   std::string txBuffer("40");
@@ -269,7 +298,6 @@ main (int argc, char *argv[21])
 
   if(topologyImport.compare("Annotated")==0)
   {
-	  AnnotatedTopologyReader topologyReader ("", 10);
 	  const char* topoPathCh;
 	  ss << "../TOPOLOGIES/" << topologyImport << "/" << networkType << ".txt";
 	  topoPathCh = ss.str().c_str();
@@ -349,7 +377,7 @@ main (int argc, char *argv[21])
 
   bool completeRepo = false;
 
-  uint32_t numRandRepo = (uint32_t)m_SeqRngNumRepo.GetValue();
+  uint32_t numRandRepo = (uint32_t)round(m_SeqRngNumRepo.GetValue());
 
   std::vector<uint32_t>* repoAttachesID = new std::vector<uint32_t>(numRandRepo) ;
   for(uint32_t i=0; i<repoAttachesID->size(); i++)
@@ -367,7 +395,7 @@ main (int argc, char *argv[21])
 	  while(!already_extracted)
 	  {
 
-		  randRepoAttach = (uint32_t)m_SeqRngRepoAttach.GetValue();
+		  randRepoAttach = (uint32_t)round(m_SeqRngRepoAttach.GetValue());
 		  for(uint32_t i=0; i<repoAttachesID->size(); i++)
 		  {
 			  if(repoAttachesID->operator[](i)==randRepoAttach)
@@ -401,7 +429,11 @@ main (int argc, char *argv[21])
 	  // Create Links between Core Nodes and Repos
 	  uint32_t linkCountRepos = 0;
 
-	  NodeContainer n_links = NodeContainer (coreNodes.Get (repoAttachesID->operator[](i)), repoNodes.Get (i));
+	  NodeContainer n_links;
+	  if(topologyImport.compare("Annotated")==0)
+		  n_links = NodeContainer (topologyReader.GetNodes().Get (repoAttachesID->operator[](i)), repoNodes.Get (i));
+	  else
+		  n_links = NodeContainer (coreNodes.Get (repoAttachesID->operator[](i)), repoNodes.Get (i));
 	  NetDeviceContainer n_devs = p2p.Install (n_links);
 	  linkCountRepos++;
 
@@ -428,14 +460,14 @@ main (int argc, char *argv[21])
         ss << repoSize;
 		repoSizeStr = ss.str();
 		ss.str("");
-		pathRepo= "../boh/repository1_1.txt";       // One Repo stores all the contents.
+		pathRepo= "../SEED_COPIES/Repo1_1.txt";       // One Repo stores all the contents.
 	    break;
   case(2):
 		repoSize = round(contentCatalogFib/2) + 1;
         ss << repoSize;
 		repoSizeStr = ss.str();
 		ss.str("");
-		pathRepo= "../boh/repository2_";            // Two Repos
+		pathRepo= "../SEED_COPIES/Repo2_";            // Two Repos
 		break;
   case(3):
 		//RepoSize = round(contentCatalog/3) + 3;
@@ -443,7 +475,7 @@ main (int argc, char *argv[21])
         ss << repoSize;
 		repoSizeStr = ss.str();
 		ss.str("");
-		pathRepo= "../boh/repository3_";            // Three Repos
+		pathRepo= "../SEED_COPIES/Repo3_";            // Three Repos
 		break;
   default:
 	  NS_LOG_UNCOND("Number of Repos not supported!\t" << numRandRepo);
@@ -456,7 +488,12 @@ main (int argc, char *argv[21])
   // *************   CLIENT RANDOM PLACEMENT   *******************
 
   // Both the number of clients and their attachments are extracted casually.
-  uint32_t numClients = round((numCoreNodes/100)*60);     // 60% of the core nodes has a client attached
+  uint32_t numClients = ceil((double)((numCoreNodes-numRandRepo)/100.)*clientPerc);     // 60% of the core nodes has a client attached
+
+  NS_LOG_UNCOND("Numero CLIENT PERC: " << clientPerc);
+  NS_LOG_UNCOND("Numero CORE NODES: " << numCoreNodes);
+  NS_LOG_UNCOND("Numero RAND REPOS: " << numRandRepo);
+  NS_LOG_UNCOND("Numero CLIENT: " << numClients);
 
   bool completeClients = false;
 
@@ -476,7 +513,9 @@ main (int argc, char *argv[21])
 	  while(!already_extracted)
 	  {
 
-		  randClientAttach = (uint32_t)m_SeqRngRepoAttach.GetValue();
+		  randClientAttach = (uint32_t)round(m_SeqRngRepoAttach.GetValue());
+		  NS_LOG_UNCOND("Rand Client Attach: " << randClientAttach);
+
 		  for(uint32_t i=0; i<clientAttachesID->size(); i++)
 		  {
 			  if(clientAttachesID->operator[](i)==randClientAttach)
@@ -505,7 +544,7 @@ main (int argc, char *argv[21])
 		completeClients = true;
   }
 
-  // Creation and Attachment of Repo Nodes
+  // Creation and Attachment of Client Nodes
 
   clientNodes.Create(numClients);
 
@@ -518,7 +557,12 @@ main (int argc, char *argv[21])
 	  // Create Links between Core Nodes and Repos
 	  uint32_t linkCountClients = 0;
 
-	  NodeContainer n_links = NodeContainer (coreNodes.Get (clientAttachesID->operator[](i)), clientNodes.Get (i));
+	  NodeContainer n_links;
+	  if(topologyImport.compare("Annotated")==0)
+		 n_links = NodeContainer (topologyReader.GetNodes().Get (clientAttachesID->operator[](i)), clientNodes.Get (i));
+	  else
+		 n_links = NodeContainer (coreNodes.Get (clientAttachesID->operator[](i)), clientNodes.Get (i));
+
 	  NetDeviceContainer n_devs = p2p.Install (n_links);
 	  linkCountClients++;
 
@@ -690,7 +734,11 @@ main (int argc, char *argv[21])
 
   NodeContainer bfNodes, nonBfNodes;
 
-  bfNodes.Add(coreNodes);
+  if(topologyImport.compare("Annotated")==0)
+	  bfNodes.Add(topologyReader.GetNodes());
+  else
+	  bfNodes.Add(coreNodes);
+
   nonBfNodes.Add(repoNodes);
   nonBfNodes.Add(clientNodes);
 
@@ -817,7 +865,15 @@ main (int argc, char *argv[21])
 
   ndn::AppHelper consumerHelper ("ns3::ndn::ConsumerCbr");
   consumerHelper.SetPrefix (prefix);
-  consumerHelper.SetAttribute ("Frequency", StringValue ("1"));
+  //consumerHelper.SetAttribute ("Frequency", StringValue ("1"));
+
+  consumerHelper.SetAttribute ("Frequency", StringValue (lambdaStr)); // lambda Interest per second
+  consumerHelper.SetAttribute ("NumberOfContentsZipf", StringValue (catalogCardinalityStr));
+  //consumerHelper.SetAttribute ("Randomize", StringValue ("none"));
+  consumerHelper.SetAttribute ("qZipf", StringValue (plateauStr)); // q paremeter
+  consumerHelper.SetAttribute ("sZipf", StringValue (alphaStr)); // Zipf's exponent
+
+
   //consumerHelper.SetAttribute ("StartTime", TimeValue (Seconds (2.000000)));
   ApplicationContainer consumers = consumerHelper.Install (clientNodes);
   consumers.Start (Seconds(2));
@@ -826,7 +882,7 @@ main (int argc, char *argv[21])
 
   // **** Settaggio della tipologia di nodo.
 
-  for (NodeContainer::Iterator node_app = clientNodes.Begin(); node_app != repoNodes.End(); ++node_app)
+  for (NodeContainer::Iterator node_app = clientNodes.Begin(); node_app != clientNodes.End(); ++node_app)
   {
 	  (*node_app)->GetObject<ForwardingStrategy>()->SetNodeType("client");
   }
@@ -836,9 +892,19 @@ main (int argc, char *argv[21])
 	  (*node_prod)->GetObject<ForwardingStrategy>()->SetNodeType("producer");
   }
 
-  for (NodeContainer::Iterator node_core = coreNodes.Begin(); node_core != repoNodes.End(); ++node_core)
+  if(topologyImport.compare("Annotated")==0)
   {
-	  (*node_core)->GetObject<ForwardingStrategy>()->SetNodeType("core");
+	  for (NodeContainer::Iterator node_core = topologyReader.GetNodes().Begin(); node_core != topologyReader.GetNodes().End(); ++node_core)
+	  {
+		  (*node_core)->GetObject<ForwardingStrategy>()->SetNodeType("core");
+	  }
+  }
+  else
+  {
+	  for (NodeContainer::Iterator node_core = coreNodes.Begin(); node_core != coreNodes.End(); ++node_core)
+	  {
+		  (*node_core)->GetObject<ForwardingStrategy>()->SetNodeType("core");
+	  }
   }
 
 
@@ -980,7 +1046,7 @@ main (int argc, char *argv[21])
 
 // *************************
 
-void InterestDataTrace(Ptr<OutputStreamWrapper> stream, Ptr<const Interest> header, Ptr<const Face> face, std::string eventType, std::string nodeType)
+void InterestTrace(Ptr<OutputStreamWrapper> stream, Ptr<const Interest> header, Ptr<const Face> face, std::string eventType, std::string nodeType)
 {
 	*stream->GetStream() << Simulator::Now().GetMicroSeconds() << "\t" <<  eventType << "\t" << face->GetId() << "\t" << nodeType << "--\t"  << std::endl;
 }

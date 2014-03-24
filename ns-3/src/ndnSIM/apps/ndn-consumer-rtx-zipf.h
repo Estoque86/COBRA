@@ -75,8 +75,12 @@ public:
    * @brief Timeout event
    * @param sequenceNumber time outed sequence number
    */
+//  virtual void
+//  OnTimeout (uint32_t sequenceNumber);
+
   virtual void
   OnTimeout (uint32_t sequenceNumber);
+
 
   /**
    * @brief Actually send packet
@@ -94,6 +98,8 @@ public:
   virtual void
   WillSendOutInterest (uint32_t sequenceNumber);
   
+  uint32_t GetNextSeq();
+
 protected:
   // from App
   virtual void
@@ -128,6 +134,26 @@ protected:
   Time
   GetRetxTimer () const;
 
+  // **** ADDED FROM ZIPF-MANDELBROT
+
+  void
+  SetNumberOfContents (uint32_t numOfContents);
+
+  uint32_t
+  GetNumberOfContents () const;
+
+  void
+  SetQ (double q);
+
+  double
+  GetQ () const;
+
+  void
+  SetS (double s);
+
+  double
+  GetS () const;
+
   /**
    * \brief Allows the positioning in a file at a specified line.
    */
@@ -136,10 +162,20 @@ protected:
 protected:
   //  *** (MT) ***
   std::ifstream request_file;    ///< @brief ifstream associated to the file containing the requests of the client.
-  std::map<std::string, uint32_t> *seq_contenuto;    ///< @brief map the content name to the sequence number.
+  std::map<std::string, uint32_t > *seq_contenuto;    ///< @brief map the content name to the sequence number.
 
   uint32_t m_maxNumRtx;       ///< @brief maximum number of allowed retransmission.
-  std::map<uint32_t, uint32_t> *num_rtx;  ///< @brief map the sequence number of the content to the relative number of retransmission.
+  std::map< uint32_t, uint32_t> *num_rtx;  ///< @brief map the sequence number of the content to the relative number of retransmission.
+
+  struct contentInfoEntry
+  {
+	  contentInfoEntry(uint32_t _contentID, uint32_t _chunkNum):contentID(_contentID), chunkNum(_chunkNum) {}
+
+	  uint32_t contentID;
+	  uint32_t chunkNum;
+  };
+
+  std::map<std::string, contentInfoEntry> *contentInfoSeqNum;  ///< @brief map the content info to the sequencial sequence number.
 
   // *** (MT) Structure used to track the DOWNLOAD TIME of a single chunk; it is needed to eliminate the time elapsed between the  ****
            // effective retransmission of an Interest and its scheduling.
@@ -192,6 +228,13 @@ protected:
   UniformVariable m_rand; ///< @brief nonce generator
 
   uint32_t        m_seq;  ///< @brief currently requested sequence number
+  //std::vector<uint32_t>* m_seq;
+
+  uint32_t 		  m_currentContentID;    // Keeps track of the ID of the content that is currently being requested.
+  uint32_t 		  m_currentChunk;  // Keeps track of the chunk number of the content that is currently being requested.
+  uint32_t		  m_expChunk;      // Keeps track of the expected number of chunks of the content that is currently being requested.
+  std::string     m_currentContentName;  // Keeps track of the name of the that is currently being requested.
+
   uint32_t        m_seqMax;    ///< @brief maximum number of sequence number
   EventId         m_sendEvent; ///< @brief EventId of pending "send packet" event
   Time            m_retxTimer; ///< @brief Currently estimated retransmission timer
@@ -203,12 +246,20 @@ protected:
   Name         m_interestName;        ///< \brief NDN Name of the Interest (use Name)
   Time         m_interestLifeTime;    ///< \brief LifeTime for interest packet
 
+  // ***** ADDED FROM ZIPF-MANDELBROT
+  uint32_t m_N;  //number of the contents
+  double m_q;  //q in (k+q)^s
+  double m_s;  //s in (k+q)^s
+  std::vector<double> m_Pcum;  //cumulative probability
+  UniformVariable m_SeqRng; //RNG
+
+
   /// @cond include_hidden
   /**
    * \struct This struct contains sequence numbers of packets to be retransmitted
    */
   struct RetxSeqsContainer :
-    public std::set<uint32_t> { };
+    public std::set<uint32_t > { };
 
   RetxSeqsContainer m_retxSeqs;             ///< \brief ordered set of sequence numbers to be retransmitted
 
@@ -262,22 +313,23 @@ protected:
   //               int32_t /*hop count*/> m_firstInterestDataDelay;
 
   //TracedCallback<const std::string*> m_interestApp;
-  TracedCallback<const std::string*, int64_t, std::string> m_interestApp;
+  TracedCallback<const std::string*, int64_t, std::string, std::string> m_interestApp;
   
   //TracedCallback<Ptr<const Interest> > m_timeOutTrace;
-  TracedCallback<const std::string*, int64_t, std::string > m_timeOutTrace;
+  TracedCallback<const std::string*, int64_t, std::string, std::string> m_timeOutTrace;
 
-//TracedCallback<const std::string*, int64_t, int64_t, uint32_t > m_downloadTime;
-  TracedCallback<const std::string*, int64_t, int64_t, uint32_t, std::string > m_downloadTime;
-
-//  TracedCallback<const std::string*, int64_t, int64_t, uint32_t > m_downloadTimeFile;
-  TracedCallback<const std::string*, int64_t, int64_t, uint32_t, std::string > m_downloadTimeFile;
-
-//  TracedCallback<const std::string*, int64_t> m_uncompleteFile;
-  TracedCallback<const std::string*, int64_t, std::string> m_uncompleteFile;
+  //  TracedCallback<const std::string*, int64_t> m_uncompleteFile;
+  TracedCallback<const std::string*, int64_t, std::string, std::string> m_uncompleteFile;
 
   //TracedCallback<const std::string*, int64_t > m_numMaxRtx;
-  TracedCallback<const std::string*, int64_t, std::string > m_numMaxRtx;
+  TracedCallback<const std::string*, int64_t, std::string, std::string> m_numMaxRtx;
+
+  //TracedCallback<const std::string*, int64_t, int64_t, uint32_t > m_downloadTime;
+  TracedCallback<const std::string*, int64_t, int64_t, uint32_t, std::string, std::string > m_downloadTime;
+
+  //  TracedCallback<const std::string*, int64_t, int64_t, uint32_t > m_downloadTimeFile;
+  TracedCallback<const std::string*, int64_t, int64_t, uint32_t, std::string, std::string > m_downloadTimeFile;
+
 /// @endcond
 };
 

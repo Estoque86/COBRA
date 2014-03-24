@@ -538,13 +538,13 @@ protected:
 //                 Ptr<const Face> > m_outInterests; ///< @brief Transmitted interests trace
   
   TracedCallback<Ptr<const Interest>,
-                 Ptr<const Face>, std::string > m_outInterests; ///< @brief Transmitted interests trace
+                 Ptr<const Face>, std::string, std::string > m_outInterests; ///< @brief Transmitted interests trace
 
 //  TracedCallback<Ptr<const Interest>,
 //                 Ptr<const Face> > m_inInterests; ///< @brief trace of incoming Interests
 
   TracedCallback<Ptr<const Interest>,
-                 Ptr<const Face>, std::string > m_inInterests; ///< @brief trace of incoming Interests
+                 Ptr<const Face>, std::string, std::string > m_inInterests; ///< @brief trace of incoming Interests
 
   TracedCallback<Ptr<const Interest>,
                  Ptr<const Face> > m_dropInterests; ///< @brief trace of dropped Interests (Duplicate/exhaust fw options/failed to create PIT entry)
@@ -555,7 +555,7 @@ protected:
 //                   Ptr<const Face> > m_aggregateInterests; ///< @brief trace of Aggregated Interests
 
   TracedCallback<Ptr<const Interest>,
-                   Ptr<const Face>, std::string > m_aggregateInterests; ///< @brief trace of Aggregated Interests
+                   Ptr<const Face>, std::string, std::string > m_aggregateInterests; ///< @brief trace of Aggregated Interests
 
 
   ////////////////////////////////////////////////////////////////////
@@ -567,16 +567,16 @@ protected:
 //                 Ptr<const Face> > m_outData; ///< @brief trace of outgoing Data
 
   TracedCallback<Ptr<const ContentObject>, /*Ptr<const Packet>,*/
-                 bool /*true = from cache or repository, false = from data received*/,
                  Ptr<const Face>,
+                 std::string,
                  std::string > m_outData; ///< @brief trace of outgoing Data
 
 //  TracedCallback<Ptr<const ContentObject>, /*Ptr<const Packet>,*/
 //                 Ptr<const Face> > m_inData; ///< @brief trace of incoming Data
 //  
   TracedCallback<Ptr<const ContentObject>, /*Ptr<const Packet>,*/
-                 bool,
                  Ptr<const Face>,
+                 std::string,
                  std::string > m_inData; ///< @brief trace of incoming Data
 
   TracedCallback<Ptr<const ContentObject>, /*Ptr<const Packet>,*/
@@ -596,7 +596,7 @@ protected:
   TracedCallback<Ptr<const Interest> > m_expiredEntry;
 
   // TracedCallback<Ptr<const ContentObject> > m_inDataCacheApp;    ///< @brief trace of locally satisfied Interests
-  TracedCallback<Ptr<const ContentObject>, std::string > m_inDataCacheApp;    ///< @brief trace of locally satisfied Interests
+  TracedCallback<Ptr<const ContentObject>, std::string, std::string > m_inDataCacheApp;    ///< @brief trace of locally satisfied Interests
 
   std::string nodeType;
 

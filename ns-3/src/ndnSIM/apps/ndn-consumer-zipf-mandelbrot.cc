@@ -143,8 +143,13 @@ ConsumerZipfMandelbrot::SendPacket() {
 
   while (m_retxSeqs.size ())
     {
+	  //std::set< std::vector<uint32_t>* >::iterator it;
+	  //it = m_retxSeqs.begin();
       seq = *m_retxSeqs.begin ();
-      m_retxSeqs.erase (m_retxSeqs.begin ());
+	  //const std::vector<uint32_t>* temp = (*it);
+	  //seq = temp->operator[](0);
+      //m_retxSeqs.erase (m_retxSeqs.begin ());
+	  m_retxSeqs.erase (seq);
 
       // NS_ASSERT (m_seqLifetimes.find (seq) != m_seqLifetimes.end ());
       // if (m_seqLifetimes.find (seq)->time <= Simulator::Now ())
@@ -193,6 +198,10 @@ ConsumerZipfMandelbrot::SendPacket() {
   //NS_LOG_DEBUG ("Interest packet size: " << packet->GetSize ());
 
   NS_LOG_DEBUG ("Trying to add " << seq << " with " << Simulator::Now () << ". already " << m_seqTimeouts.size () << " items");
+
+  std::vector<uint32_t> p;
+  p.push_back(0);
+  p.push_back(0);
 
   m_seqTimeouts.insert (SeqTimeout (seq, Simulator::Now ()));
   m_seqFullDelay.insert (SeqTimeout (seq, Simulator::Now ()));

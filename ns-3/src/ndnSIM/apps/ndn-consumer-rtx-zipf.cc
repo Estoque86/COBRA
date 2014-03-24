@@ -99,6 +99,22 @@ ConsumerRtxZipf::GetTypeId (void)
                    MakeUintegerAccessor(&ConsumerRtxZipf::m_maxNumRtx),
                    MakeUintegerChecker<int32_t>())
 
+    .AddAttribute ("NumberOfContentsZipf", "Number of the Contents in total",
+                   StringValue ("100"),
+                   MakeUintegerAccessor (&ConsumerRtxZipf::SetNumberOfContents, &ConsumerRtxZipf::GetNumberOfContents),
+                   MakeUintegerChecker<uint32_t> ())
+
+    .AddAttribute ("qZipf", "parameter of improve rank",
+                    StringValue ("0.7"),
+                    MakeDoubleAccessor (&ConsumerRtxZipf::SetQ, &ConsumerRtxZipf::GetQ),
+                    MakeDoubleChecker<double> ())
+
+    .AddAttribute ("sZipf", "parameter of power",
+                    StringValue ("0.7"),
+                    MakeDoubleAccessor (&ConsumerRtxZipf::SetS, &ConsumerRtxZipf::GetS),
+                    MakeDoubleChecker<double> ())
+
+
     //.AddTraceSource ("LastRetransmittedInterestDataDelay", "Delay between last retransmitted Interest and received Data",
     //                 MakeTraceSourceAccessor (&Consumer::m_lastRetransmittedInterestDataDelay))
 
@@ -132,20 +148,34 @@ ConsumerRtxZipf::GetTypeId (void)
 
 ConsumerRtxZipf::ConsumerRtxZipf ()
   : m_rand (0, std::numeric_limits<uint32_t>::max ())
-  , m_seq (0)
+  , m_seq(0)       // Serve come indice incrementale
+  , m_currentChunk(0)
   , m_seqMax (111000) // don't request anything
+  , m_N (100) // needed here to make sure when SetQ/SetS are called, there is a valid value of N
+  , m_q (0.7)
+  , m_s (0.7)
+  , m_SeqRng (0.0, 1.0)
+
 {
   NS_LOG_FUNCTION_NOARGS ();
+
+  //m_seq->push_back(m_seq_start);        // The first element is the Sequence Number;
+  //m_seq->push_back(0);       			// The second element is the Chunk Number.
 
   m_rtt = CreateObject<RttMeanDeviation> ();
   TimeValue value;
   this->GetAttributeFailSafe("RetxTimer", value);
   SetRetxTimer(value.Get());
   //SetRetxTimer(Seconds(0.025));
-  seq_contenuto = new std::map<std::string, uint32_t> ();
+  seq_contenuto = new std::map<std::string, uint32_t > ();
   num_rtx = new std::map<uint32_t, uint32_t> ();
+  contentInfoSeqNum = new std::map<std::string, contentInfoEntry> ();
   download_time = new std::map<std::string, DownloadEntry_Chunk> ();
+  download_time_first = new std::map<std::string, DownloadEntry_Chunk> ();
+  download_time_file = new std::map<std::string, DownloadEntry> ();
   m_maxNumRtx = 100;      // Num Max Rtx
+
+  NS_LOG_UNCOND("COSTRUTTORE APP!!");
 }
 
 ConsumerRtxZipf::~ConsumerRtxZipf()
@@ -157,7 +187,7 @@ ConsumerRtxZipf::~ConsumerRtxZipf()
   if(request_file)
         request_file.close();
 
- NS_LOG_UNCOND("STOP APPLICATION"); 
+ NS_LOG_UNCOND("STOP APPLICATION");
 
   // cancel periodic packet generation
   Simulator::Cancel (m_sendEvent);
@@ -166,6 +196,61 @@ ConsumerRtxZipf::~ConsumerRtxZipf()
   App::StopApplication ();
 */
 }
+
+void
+ConsumerRtxZipf::SetNumberOfContents (uint32_t numOfContents)
+{
+  m_N = numOfContents;
+
+  NS_LOG_DEBUG (m_q << " and " << m_s << " and " << m_N);
+
+  m_Pcum = std::vector<double> (m_N + 1);
+
+  m_Pcum[0] = 0.0;
+  for (uint32_t i=1; i<=m_N; i++)
+    {
+      m_Pcum[i] = m_Pcum[i-1] + 1.0 / std::pow(i+m_q, m_s);
+    }
+
+  for (uint32_t i=1; i<=m_N; i++)
+    {
+      m_Pcum[i] = m_Pcum[i] / m_Pcum[m_N];
+      NS_LOG_LOGIC ("Cumulative probability [" << i << "]=" << m_Pcum[i]);
+  }
+}
+
+uint32_t
+ConsumerRtxZipf::GetNumberOfContents () const
+{
+  return m_N;
+}
+
+void
+ConsumerRtxZipf::SetQ (double q)
+{
+  m_q = q;
+  SetNumberOfContents (m_N);
+}
+
+double
+ConsumerRtxZipf::GetQ () const
+{
+  return m_q;
+}
+
+void
+ConsumerRtxZipf::SetS (double s)
+{
+  m_s = s;
+  SetNumberOfContents (m_N);
+}
+
+double
+ConsumerRtxZipf::GetS () const
+{
+  return m_s;
+}
+
 
 void
 ConsumerRtxZipf::SetRetxTimer (Time retxTimer)
@@ -193,20 +278,45 @@ ConsumerRtxZipf::CheckRetxTimeout ()
 {
   //NS_LOG_FUNCTION(Application::GetNode()->GetId() << "\t con CheckRetxTimer:\t" << m_retxTimer << "\t e Interest LifeTime:\t" << m_interestLifeTime);
 
+  //NS_LOG_UNCOND("CHECK RETX TO - APP\t" << Simulator::Now());
+
   Time now = Simulator::Now ();
 
   Time rto = m_rtt->RetransmitTimeout ();
+
+  //NS_LOG_UNCOND("CHECK RETX TO - APP: Current RTO\t" << rto);
   // NS_LOG_DEBUG ("Current RTO: " << rto.ToDouble (Time::S) << "s");
 
   while (!m_seqTimeouts.empty ())
     {
       SeqTimeoutsContainer::index<i_timestamp>::type::iterator entry =
         m_seqTimeouts.get<i_timestamp> ().begin ();
+      //NS_LOG_UNCOND("CHECK RETX TO - APP: Timestamp entry\t" << entry->time);
       if (entry->time + rto <= now) // timeout expired?
         {
           uint32_t seqNo = entry->seq;
           m_seqTimeouts.get<i_timestamp> ().erase (entry);
+          //NS_LOG_UNCOND("APP: ON TIMEOUT!" << Simulator::Now());
+
           OnTimeout (seqNo);
+
+    	  //uint32_t seqNo = entry->seq->operator[](0);
+          //m_seqTimeouts.get<i_timestamp> ().erase (entry);
+          //OnTimeout (seqNo);
+
+          /*SeqTimeoutsContainer::index<i_seq>::type::iterator entrySeq =
+            m_seqTimeouts.get<i_seq> ().begin ();
+
+          //std::vector<uint32_t>* seqNo = (entry->seq);
+          m_seqTimeouts.get<i_timestamp> ().erase (entry);
+
+          //uint32_t contID = seqNo->operator[](0);
+
+
+          //OnTimeout (*temp);
+          //OnTimeout(*entry->seq);
+          OnTimeout(*entrySeq->seq);
+           */
         }
       else
         break; // nothing else to do. All later packets need not be retransmitted
@@ -222,54 +332,34 @@ ConsumerRtxZipf::StartApplication () // Called at time specified by Start
 {
 	  NS_LOG_FUNCTION_NOARGS ();
 
+	  NS_LOG_UNCOND("START APPLICATION!! ");
+
 	  // do base stuff
 	  App::StartApplication ();
 
 	  uint32_t ID_NODO;
-	  std::string PATH_PREFIX = "/media/DATI/tortelli/Simulazioni_BF_SpecialIssue/ndnSIM_Routing_NewBf/RICHIESTE/";
+	  std::stringstream ss;
 
-	  std::string PATH_SUFFIX;
+	  std::string PATH_PREFIX = "/Users/michele/Desktop/Dottorato/Parigi/LINCS/COBRA/Simulatore/COBRA_SIM/RICHIESTE/";
+
 	  // Metodo per recuperare le variabili globali settate con cmd line
-	  DoubleValue av;
-	  std::string adv = "g_alphaValue";
-	  ns3::GlobalValue::GetValueByNameFailSafe(adv, av);
-	  double alpha = av.Get();
+	  // DoubleValue av;
+	  // std::string adv = "g_alphaValue";
+	  // ns3::GlobalValue::GetValueByNameFailSafe(adv, av);
+	  // double alpha = av.Get();
 
-	  NS_LOG_UNCOND("Il Valore di Alpha Ã¨:" << alpha);
-
-	  if(alpha == 1)
-		PATH_SUFFIX = "RICHIESTE_ALPHA_1/request_";
-                //PATH_SUFFIX = "FILE_RICHIESTE_1/richieste";
-	  else if (alpha == 12)
-                PATH_SUFFIX = "RICHIESTE_ALPHA_12/request_";
-	        //PATH_SUFFIX = "FILE_RICHIESTE_12/richieste";
-	  else{
-		NS_LOG_UNCOND("Valore di alpha non supportato");
-		exit(0);
-	  }
+	  // NS_LOG_UNCOND("Il Valore di Alpha :" << alpha);
 
 	  std::string EXT = ".txt";
-	  std::stringstream ss;
-	  Ptr<ns3::Node> node = Application::GetNode();
 
-	// Metodo per recuperare le variabili globali settate con cmd line
-	  UintegerValue st;
-	  std::string sit = "g_simRun";
-	  ns3::GlobalValue::GetValueByNameFailSafe(sit, st);
-	  uint64_t sim = st.Get();
+	  ss << PATH_PREFIX << "request_PROVA" << EXT;
 
-
-	  //ID_NODO = ((*node).GetId())%22;                                 // 21 is the maximum number of clients
-
-          ID_NODO = (*node).GetId();
-	  
-          ss << PATH_PREFIX << PATH_SUFFIX << ID_NODO << "_" << sim << EXT;
 	  std::string PERCORSO = ss.str();
 	  const char *PATH_C = PERCORSO.c_str();
 	  ss.str("");
 	  request_file.open(PATH_C, std::fstream::in);
 	  if(!request_file){
-	  	  	std::cout << "\nERRORE: Impossibile leggere dal file dei contenuti!\n" << PATH_C << "\t" << sim << "\t" << st.Get();
+	  	  	std::cout << "\nERRORE: Impossibile leggere dal file dei contenuti!\n" << PATH_C ;
 	 		exit(0);
 	  }
 
@@ -283,7 +373,10 @@ ConsumerRtxZipf::StopApplication () // Called at time specified by Stop
 
   delete seq_contenuto;
   delete num_rtx;
+  delete contentInfoSeqNum;
   delete download_time;
+  delete download_time_file;
+  delete download_time_first;
 
   if(request_file)
         request_file.close();
@@ -301,34 +394,67 @@ ConsumerRtxZipf::StopApplication () // Called at time specified by Stop
 void
 ConsumerRtxZipf::SendPacket ()
 {
+
   if (!m_active) return;
 
   NS_LOG_FUNCTION_NOARGS ();
 
   bool retransmit = false;
+  bool newContent = false;   // Used to differentiate the request of a new content instead of a new
+  	  	  	  	  	  	  	 // chunk of the same content.
+  //NS_LOG_UNCOND("SEND PACKET!!");
+  uint32_t contentID;
+  uint32_t chunkNum;
+  uint32_t seq=std::numeric_limits<uint32_t>::max ();
+  std::string seqStr;
+  std::stringstream seqStream;
 
-  uint32_t seq=std::numeric_limits<uint32_t>::max (); //invalid
+  uint32_t currentSeq;    // It is assigned both in case of retransmission and in case of a new content.
 
   while (m_retxSeqs.size ())
-    {
-      seq = *m_retxSeqs.begin ();
-      m_retxSeqs.erase (m_retxSeqs.begin ());
+  {
+	  //NS_LOG_UNCOND("SEND PACKET - APP: RETX QUEUE SIZE\t" << m_retxSeqs.size () << "\t" << Simulator::Now());
+	  seq = *m_retxSeqs.begin ();
+
+	  seqStream << seq;
+	  seqStr = seqStream.str();
+
+	  //std::set< std::vector<uint32_t>* >::iterator it;
+	  //it = m_retxSeqs.begin();
+	  contentID = contentInfoSeqNum->find(seqStr)->second.contentID;
+	  chunkNum = contentInfoSeqNum->find(seqStr)->second.chunkNum;
+
+	  seqStream.str("");
+
+	  currentSeq = seq;
+
+	  //NS_LOG_UNCOND("SEND PACKET - APP: RTX for contID: " << contentID << "\t and ChunkNum: " << chunkNum);
+      //m_retxSeqs.erase (m_retxSeqs.begin ());
+	  m_retxSeqs.erase (seq);
       retransmit = true;
       break;
-    }
+  }
 
   if (seq == std::numeric_limits<uint32_t>::max ())             // Enter here if there is nothing to retransmit
-    {
-      if (m_seqMax != std::numeric_limits<uint32_t>::max ())
-        {
-          if (m_seq >= m_seqMax)
-            {
-              return; // we are totally done
-            }
-        }
-
-      seq = m_seq++;
-    }
+  {
+	  if (m_seqMax != std::numeric_limits<uint32_t>::max ())
+      {
+		  if (m_seq >= m_seqMax)
+          {
+			  return; // we are totally done
+          }
+      }
+      //seq = m_seq++;
+	  if(m_currentChunk==0)            // It means that a new content needs to be requested.
+	  {
+		  contentID = ConsumerRtxZipf::GetNextSeq();
+		  m_currentContentID = contentID;
+		  newContent = true;
+		  //NS_LOG_UNCOND("SEND PACKET - APP: EXTRACTED CONTENT ID\t" << m_currentContentID << "\t" << Simulator::Now());
+	  }
+	  currentSeq = m_seq;
+	  m_seq ++;
+   }
 
   /* *** (MT) Retrieve the content name of the request ***
    *
@@ -340,50 +466,165 @@ ConsumerRtxZipf::SendPacket ()
    *       exp_num_chunk = num of chunks of the content, for the first chunk, otherwise is 0.
    */
 
-  GotoLine(request_file,(seq+1));
-  std::string line;
-  std::getline(request_file,line);
+  std::string contentName, chunkStr, fullName;
+  std::stringstream ss;
 
-  if(line.empty())
-    return;
+  if(newContent || retransmit)
+  {
+	  GotoLine(request_file,(contentID));
+	  std::string lineFull;
+	  std::getline(request_file,lineFull);
 
-  // (MT) If it is NOT a retransmission
+	  //NS_LOG_UNCOND("APP SENDING NEW INTEREST: " << lineFull);
+
+	  if(lineFull.empty())
+		  return;
+
+	  const std::string line = lineFull;
+
+	  // Tokenize the string in order to separate content name from the number of chunks of that content
+	  typedef boost::tokenizer<boost::char_separator<char> > tokenizer;
+	  boost::char_separator<char> sep("\t");
+	  tokenizer tokens_space(line, sep);
+	  tokenizer::iterator it_space=tokens_space.begin();
+	  contentName = *it_space;           // It should be the content name without the chunk part
+	  if(!retransmit)     // It means that a new content is being requested
+	  {
+		  it_space++;
+		  const std::string expContentChunks = *it_space;      // It should be the number of expected chunks for that content
+		  m_expChunk = std::atoi(expContentChunks.c_str());
+		  m_currentContentName = contentName;
+		  ss << m_currentChunk;      // m_currentChunk should be already to '0'
+		  chunkStr = ss.str();
+		  ss.str("");
+	  }
+	  else
+	  {
+		  ss << chunkNum;
+		  chunkStr = ss.str();   // Assign the chunk num calculated before.
+		  ss.str("");
+	  }
+  }
+  else   // Another chunk of the current content is going to be requested.
+  {
+	  contentName = m_currentContentName;
+	  ss << m_currentChunk;
+	  chunkStr = ss.str();
+	  ss.str("");
+  }
+
+
+
+  // Build the complete content name
+
+  std::string chunkStrCompl;
+  ss << "s_" << chunkStr;
+  chunkStrCompl = ss.str();
+  ss.str("");
+
+  Ptr<NameComponents> mainName = Create<NameComponents> (contentName);
+  uint32_t numComponents = mainName->GetComponents().size();
+  std::list<std::string> mainNameLst (numComponents);
+  mainNameLst.assign(mainName->begin(), mainName->end());
+  mainNameLst.push_back(chunkStrCompl);
+  ++numComponents;
+  std::list<std::string>::iterator it = mainNameLst.begin();
+  for(uint32_t t = 0; t < numComponents; t++)
+  {
+        ss << "/" << *it;
+        it++;
+  }
+  fullName = ss.str();
+  ss.str("");
+
+
+  //NS_LOG_UNCOND("APP: Sending a New Interest:\t" << fullName);
+
+
+
+  // ** If it is NOT a RETRANSMISSION
   if(!retransmit)
   {
-  	 //std::string intApp = contentChunk;
-  
-//	 m_interestApp(&line);
-	 m_interestApp(&line, int64_t(0), "Tx");
+	  //NS_LOG_UNCOND("SEND PACKET - APP: Sending NEW Content\t" << fullName << "\t" << Simulator::Now());
 
-  	 //App::OnInterestApp(&intApp);                 // APP-LEVEL tracing for the sent Interests
-     std::map<std::string, uint32_t>::iterator it;
-     it = seq_contenuto->find(line);
+
+  	 std::string intApp = fullName;
+
+  	 std::string nodeType = this->GetNode()->GetObject<ForwardingStrategy>()->GetNodeType();
+  
+	 m_interestApp(&intApp, int64_t(0), "TX", nodeType);  // APP-LEVEL Tracing for transmitted Interests.
+
+     std::map<std::string, uint32_t >::iterator it;
+     it = seq_contenuto->find(fullName);
 
      if(it!=seq_contenuto->end())                 // Go next if the content to fetch has already been asked but not retrieve yet
      {
-        m_rtt->IncrNext(SequenceNumber32 (seq), 1);
+        m_rtt->IncrNext(SequenceNumber32 (m_seq), 1);    // NB: Verify if it's "m_seq-1" or "m_seq".
         ScheduleNextPacket ();
         return;
      }
      else     // Different content
      {
          //NS_LOG_UNCOND("Content to ask:\t" << contenutChunk << "\t with exp_num_chunks:\t" << expChunk_string);
-         num_rtx->insert(std::pair<uint32_t, uint32_t> (seq,1));
-         seq_contenuto->insert(std::pair<std::string,uint32_t>(line,seq));   // Bind the chunk name to the relative sequence number
-     	 download_time->insert(std::pair<std::string,DownloadEntry_Chunk> (line, DownloadEntry_Chunk(Simulator::Now(), Simulator::Now(), MicroSeconds(0))));
+         //std::vector<uint32_t> *p;
+         //p = new std::vector<uint32_t>();
+         //p->push_back(m_currentContentID);
+         //p->push_back(m_currentChunk);
+         //p->operator[](0) = (m_currentContentID);
+         //p->operator[](1) = (m_currentChunk);
+    	 num_rtx->insert(std::pair<uint32_t, uint32_t> (currentSeq,1));
+    	 //num_rtx->insert(std::pair<uint32_t, uint32_t> (currentSeq,1));
+
+    	 seqStream << currentSeq;
+    	 seqStr = seqStream.str();
+    	 seqStream.str("");
+
+         seq_contenuto->insert(std::pair<std::string, uint32_t > (fullName, currentSeq));   // Bind the chunk name to the relative sequence number
+         //contentInfoSeqNum->insert(std::pair<std::vector<uint32_t>*, uint32_t> (p,m_seq));
+         contentInfoSeqNum->insert(std::pair<std::string, contentInfoEntry> (seqStr, contentInfoEntry(m_currentContentID, m_currentChunk)));
+
+     	 if(m_currentChunk == 0)     // If it is the FIRST CHUNK, all the structures must be updated: download_time_first,
+     		 	 	 	 	   // download_time, and download_time_file.
+     	 {
+     		download_time_first->insert(std::pair<std::string,DownloadEntry_Chunk> (fullName, DownloadEntry_Chunk(Simulator::Now(), Simulator::Now(), MicroSeconds(0))));
+     		download_time->insert(std::pair<std::string,DownloadEntry_Chunk> (fullName, DownloadEntry_Chunk(Simulator::Now(), Simulator::Now(), MicroSeconds(0))));
+
+     		// In the 'download_time_file' map, only the content name is inserted (without the chunk part).
+            download_time_file->insert(std::pair<std::string,DownloadEntry> (contentName, DownloadEntry(Simulator::Now(), Simulator::Now(),m_expChunk,0,0)) );
+     	 }
+     	 else
+     	 {
+     		download_time->insert(std::pair<std::string,DownloadEntry_Chunk> (fullName, DownloadEntry_Chunk(Simulator::Now(), Simulator::Now(), MicroSeconds(0))));
+     	 }
+     	 //delete p;
      }
+
   }
 
-  else    //  (MT) It IS a retransmission; in this case, the new "sent_time" must be updated.
+  else    //  If it IS a RETRANSMISSION, the "sent_time" must be updated.
   {
-	  if(download_time->find(line)!=download_time->end())
-		  download_time->find(line)->second.sentTimeChunk_New = Simulator::Now();
-	  else
-		  NS_LOG_UNCOND("Impossible to find the retransmitted content in the map!!");
+      //NS_LOG_UNCOND("APP: Sending a RETRANSMISSION:\t" << fullName);
+
+	  //NS_LOG_UNCOND("SEND PACKET - APP: Sending a RETRANSMISSION\t" << fullName << "\t" << Simulator::Now());
+
+	  if(chunkNum != 0)     // It is the FIRST Chunk that needs to be retransmitted
+	  {
+		  if(download_time_first->find(fullName)!=download_time_first->end())
+			  download_time_first->find(fullName)->second.sentTimeChunk_New = Simulator::Now();
+	  	  else
+	  		  NS_LOG_UNCOND("Impossible to find the retransmitted content in the map!!");
+	  }
+	  else // It is NOT the FIRST Chunk that needs to be retransmitted
+	  {
+		  if(download_time->find(fullName)!=download_time->end())
+			  download_time->find(fullName)->second.sentTimeChunk_New = Simulator::Now();
+		  else
+			  NS_LOG_UNCOND("Impossible to find the retransmitted content in the map!!");
+	  }
   }
 
   Ptr<Interest> interestHeader = Create<Interest>();
-  interestHeader->SetName(Create<Name> (line));
+  interestHeader->SetName(Create<Name> (fullName));
   interestHeader->SetNonce               (m_rand.GetValue ());
   interestHeader->SetInterestLifetime    (m_interestLifeTime);
 
@@ -396,15 +637,30 @@ ConsumerRtxZipf::SendPacket ()
   //FwHopCountTag hopCountTag;
   //packet->AddPacketTag (hopCountTag);
 
-  m_seqTimeouts.insert (SeqTimeout (seq, Simulator::Now ()));
-  m_seqLifetimes.insert (SeqTimeout (seq, Simulator::Now () + m_interestLifeTime)); // only one insert will work. if entry exists, nothing will happen... nothing should happen
+  //std::vector<uint32_t> *p;
+  //p = new std::vector<uint32_t>(2);
+  //p->operator[](0) = (m_currentContentID);
+  //p->operator[](1) = (m_currentChunk);
+
+  if(!retransmit)
+  {
+	  ++m_currentChunk;
+	  if(m_currentChunk == m_expChunk)   // The last chunk of the current content is going to be requested, so I need
+		  m_currentChunk = 0; 			   // to set m_currentChunk = 0 in order to request a new content in the next iteration
+  }
+
+  m_seqTimeouts.insert (SeqTimeout (currentSeq, Simulator::Now ()));
+  m_seqLifetimes.insert (SeqTimeout (currentSeq, Simulator::Now () + m_interestLifeTime)); // only one insert will work. if entry exists, nothing will happen... nothing should happen
   m_transmittedInterests (interestHeader, this, m_face);
 
-  m_rtt->SentSeq (SequenceNumber32 (seq), 1);
+  m_rtt->SentSeq (SequenceNumber32 (m_seq-1), 1);     // NB: Verify if it's "m_seq-1" or "m_seq".
 
   if(retransmit)
-	  m_timeOutTrace (&line, 0, "Rtx");         // APP-LEVEL Trace for retransmitted Interests
-      // m_timeOutTrace (interestHeader);         // APP-LEVEL Trace for retransmitted Interests
+  {
+	  std::string nodeType = this->GetNode()->GetObject<ForwardingStrategy>()->GetNodeType();
+	  m_timeOutTrace (&fullName, 0, "RTX", nodeType);         // APP-LEVEL Trace for retransmitted Interests
+  }
+
 
   m_protocolHandler (packet);
 
@@ -426,53 +682,183 @@ ConsumerRtxZipf::OnContentObject (const Ptr<const ContentObject> &contentObject,
 
   NS_LOG_FUNCTION (this << contentObject << payload);
 
-  // (MT) Hop count info extraction
+  // ** HOP COUNT info extraction
   uint32_t dist = contentObject->GetAdditionalInfo().GetHopCount();
 
   std::stringstream ss;
   ss << contentObject -> GetName();
   const std::string cont_ric = ss.str();
   std::string cont_ric_app = ss.str();
-  uint32_t seq_ric = seq_contenuto->find(cont_ric)->second;   // Retrieve the sequence number associated to the received content
   ss.str("");
 
-  if((seq_ric % 100) == 0)   // Print a log message every 100 chunks.
+  //NS_LOG_UNCOND("ON DATA - APP: Received CONTENT OBJECT\t" << cont_ric << "\t" << Simulator::Now());
+
+
+  // Retrieve the ContentID and the ChunkNumber associated to the received content
+  //std::vector<uint32_t>* contentInfo = seq_contenuto->find(cont_ric)->second;
+  uint32_t seqNumRic = seq_contenuto->find(cont_ric)->second;
+
+  std::string seqStr;
+  ss << seqNumRic;
+  seqStr = ss.str();
+  ss.str("");
+
+  //NS_LOG_UNCOND("ON DATA - APP: Received CONTENT OBJECT with SeqNum\t" << seqNumRic << "\t" << Simulator::Now());
+
+  //std::map<std::string, const std::vector<uint32_t>*>::iterator itMap;
+
+  //std::vector<uint32_t>* contentInfo = new std::vector<uint32_t>();
+  //itMap = contentInfoSeqNum->find(seqStr);
+  //if(contentInfoSeqNum->find(seqStr)!=contentInfoSeqNum->end())
+  //{
+	  //contentInfo->push_back( (*itMap).second->operator [](0));   // Sequential seq num associated to contentInfo
+	  //contentInfo->push_back( (*itMap).second->operator [](1));
+
+	//  NS_LOG_UNCOND("ECCO!!");
+  //}
+
+  //else
+  //{
+	//  NS_LOG_UNCOND("CAZOOOOOO!!!!");
+	//  return;
+  //}
+
+  uint32_t contentID = contentInfoSeqNum->find(seqStr)->second.contentID;
+  uint32_t chunkNum = contentInfoSeqNum->find(seqStr)->second.chunkNum;
+
+  //NS_LOG_UNCOND("ON DATA - APP: Received CONTENT OBJECT with SeqNum\t" << seqNumRic << "\tand content ID: "<< contentID << "\tand chunk Num: "<< chunkNum << "\t" << Simulator::Now());
+
+
+  // Print a LOG MSG every 100 chunks.
+  if((seqNumRic % 100) == 0)
 
           NS_LOG_UNCOND("NODE:\t" << Application::GetNode()->GetId() << "\t APP-LAYER RECEIVED DATA:\t" << cont_ric << "\t" << Simulator::Now().GetMicroSeconds());
 
-  seq_contenuto->erase(cont_ric);           // Erase the association content_name <-> seq number
+  // Erase the association content_name <-> seq number
+  seq_contenuto->erase(cont_ric);
 
-
-  if(download_time->find(cont_ric)!=download_time->end())
+  // *** The SEEK TIME should be calculated only concerning the FIRST Chunk.
+  if(download_time_first->find(cont_ric)!=download_time_first->end())
   {
-	  //int64_t tempo_invio = download_time_first->find(cont_ric)->second;
-	  Time tempo_primo_invio = download_time->find(cont_ric)->second.sentTimeChunk_First;
+	  Time firstTxTime = download_time_first->find(cont_ric)->second.sentTimeChunk_First;
 
-	  Time tempo_ultimo_invio = download_time->find(cont_ric)->second.sentTimeChunk_New;
+	  Time lastTxTime = download_time_first->find(cont_ric)->second.sentTimeChunk_New;
 
-      Time tempo_download = (Simulator::Now() - tempo_ultimo_invio)+download_time->find(cont_ric)->second.incrementalTime;
+      Time downloadTime = (Simulator::Now() - lastTxTime)+download_time_first->find(cont_ric)->second.incrementalTime;
 
-	  // LE INFO DEL TEMPO DI DOWNLOAD E DEL HOP COUNT VENGONO INSERITE IN UN UNICO TRACING FILE.
-      //m_downloadTime (&cont_ric_app, tempo_primo_invio.GetMicroSeconds(), tempo_download.GetMicroSeconds(), dist);
-      m_downloadTime (&cont_ric_app, tempo_primo_invio.GetMicroSeconds(), tempo_download.GetMicroSeconds(), dist, "First");
+      // It is the same Tracing File both for the Download Time and for the Hop Count
+	  std::string nodeType = this->GetNode()->GetObject<ForwardingStrategy>()->GetNodeType();
+      m_downloadTime (&cont_ric_app, firstTxTime.GetMicroSeconds(), downloadTime.GetMicroSeconds(), dist, "FIRST", nodeType);
 
-      download_time->erase(cont_ric);
-	  //download_time->erase(cont_ric);
+      download_time_first->erase(cont_ric);
+  }
+
+  // Checking the received Chunk; Update the structure "download_time_file" and, eventually, calculate the file download time
+
+  Ptr<NameComponents> receivedContent = Create<NameComponents> (cont_ric);
+  uint32_t numComponents = receivedContent->GetComponents().size();
+  std::list<std::string> nameReceivedContent (numComponents);
+  nameReceivedContent.assign(receivedContent->begin(), receivedContent->end());
+  std::list<std::string>::iterator it = nameReceivedContent.end();
+
+  --it;
+  // Extract the chunk part of the name.
+  std::string chunkString = *it;
+
+  it = nameReceivedContent.begin();
+  nameReceivedContent.pop_back();
+  --numComponents;
+
+  for(uint32_t t = 0; t < numComponents; t++)
+  {
+	ss << "/" << *it;
+	it++;
+  }
+  std::string contentWithoutChunk = ss.str();
+  ss.str("");
+
+  // Control if the respective content of the received chunk has been already deleted from the structure.
+  // This can happen when one ore more chunks are received after the last chunk.
+  if(download_time_file->find(contentWithoutChunk)!=download_time_file->end())
+  {
+	  uint32_t totNumChunks = download_time_file->find(contentWithoutChunk)->second.expNumChunk;
+      std::string checkChunk = "s_";
+      ss << checkChunk << (totNumChunks-1);
+      checkChunk = ss.str();
+      if (chunkString.compare(checkChunk) != 0)    // The received chunk does not correspond to the last one; so, only the counter of received chunk is incremented.
+	  	  	  	  	  	                           // If exactly the last chunk is lost, the respective contents will stay into the download_time_file structure.
+      {
+    	  download_time_file->find(contentWithoutChunk)->second.rcvNumChunk++;
+
+    	  // ** The download time of the single chunk is calculated and added to the sum the refers to the respective content
+    	  Time incrementTime = Simulator::Now() - download_time->find(cont_ric)->second.sentTimeChunk_New;
+    	  if(incrementTime > NanoSeconds(100000000)) // vuol dire che la ritrasmissione schedulata non Ã¨ stata ancora effettuata.
+    		  incrementTime = NanoSeconds(100000000) + download_time->find(cont_ric)->second.incrementalTime;
+          else
+        	  incrementTime = (Simulator::Now() - download_time->find(cont_ric)->second.sentTimeChunk_New)+download_time->find(cont_ric)->second.incrementalTime;
+
+	      download_time_file->find(contentWithoutChunk)->second.downloadTime+=incrementTime;
+          download_time_file->find(contentWithoutChunk)->second.distance+=dist;
+	      download_time->erase(cont_ric);
+      }
+      else  // The received chunk is the LAST one. If rcvChunks == expChunks --> calculate Download Time;
+    	    // otherwise, the content is marked as lost.
+      {
+    	  if(download_time_file->find(contentWithoutChunk)->second.rcvNumChunk == (totNumChunks - 1))
+	      {
+        	  download_time_file->find(contentWithoutChunk)->second.rcvNumChunk++;
+
+        	  // ** The download time of the single chunk is calculated and added to the sum the refers to the respective content
+        	  Time incrementTime = Simulator::Now() - download_time->find(cont_ric)->second.sentTimeChunk_New;
+        	//  if(incrementTime > NanoSeconds(100000000)) // vuol dire che la ritrasmissione schedulata non Ã¨ stata ancora effettuata.
+        	//	  incrementTime = NanoSeconds(100000000) + download_time->find(cont_ric)->second.incrementalTime;
+            //  else
+            //	  incrementTime = (Simulator::Now() - download_time->find(cont_ric)->second.sentTimeChunk_New)+download_time->find(cont_ric)->second.incrementalTime;
+
+    	      download_time_file->find(contentWithoutChunk)->second.downloadTime+=incrementTime;
+              download_time_file->find(contentWithoutChunk)->second.distance+=dist;
+    	      download_time->erase(cont_ric);
+
+		      Time downloadTimeFinal = download_time_file->find(contentWithoutChunk)->second.downloadTime;
+              Time firstChunkTime = download_time_file->find(contentWithoutChunk)->second.sentTimeFirst;
+              uint32_t meanHitDistance = round(download_time_file->find(contentWithoutChunk)->second.distance / totNumChunks);
+
+        	  std::string nodeType = this->GetNode()->GetObject<ForwardingStrategy>()->GetNodeType();
+              m_downloadTimeFile (&contentWithoutChunk, firstChunkTime.GetMicroSeconds(), downloadTimeFinal.GetMicroSeconds(), meanHitDistance, "FILE", nodeType);
+
+              download_time_file->erase(contentWithoutChunk);
+	      }
+    	  else   // One or more chunks have been not received; so the entire content is marked as LOST
+    	  {
+    		  Time firstChunkTime = download_time_file->find(contentWithoutChunk)->second.sentTimeFirst;
+		      download_time_file->erase(contentWithoutChunk);
+		      download_time->erase(cont_ric);
+
+		      // APP-LEVEL Tracing of Incomplete Files
+			  std::string nodeType = this->GetNode()->GetObject<ForwardingStrategy>()->GetNodeType();
+		      m_uncompleteFile(&contentWithoutChunk, firstChunkTime.GetMicroSeconds(),"ELMFILE", nodeType);
+    	  }
+      }
   }
   else
   {
-	  NS_LOG_UNCOND("CONTENUTO GIA' ELIMINATO DALLA STRUTTURA DOWNLOAD TIME");
-	  //exit(0);
+	  download_time->erase(cont_ric);
   }
 
 
-  m_seqLifetimes.erase (seq_ric);
-  m_seqTimeouts.erase (seq_ric);
-  m_retxSeqs.erase (seq_ric);
+  m_seqLifetimes.erase (seqNumRic);
 
-  num_rtx->erase(seq_ric);
+  //NS_LOG_UNCOND("ON DATA - APP: SEQ TIMEOUT SIZE BEFORE\t" << m_seqTimeouts.size() << "\t" << Simulator::Now());
+  m_seqTimeouts.erase (seqNumRic);
+  //NS_LOG_UNCOND("ON DATA - APP: SEQ TIMEOUT SIZE AFTER\t" << m_seqTimeouts.size() << "\t" << Simulator::Now());
 
-  m_rtt->AckSeq (SequenceNumber32 (seq_ric+1));
+
+  m_retxSeqs.erase (seqNumRic);
+
+  num_rtx->erase(seqNumRic);
+  //num_rtx->erase(contentInfoSeqNum->find(seqNumRic)->second);
+
+  m_rtt->AckSeq (SequenceNumber32 (seqNumRic+1));
 }
 
 void
@@ -493,6 +879,10 @@ ConsumerRtxZipf::OnNack (const Ptr<const Interest> &interest, Ptr<Packet> origPa
 
   // put in the queue of interests to be retransmitted
   // NS_LOG_INFO ("Before: " << m_retxSeqs.size ());
+  //std::vector<uint32_t> p;
+  //p.push_back(0);
+  //p.push_back(0);
+
   m_retxSeqs.insert (seq);
   // NS_LOG_INFO ("After: " << m_retxSeqs.size ());
 
@@ -502,60 +892,133 @@ ConsumerRtxZipf::OnNack (const Ptr<const Interest> &interest, Ptr<Packet> origPa
   ScheduleNextPacket ();
 }
 
+//void
+//ConsumerRtxZipf::OnTimeout (uint32_t sequenceNumber)
 void
-ConsumerRtxZipf::OnTimeout (uint32_t sequenceNumber)
+ConsumerRtxZipf::OnTimeout (uint32_t seqNum)
 {
-	  NS_LOG_FUNCTION (sequenceNumber);
-	  // std::cout << Simulator::Now () << ", TO: " << sequenceNumber << ", current RTO: " << m_rtt->RetransmitTimeout ().ToDouble (Time::S) << "s\n";
+	  //NS_LOG_FUNCTION (sequenceNumber);
 	  //NS_LOG_UNCOND("NODONODO:\t" << Application::GetNode()->GetId() << "\tNumero ritrasmissione:\t" << num_rtx->find(sequenceNumber)->second << "\t Num Max:\t" << m_maxNumRtx << "\tTempo:\t" << Simulator::Now ());
 
-	  // Recupero il nome del contenuto
-	  GotoLine(request_file, (sequenceNumber+1));
+	  std::stringstream ss_rto;
+	  std::string seqNumStr;
+	  ss_rto << seqNum;
+	  seqNumStr = ss_rto.str();
+	  ss_rto.str("");
+
+	  //const std::vector<uint32_t>* contentInfo = contentInfoSeqNum->find(seqNumStr)->second;
+	  // Retrieve the correspondent line
+	  uint32_t contentID = contentInfoSeqNum->find(seqNumStr)->second.contentID;
+	  uint32_t chunkNumber = contentInfoSeqNum->find(seqNumStr)->second.chunkNum;
+
+	  //NS_LOG_UNCOND("APP - RTX: Content ID: " << contentID);
+	  //NS_LOG_UNCOND("APP - RTX: Chunk number: " << chunkNumber);
+
+	  GotoLine(request_file, (contentID));
 	  std::string line_rto;
 	  std::getline(request_file,line_rto);
 
-	  // **** Calcolo il nuovo tempo incrementale per il chunk
-	  Time new_increment = Simulator::Now() - download_time->find(line_rto)->second.sentTimeChunk_New;
+	  // Retrieve the content name
 
-	  download_time->find(line_rto)->second.incrementalTime+=new_increment;
+	  typedef boost::tokenizer<boost::char_separator<char> > tokenizer_rto;
+	  boost::char_separator<char> sep_rto("\t");
+	  tokenizer_rto tokens_space_rto(line_rto, sep_rto);
+	  tokenizer_rto::iterator it_space_rto=tokens_space_rto.begin();
+	  std::string contentNameRto = *it_space_rto;
 
-	  // Verifico se rientro nel numero max di ritrasmissioni
-	  if(num_rtx->find(sequenceNumber)->second < m_maxNumRtx)
+	  // Compose the full name with the chunk part
+	  std::string chunkStr;
+	  ss_rto << "s_" << chunkNumber;
+	  chunkStr = ss_rto.str();
+	  ss_rto.str("");
+
+      Ptr<NameComponents> rtoContent = Create<NameComponents> (contentNameRto);
+      uint32_t numComponents = rtoContent->GetComponents().size();
+      std::list<std::string> nameRtoContent (numComponents);
+      nameRtoContent.assign(rtoContent->begin(), rtoContent->end());
+      nameRtoContent.push_back(chunkStr);
+      ++numComponents;
+      std::list<std::string>::iterator it = nameRtoContent.begin();
+      for(uint32_t t = 0; t < numComponents; t++)
+      {
+	        ss_rto << "/" << *it;
+	        it++;
+      }
+      std::string fullNameRto = ss_rto.str();
+      ss_rto.str("");
+
+      //NS_LOG_UNCOND("APP - FULL NAME CONTENT RTO: " << fullNameRto);
+
+
+	  // ** Calculate and Update the new Incremental Time for the respective chunk
+	  Time new_increment = Simulator::Now() - download_time->find(fullNameRto)->second.sentTimeChunk_New;
+
+	  if(chunkNumber != 0)     // It is the First Chunk.
+		  download_time_first->find(fullNameRto)->second.incrementalTime+=new_increment;
+	  else
+		  download_time->find(fullNameRto)->second.incrementalTime+=new_increment;
+
+	  // ** Check if another Retransmission is Allowed.
+	  if(num_rtx->find(seqNum)->second < m_maxNumRtx)
+	 //if(num_rtx->find(trial)->second < m_maxNumRtx)
 	  {
-	        // Incremento il contatore delle ritrasmissioni (con ulteriore controllo della presenza dell'elemento nella mappa)
+	        // Increment the Rtx Counter (with another check of the presence of the element)
 	        std::pair<std::map<uint32_t,uint32_t>::iterator,bool> ret;
-	        ret=num_rtx->insert (std::pair<uint32_t,uint32_t>(sequenceNumber,1) );
+	        ret=num_rtx->insert (std::pair<uint32_t,uint32_t>(seqNum,1) );
 	        if(ret.second==false)
 	        {
-	                // L'elemento  giˆ presente, quindi posso aumentare il contatore
-	                uint32_t counter = num_rtx->find(sequenceNumber)->second;
-	                num_rtx->operator[](sequenceNumber)= counter+1;
+	        	uint32_t counter = num_rtx->find(seqNum)->second;
+	            num_rtx->operator[](seqNum)= counter+1;          // *** NB  VERIFICARE BENE
 	        }
 	        else
 	        {
-	                NS_LOG_UNCOND("ERRORE NELLA MAPPA DELLE RITRASMISSIONI! ELEMENTO NON PRESENTE");
+	            NS_LOG_UNCOND("ERROR INSIDE THE RTX MAP! ELEMENT NOT FOUND");
 	        }
 
-	        m_rtt->SentSeq (SequenceNumber32 (sequenceNumber), 1);                // make sure to disable RTT calculation for this sample
-	        m_retxSeqs.insert (sequenceNumber);
+	        //uint32_t seqNumber = contentInfoSeqNum->find(&seqNum)->second;
+
+	        //NS_LOG_UNCOND("ON TIMEOUT - CONTENT INFO SEQ NUM: \t" << seqNum << "\t" << Simulator::Now());
+
+	        m_rtt->SentSeq (SequenceNumber32 (seqNum), 1);                // make sure to disable RTT calculation for this sample
+
+	        m_retxSeqs.insert (seqNum);
 
 	  }
 	  else
 	  {
-	      Time tempo_invio = download_time->find(line_rto)->second.sentTimeChunk_First;
-	     
-              //m_numMaxRtx(&line_rto, tempo_invio.GetMicroSeconds());
-	      m_numMaxRtx(&line_rto, tempo_invio.GetMicroSeconds(), "El");
-	      
-              download_time->erase(line_rto);
-	      num_rtx->erase(sequenceNumber);
-	      seq_contenuto->erase(line_rto);     /// **** MODIFICA
-	      m_retxSeqs.erase(sequenceNumber);
-	      m_seqLifetimes.erase (sequenceNumber);
-	      m_seqTimeouts.erase (sequenceNumber);
-	      m_rtt->AckSeq (SequenceNumber32 (sequenceNumber));
-	  }
+            uint32_t numChunkTot = download_time_file->find(contentNameRto)->second.expNumChunk;
+	        std::string checkChunk = "s_";
+	        ss_rto << checkChunk << (numChunkTot-1);
+	        checkChunk = ss_rto.str();
+	        ss_rto.str("");
+	        if (chunkStr.compare(checkChunk) == 0)  // I'm eliminating the last chunk of the content; so, the corespondent file is erased
+	                                                   // too from the structure file_download_time.
+	                download_time_file->erase(contentNameRto);
 
+	        Time firstTxTime = download_time->find(fullNameRto)->second.sentTimeChunk_First;
+	     
+	        // APP-LEVEL Tracing for eliminated files
+	     	std::string nodeType = this->GetNode()->GetObject<ForwardingStrategy>()->GetNodeType();
+	        m_numMaxRtx(&fullNameRto, firstTxTime.GetMicroSeconds(), "ELM", nodeType);
+	      
+            download_time->erase(fullNameRto);
+	        num_rtx->erase(seqNum);
+	        seq_contenuto->erase(fullNameRto);
+	        m_retxSeqs.erase(seqNum);
+	        m_seqLifetimes.erase (seqNum);
+
+	        //NS_LOG_UNCOND("ON TIMEOUT - APP: SEQ TIMEOUT SIZE BEFORE\t" << m_seqTimeouts.size() << "\t" << Simulator::Now());
+	        m_seqTimeouts.erase (seqNum);
+	        //NS_LOG_UNCOND("ON TIMEOUT - APP: SEQ TIMEOUT SIZE AFTER\t" << m_seqTimeouts.size() << "\t" << Simulator::Now());
+
+
+	        //uint32_t seqNumber = contentInfoSeqNum->find(&seqNum)->second;
+
+
+	        m_rtt->AckSeq (SequenceNumber32 (seqNum));
+	        if(download_time_first->find(fullNameRto)!= download_time_first->end())     /// **** MODIFICA
+	        	download_time_first->erase(fullNameRto);
+	  }
 	  ScheduleNextPacket ();
 }
 
@@ -564,8 +1027,16 @@ ConsumerRtxZipf::WillSendOutInterest (uint32_t sequenceNumber)
 {
   NS_LOG_DEBUG ("Trying to add " << sequenceNumber << " with " << Simulator::Now () << ". already " << m_seqTimeouts.size () << " items");
 
+  std::vector<uint32_t> p;
+  p.push_back(0);
+  p.push_back(0);
+
   m_seqTimeouts.insert (SeqTimeout (sequenceNumber, Simulator::Now ()));
   m_seqFullDelay.insert (SeqTimeout (sequenceNumber, Simulator::Now ()));
+
+  std::vector<uint32_t> trial;
+  trial.push_back(0);
+  trial.push_back(0);
 
   m_seqLastDelay.erase (sequenceNumber);
   m_seqLastDelay.insert (SeqTimeout (sequenceNumber, Simulator::Now ()));
@@ -574,6 +1045,34 @@ ConsumerRtxZipf::WillSendOutInterest (uint32_t sequenceNumber)
 
   m_rtt->SentSeq (SequenceNumber32 (sequenceNumber), 1);
 }
+
+uint32_t
+ConsumerRtxZipf::GetNextSeq()
+{
+  uint32_t content_index = 1; //[1, m_N]
+  double p_sum = 0;
+
+  double p_random = m_SeqRng.GetValue();
+  while (p_random == 0)
+    {
+      p_random = m_SeqRng.GetValue();
+    }
+  //if (p_random == 0)
+  NS_LOG_LOGIC("p_random="<<p_random);
+  for (uint32_t i=1; i<=m_N; i++)
+    {
+      p_sum = m_Pcum[i];   //m_Pcum[i] = m_Pcum[i-1] + p[i], p[0] = 0;   e.g.: p_cum[1] = p[1], p_cum[2] = p[1] + p[2]
+      if (p_random <= p_sum)
+        {
+          content_index = i;
+          break;
+        } //if
+    } //for
+  //content_index = 1;
+  NS_LOG_DEBUG("RandomNumber="<<content_index);
+  return content_index;
+}
+
 
 std::ifstream& ConsumerRtxZipf::GotoLine(std::ifstream& file, uint32_t num) {
   file.seekg(std::ios::beg);

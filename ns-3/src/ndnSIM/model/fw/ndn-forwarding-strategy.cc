@@ -216,7 +216,7 @@ ForwardingStrategy::OnInterest (Ptr<Face> inFace,
   TypeId faceType = inFace->GetInstanceTypeId();
   std::string faceType_name = faceType.GetName();
   if(faceType_name.compare("ns3::ndn::AppFace") != 0)
-	  m_inInterests (header, inFace, "Rx");
+	  m_inInterests (header, inFace, "RX", nodeType);
 	  //m_inInterests (header, inFace);                  // Only Interest received from other nodes are traced as incoming Interests
 
 	  
@@ -258,6 +258,8 @@ ForwardingStrategy::OnInterest (Ptr<Face> inFace,
     if (pitEntry != 0)
     {
       DidCreatePitEntry (inFace, header, origPacket, pitEntry);
+
+      //NS_LOG_UNCOND("NODE:\t" << inFace->GetNode()->GetId() << " Created PIT Entry");
     }
     else
     {
@@ -288,6 +290,9 @@ ForwardingStrategy::OnInterest (Ptr<Face> inFace,
   Ptr<Packet> contentObject;
   Ptr<const ContentObject> contentObjectHeader; // used for tracing
   Ptr<const Packet> payload; // used for tracing
+  Ptr<ContentObject> header_repo;
+
+  bool repo = false;
 
   std::stringstream ss;
   ss << header->GetName();
@@ -295,7 +300,57 @@ ForwardingStrategy::OnInterest (Ptr<Face> inFace,
   ss.str("");
 
   uint32_t rp_size = m_repository->GetMaxSize();     // ** [MT] ** Ordinary nodes have a "rp_size" = 0.
-  if(rp_size!=0)
+
+  if(rp_size!=0)   // For Repo Nodes, the chunk part of the name is cut in order to do the lookup.
+  {
+        repo = true;
+        //NS_LOG_UNCOND("REPOSITORY:\t" << inFace->GetNode()->GetId() << "\tRicevuto Interest" << "\t" << header->GetName() <<  "\t" << Simulator::Now().GetNanoSeconds());
+
+        Ptr<NameComponents> receivedContent = Create<NameComponents> (interest_ric);
+        uint32_t numComponents = receivedContent->GetComponents().size();
+        std::list<std::string> nome_int_ric (numComponents);
+        nome_int_ric.assign(receivedContent->begin(), receivedContent->end());
+        std::list<std::string>::iterator it = nome_int_ric.begin();
+        nome_int_ric.pop_back();
+        --numComponents;
+
+        for(uint32_t t = 0; t < numComponents; t++)
+        {
+	    ss << "/" << *it;
+	    it++;
+        }
+        std::string interestNoChunk = ss.str();
+        ss.str("");
+
+        nome_int_ric.clear();
+
+        Ptr<Interest> header_new = Create<Interest>();
+        header_new->SetName(Create<NameComponents> (interestNoChunk));
+
+       //NS_LOG_UNCOND("REPOSITORY:\t" << incomingFace->GetNode()->GetId() << "\tInterest senza chunk:\t" << interestNoChunk <<  "\t" << Simulator::Now().GetNanoSeconds());
+
+        //  **** Lookup nel repository
+        boost::tie (contentObject, contentObjectHeader, payload) = m_repository->Lookup (header_new);
+
+        if(contentObject != 0)   // The REPO has the content
+        {
+              //NS_LOG_UNCOND("NODE:\t" << inFace->GetNode()->GetId() << " CONTENT IN REPO: " << interestNoChunk);
+
+              header_repo = Create<ContentObject> ();
+              contentObject->RemoveHeader (*header_repo);
+              header_repo->SetName(Create<NameComponents>(interest_ric));
+              contentObject->AddHeader(*header_repo);
+        }
+        //else
+            //NS_LOG_UNCOND("NODE:\t" << inFace->GetNode()->GetId() << " CONTENT NOT IN REPO: " << interestNoChunk);
+  }
+  else    // It is NOT a REPO, so the lookup is done on the entire name.
+  {
+        boost::tie (contentObject, contentObjectHeader, payload) = m_contentStore->Lookup (header);
+  }
+
+
+/*  if(rp_size!=0)
   {
       //NS_LOG_UNCOND("REPO:\t" << inFace->GetNode()->GetId() << "\tInterest without chunk part:\t" << interestNoChunk <<  "\t" << Simulator::Now().GetNanoSeconds());
 
@@ -306,19 +361,50 @@ ForwardingStrategy::OnInterest (Ptr<Face> inFace,
   {
       boost::tie (contentObject, contentObjectHeader, payload) = m_contentStore->Lookup (header);
   }
+*/
 
-  if (contentObject != 0)            // The requested content is either in the ContentStore or in the Repo
+
+  if (contentObject != 0)          //  The requested content is in the local cache (Repo or not)
+  {
+      NS_ASSERT (contentObjectHeader != 0);
+
+      //NS_LOG_UNCOND ("NODONODO:\t" << incomingFace->GetNode()->GetId() << "\t CO TROVATO IN CACHE O REPO:\t" << contentObjectHeader->GetName());
+
+      // Old method for hot count tracing. The value is initialized to '0'
+      Ptr<ContentObject> header_cont = Create<ContentObject> ();
+      contentObject->RemoveHeader (*header_cont);
+      header_cont->GetAdditionalInfo().SetHopCount(0);
+      contentObject->AddHeader(*header_cont);
+
+      pitEntry->AddIncoming (inFace);
+
+      // Do data plane performance measurements
+      //WillSatisfyPendingInterest (0, pitEntry);                 // l'Incoming face è '0' perchè l'interest verrà soddisfatto dalla cache locale.
+
+      // Actually satisfy pending interest
+      if(!repo) {
+ 		  SatisfyPendingInterest (0, contentObjectHeader, payload, contentObject, pitEntry);   // Soddisfo l'Interest ricevuto ed esco dalla funzione.
+		  }
+      else {
+    	  //NS_LOG_UNCOND("Contenuto creato dal REPOSITORY:" << "\t" << contentObjectHeader->GetName());
+          SatisfyPendingInterest (0, header_repo, payload, contentObject, pitEntry);   // Soddisfo l'Interest ricevuto ed esco dalla funzione.
+	      }
+      return;
+  }
+
+
+/*  if (contentObject != 0)            // The requested content is either in the ContentStore or in the Repo
   {
       NS_ASSERT (contentObjectHeader != 0);
 
       //NS_LOG_UNCOND("NODE:\t" << inFace->GetNode()->GetId() << "\tContent Object Size:\t" << contentObject->GetSize() << "\tPackect Size:\t" << payload->GetSize() << "\tContent Object Header:\t" << contentObjectHeader->GetSerializedSize());
 
 
-      /*FwHopCountTag hopCountTag;   // New method for the hop count tracing
-      if (origPacket->PeekPacketTag (hopCountTag))
-      {
-          contentObject->AddPacketTag (hopCountTag);
-      }*/
+      //FwHopCountTag hopCountTag;   // New method for the hop count tracing
+      //if (origPacket->PeekPacketTag (hopCountTag))
+      //{
+      //    contentObject->AddPacketTag (hopCountTag);
+      //}
 
       // Old method for the hop count tracing
       Ptr<ContentObject> header_cont = Create<ContentObject> ();
@@ -326,7 +412,7 @@ ForwardingStrategy::OnInterest (Ptr<Face> inFace,
       header_cont->GetAdditionalInfo().SetHopCount(0);
       contentObject->AddHeader(*header_cont);
 
-      pitEntry->AddIncoming (inFace/*, Seconds (1.0)*/);
+      pitEntry->AddIncoming (inFace);
 
       // Do data plane performance measurements
       //WillSatisfyPendingInterest (0, pitEntry);
@@ -340,7 +426,7 @@ ForwardingStrategy::OnInterest (Ptr<Face> inFace,
 
       return;
   }
-
+*/
   if (similarInterest && ShouldSuppressIncomingInterest (inFace, header, origPacket, pitEntry))
   {
     pitEntry->AddIncoming (inFace/*, header->GetInterestLifetime ()*/);
@@ -352,7 +438,7 @@ ForwardingStrategy::OnInterest (Ptr<Face> inFace,
     //m_dropInterests (header, inFace);
 
     //m_aggregateInterests (header, inFace);
-    m_aggregateInterests (header, inFace, "Aggr");
+    m_aggregateInterests (header, inFace, "AGGR", nodeType);
 
     //NS_LOG_UNCOND ("FS/OnInterest - Interest aggregato per:\t" << header->GetName() << "\n");
 
@@ -405,7 +491,7 @@ ForwardingStrategy::OnData (Ptr<Face> inFace,
   else
   {
 	// m_inData (header, inFace);
-        m_inData (header, 0, inFace, "Rx");
+     //   m_inData (header, 0, inFace, "Rx");    NB: Tracing Disabled because we trace the Frw Data (i.e., 1 frw = 1 rcv)
 
 	 m_contentStore->Add (header, payload);     // Add or update entry in the content store
 
@@ -567,8 +653,12 @@ ForwardingStrategy::SatisfyPendingInterest (Ptr<Face> inFace,
                                             Ptr<const Packet> origPacket,
                                             Ptr<pit::Entry> pitEntry)
 {
+	bool local = true;
   if (inFace != 0)                         // The requested Data comes from another node, so the inFace must be removed from the pitEntry.
-    pitEntry->RemoveIncoming (inFace);
+  {
+	  pitEntry->RemoveIncoming (inFace);
+	  local = false;
+  }
 
   //satisfy all pending incoming Interests
   BOOST_FOREACH (const pit::IncomingFace &incoming, pitEntry->GetIncoming ())
@@ -583,13 +673,17 @@ ForwardingStrategy::SatisfyPendingInterest (Ptr<Face> inFace,
 	 if (ok)
      {
         if(faceType_name.compare("ns3::ndn::AppFace") == 0)
-           m_inDataCacheApp (header, "Rx");
+           m_inDataCacheApp (header, "RX", nodeType);
        	   // m_inDataCacheApp (header);
 
         else
 //       	   m_outData (header, inFace == 0, incoming.m_face);
-       	   m_outData (header, inFace == 0, incoming.m_face, "Tx");
-
+        {
+        	if(local)  // The requested Data comes from the local cache
+        		m_outData (header, incoming.m_face, "TX", nodeType);
+        	else      // The requested Data comes from another node
+        		m_outData (header, incoming.m_face, "FRW", nodeType);
+        }
         DidSendOutData (inFace, incoming.m_face, header, payload, origPacket, pitEntry);
 
         NS_LOG_DEBUG ("Satisfy " << *incoming.m_face);
@@ -721,7 +815,7 @@ ForwardingStrategy::PropagateInterest (Ptr<Face> inFace,
   if (!propagated && pitEntry->GetOutgoing ().size () == 0)
   {
      DidExhaustForwardingOptions (inFace, header, origPacket, pitEntry);
-     NS_LOG_UNCOND("NODE:\t" << inFace->GetNode()->GetId() << "\t PIT ENTRY MARK ERASED:\t" << pitEntry->GetPrefix() << "\t Time:\t" << Simulator::Now().GetMicroSeconds());
+     //NS_LOG_UNCOND("NODE:\t" << inFace->GetNode()->GetId() << "\t PIT ENTRY MARK ERASED:\t" << pitEntry->GetPrefix() << "\t Time:\t" << Simulator::Now().GetMicroSeconds());
      //m_pit->MarkErased (pitEntry);
   }
 }
@@ -837,7 +931,7 @@ ForwardingStrategy::DidSendOutInterest (Ptr<Face> inFace,
                                         Ptr<pit::Entry> pitEntry)
 {
   //m_outInterests (header, outFace);
-  m_outInterests (header, outFace, "Tx");
+  m_outInterests (header, outFace, "FRW", nodeType);
 }
 
 void
@@ -849,7 +943,7 @@ ForwardingStrategy::DidSendOutData (Ptr<Face> inFace,
                                     Ptr<pit::Entry> pitEntry)
 {
 //  m_outData (header, inFace == 0, outFace);
-    m_outData (header, inFace == 0, outFace, "Tx");
+    //m_outData (header, inFace == 0, outFace, "Tx");
 }
 
 void

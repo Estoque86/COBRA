@@ -22,7 +22,7 @@
 #ifndef NDN_CONSUMER_CBR_H
 #define NDN_CONSUMER_CBR_H
 
-#include "ndn-consumer-rtx.h"
+#include "ndn-consumer-rtx-zipf.h"
 
 namespace ns3 {
 namespace ndn {

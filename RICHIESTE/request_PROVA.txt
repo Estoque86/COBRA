@@ -1,0 +1,3 @@
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif	5
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html	10
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm	5
