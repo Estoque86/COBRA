@@ -267,6 +267,12 @@ main (int argc, char *argv[23])
   	 stringScenario = ss.str();
   	 ss.str("");
      break;
+  case(2):
+ 	 simulationType = "ShortestPath";
+   	 ss << "_N=" << networkType << "_S=" << simulationType << "_C=" << cacheToCatalog  << "_A=" << alpha << "R_" << SeedManager::GetRun();
+   	 stringScenario = ss.str();
+   	 ss.str("");
+      break;
   case(3):
 	 simulationType = "BloomFilter";
 	 ss << "_N=" << networkType << "_S=" << simulationType << "_C=" << cacheToCatalog  << "_D=" << cellWidthBfFib << "_A=" << alpha << "R_" << SeedManager::GetRun();
@@ -583,6 +589,8 @@ main (int argc, char *argv[23])
 
   NS_LOG_INFO ("Installing Ndn stack on all nodes");
   ndn::StackHelper ndnHelper;
+  ndn::GlobalRoutingHelper ndnGlobalRoutingHelper;                           // ****** ROUTING HELPER
+
 
   // Change the Forwarding Strategy according to the simulated scenario
   if(simType == 3)
@@ -595,6 +603,113 @@ main (int argc, char *argv[23])
 	  ndnHelper.SetForwardingStrategy("ns3::ndn::fw::Flooding");
 	  ndnHelper.SetDefaultRoutes(true);
   }
+  else // ShortestPath
+  {
+	  ndnHelper.SetForwardingStrategy("ns3::ndn::fw::Flooding");
+	  //ndnHelper.SetDefaultRoutes(true);
+  }
+
+  if(simType == 2)         // If in ShortestPath scenario, the routing helper is installed in each node.
+  {
+	ndnGlobalRoutingHelper.InstallAll ();
+  }
+
+
+  // *** Initialize Bloom Filters Parameters
+  if (simType == 3)
+  {
+	  if (bfScope.compare("fib") == 0)
+	  {
+    	  if(bfTypeFib.compare("simple") == 0)
+    	  {
+    		  ndnHelper.SetBfFib("ns3::ndn::BloomFilterSimple", "Scope", bfScopeStr, "InitMethod", bfFibInitMethodStr,
+    				  "ContentCatalog", contentCatalogFibStr, "DesiredPfp", desiredPfpFibStr,
+    				  "CellWidth", cellWidthBfFibStr, "FilterCustomLength", customLengthBfFibStr,
+    				  "FilterCustomHashes", customHashesBfFibStr);
+    	  }
+    	  else if(bfTypeFib.compare("stable") == 0)
+    	  {
+    		  ndnHelper.SetBfFib("ns3::ndn::BloomFilterStable", "Scope", bfScopeStr, "InitMethod", bfFibInitMethodStr,
+    				  "ContentCatalog", contentCatalogFibStr, "DesiredPfp", desiredPfpFibStr,
+    				  "CellWidth", cellWidthBfFibStr, "FilterCustomLength", customLengthBfFibStr,
+    				  "FilterCustomHashes", customHashesBfFibStr);
+    	  }
+    	  else
+    	  {
+     		  NS_LOG_UNCOND("Incorrect type of Bloom Filter for the Fib. Please choose between 'simple' and 'stable'!\t");
+			  exit(1);
+    	  }
+ 	  }
+	  else if (bfScope.compare("cache") == 0)
+	  {
+    	  if(bfTypeCache.compare("simple") == 0)
+    	  {
+    		  ndnHelper.SetBfCache("ns3::ndn::BloomFilterSimple", "Scope", bfScopeStr, "InitMethod", bfCacheInitMethodStr,
+    				  "ContentCatalog", contentCatalogCacheStr, "DesiredPfp", desiredPfpCacheStr,
+    				  "CellWidth", cellWidthBfFibStr, "FilterCustomLength", customLengthBfCacheStr,
+    				  "FilterCustomHashes", customHashesBfCacheStr);
+    	  }
+    	  else if(bfTypeCache.compare("stable") == 0)
+    	  {
+    		  ndnHelper.SetBfCache("ns3::ndn::BloomFilterStable", "Scope", bfScopeStr, "InitMethod", bfCacheInitMethodStr,
+    				  "ContentCatalog", contentCatalogCacheStr, "DesiredPfp", desiredPfpCacheStr,
+    				  "CellWidth", cellWidthBfFibStr, "FilterCustomLength", customLengthBfCacheStr,
+    				  "FilterCustomHashes", customHashesBfCacheStr);
+    	  }
+    	  else
+    	  {
+     		  NS_LOG_UNCOND("Incorrect type of Bloom Filter for the Cache. Please choose between 'simple' and 'stable'!\t");
+			  exit(1);
+    	  }
+	  }
+	  else if (bfScope.compare("both") == 0)
+	  {
+    	  if(bfTypeFib.compare("simple") == 0)
+    	  {
+    		  ndnHelper.SetBfFib("ns3::ndn::BloomFilterSimple", "Scope", bfScopeStr, "InitMethod", bfFibInitMethodStr,
+    				  "ContentCatalog", contentCatalogFibStr, "DesiredPfp", desiredPfpFibStr,
+    				  "CellWidth", cellWidthBfFibStr, "FilterCustomLength", customLengthBfFibStr,
+    				  "FilterCustomHashes", customHashesBfFibStr);
+    	  }
+    	  else if(bfTypeFib.compare("stable") == 0)
+    	  {
+    		  ndnHelper.SetBfFib("ns3::ndn::BloomFilterStable", "Scope", bfScopeStr, "InitMethod", bfFibInitMethodStr,
+    				  "ContentCatalog", contentCatalogFibStr, "DesiredPfp", desiredPfpFibStr,
+    				  "CellWidth", cellWidthBfFibStr, "FilterCustomLength", customLengthBfFibStr,
+    				  "FilterCustomHashes", customHashesBfFibStr);
+    	  }
+    	  else
+    	  {
+     		  NS_LOG_UNCOND("Incorrect type of Bloom Filter for the Fib. Please choose between 'simple' and 'stable'!\t");
+			  exit(1);
+    	  }
+    	  if(bfTypeCache.compare("simple") == 0)
+    	  {
+    		  ndnHelper.SetBfCache("ns3::ndn::BloomFilterSimple", "Scope", bfScopeStr, "InitMethod", bfCacheInitMethodStr,
+    				  "ContentCatalog", contentCatalogCacheStr, "DesiredPfp", desiredPfpCacheStr,
+    				  "CellWidth", cellWidthBfFibStr, "FilterCustomLength", customLengthBfCacheStr,
+    				  "FilterCustomHashes", customHashesBfCacheStr);
+    	  }
+    	  else if(bfTypeCache.compare("stable") == 0)
+    	  {
+    		  ndnHelper.SetBfCache("ns3::ndn::BloomFilterStable", "Scope", bfScopeStr, "InitMethod", bfCacheInitMethodStr,
+    				  "ContentCatalog", contentCatalogCacheStr, "DesiredPfp", desiredPfpCacheStr,
+    				  "CellWidth", cellWidthBfFibStr, "FilterCustomLength", customLengthBfCacheStr,
+    				  "FilterCustomHashes", customHashesBfCacheStr);
+    	  }
+    	  else
+    	  {
+     		  NS_LOG_UNCOND("Incorrect type of Bloom Filter for the Cache. Please choose between 'simple' and 'stable'!\t");
+			  exit(1);
+    	  }
+	  }
+	  else
+	  {
+ 		  NS_LOG_UNCOND("Incorrect scope for the Bloom Filter. Please choose between 'fib', 'cache', or 'both'!\t");
+		  exit(1);
+	  }
+  }
+
 
 
 //  NodeContainer producerNodes;
@@ -631,102 +746,6 @@ main (int argc, char *argv[23])
 		  ndnHelper.SetRepository("ns3::ndn::rp::Persistent", "MaxSize", "0");
 		  //consumerNodes.Add((*node));
 	  }
-
-	  // *** Initialize Bloom Filters Parameters
-      if (simType == 3)
-      {
-    	  if (bfScope.compare("fib") == 0)
-    	  {
-        	  if(bfTypeFib.compare("simple") == 0)
-        	  {
-        		  ndnHelper.SetBfFib("ns3::ndn::BloomFilterSimple", "Scope", bfScopeStr, "InitMethod", bfFibInitMethodStr,
-        				  "ContentCatalog", contentCatalogFibStr, "DesiredPfp", desiredPfpFibStr,
-        				  "CellWidth", cellWidthBfFibStr, "FilterCustomLength", customLengthBfFibStr,
-        				  "FilterCustomHashes", customHashesBfFibStr);
-        	  }
-        	  else if(bfTypeFib.compare("stable") == 0)
-        	  {
-        		  ndnHelper.SetBfFib("ns3::ndn::BloomFilterStable", "Scope", bfScopeStr, "InitMethod", bfFibInitMethodStr,
-        				  "ContentCatalog", contentCatalogFibStr, "DesiredPfp", desiredPfpFibStr,
-        				  "CellWidth", cellWidthBfFibStr, "FilterCustomLength", customLengthBfFibStr,
-        				  "FilterCustomHashes", customHashesBfFibStr);
-        	  }
-        	  else
-        	  {
-         		  NS_LOG_UNCOND("Incorrect type of Bloom Filter for the Fib. Please choose between 'simple' and 'stable'!\t");
-    			  exit(1);
-        	  }
-     	  }
-    	  else if (bfScope.compare("cache") == 0)
-    	  {
-        	  if(bfTypeCache.compare("simple") == 0)
-        	  {
-        		  ndnHelper.SetBfCache("ns3::ndn::BloomFilterSimple", "Scope", bfScopeStr, "InitMethod", bfCacheInitMethodStr,
-        				  "ContentCatalog", contentCatalogCacheStr, "DesiredPfp", desiredPfpCacheStr,
-        				  "CellWidth", cellWidthBfFibStr, "FilterCustomLength", customLengthBfCacheStr,
-        				  "FilterCustomHashes", customHashesBfCacheStr);
-        	  }
-        	  else if(bfTypeCache.compare("stable") == 0)
-        	  {
-        		  ndnHelper.SetBfCache("ns3::ndn::BloomFilterStable", "Scope", bfScopeStr, "InitMethod", bfCacheInitMethodStr,
-        				  "ContentCatalog", contentCatalogCacheStr, "DesiredPfp", desiredPfpCacheStr,
-        				  "CellWidth", cellWidthBfFibStr, "FilterCustomLength", customLengthBfCacheStr,
-        				  "FilterCustomHashes", customHashesBfCacheStr);
-        	  }
-        	  else
-        	  {
-         		  NS_LOG_UNCOND("Incorrect type of Bloom Filter for the Cache. Please choose between 'simple' and 'stable'!\t");
-    			  exit(1);
-        	  }
-    	  }
-    	  else if (bfScope.compare("both") == 0)
-    	  {
-        	  if(bfTypeFib.compare("simple") == 0)
-        	  {
-        		  ndnHelper.SetBfFib("ns3::ndn::BloomFilterSimple", "Scope", bfScopeStr, "InitMethod", bfFibInitMethodStr,
-        				  "ContentCatalog", contentCatalogFibStr, "DesiredPfp", desiredPfpFibStr,
-        				  "CellWidth", cellWidthBfFibStr, "FilterCustomLength", customLengthBfFibStr,
-        				  "FilterCustomHashes", customHashesBfFibStr);
-        	  }
-        	  else if(bfTypeFib.compare("stable") == 0)
-        	  {
-        		  ndnHelper.SetBfFib("ns3::ndn::BloomFilterStable", "Scope", bfScopeStr, "InitMethod", bfFibInitMethodStr,
-        				  "ContentCatalog", contentCatalogFibStr, "DesiredPfp", desiredPfpFibStr,
-        				  "CellWidth", cellWidthBfFibStr, "FilterCustomLength", customLengthBfFibStr,
-        				  "FilterCustomHashes", customHashesBfFibStr);
-        	  }
-        	  else
-        	  {
-         		  NS_LOG_UNCOND("Incorrect type of Bloom Filter for the Fib. Please choose between 'simple' and 'stable'!\t");
-    			  exit(1);
-        	  }
-        	  if(bfTypeCache.compare("simple") == 0)
-        	  {
-        		  ndnHelper.SetBfCache("ns3::ndn::BloomFilterSimple", "Scope", bfScopeStr, "InitMethod", bfCacheInitMethodStr,
-        				  "ContentCatalog", contentCatalogCacheStr, "DesiredPfp", desiredPfpCacheStr,
-        				  "CellWidth", cellWidthBfFibStr, "FilterCustomLength", customLengthBfCacheStr,
-        				  "FilterCustomHashes", customHashesBfCacheStr);
-        	  }
-        	  else if(bfTypeCache.compare("stable") == 0)
-        	  {
-        		  ndnHelper.SetBfCache("ns3::ndn::BloomFilterStable", "Scope", bfScopeStr, "InitMethod", bfCacheInitMethodStr,
-        				  "ContentCatalog", contentCatalogCacheStr, "DesiredPfp", desiredPfpCacheStr,
-        				  "CellWidth", cellWidthBfFibStr, "FilterCustomLength", customLengthBfCacheStr,
-        				  "FilterCustomHashes", customHashesBfCacheStr);
-        	  }
-        	  else
-        	  {
-         		  NS_LOG_UNCOND("Incorrect type of Bloom Filter for the Cache. Please choose between 'simple' and 'stable'!\t");
-    			  exit(1);
-        	  }
-    	  }
-    	  else
-    	  {
-     		  NS_LOG_UNCOND("Incorrect scope for the Bloom Filter. Please choose between 'fib', 'cache', or 'both'!\t");
-			  exit(1);
-    	  }
-      }
-
       ndnHelper.Install((*node));
   }
 
@@ -816,6 +835,9 @@ main (int argc, char *argv[23])
  	    packet->AddHeader (*header);
  	    packet->AddTrailer (tail);
 
+ 	    // NB: Verificare se bisogna comporre una nuova stringa anteponendo '/' a ciascun nome
+ 	    ndnGlobalRoutingHelper.AddOrigin (line, nd);
+
  	    nd->GetObject<Repo> ()->Add (header, packet);
   	}
   	fin.close();
@@ -850,6 +872,9 @@ main (int argc, char *argv[23])
   		   Ptr<Packet> packet = Create<Packet> (512);
   		   packet->AddHeader (*header);
   		   packet->AddTrailer (tail);
+
+  		   // NB: Verificare se bisogna comporre una nuova stringa anteponendo '/' a ciascun nome
+  	 	   ndnGlobalRoutingHelper.AddOrigin (line, nd);
 
   		   nd->GetObject<Repo> ()->Add (header, packet);
   		}
@@ -1021,6 +1046,15 @@ main (int argc, char *argv[23])
   }
 
   // **************************************************************************************************************************
+
+  // **** Calculating the Shortest Paths per each content and populating the FIBs accordingly.
+  NS_LOG_UNCOND("Starting Djikstra and Populating FIBs\t" << Simulator::Now());
+  if(simType == 2)
+  {
+          ndnGlobalRoutingHelper.CalculateRoutes ();
+  }
+  NS_LOG_UNCOND("Finishing Djikstra and Populating FIBs\t" << Simulator::Now());
+
 
 
   Simulator::Stop (finishTime);
