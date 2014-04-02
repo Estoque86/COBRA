@@ -181,7 +181,7 @@ main (int argc, char *argv[24])
   alphaStr = ss.str();
   ss.str("");
 
-  uint32_t plateau = 0;
+  //uint32_t plateau = 0;
   std::string plateauStr = "0";
 
   std::string catalogCardinalityStr;
@@ -925,10 +925,13 @@ main (int argc, char *argv[24])
 
   if(topologyImport.compare("Annotated")==0)
   {
-	  for (NodeContainer::Iterator node_core = topologyReader.GetNodes().Begin(); node_core != topologyReader.GetNodes().End(); ++node_core)
-	  {
-		  (*node_core)->GetObject<ForwardingStrategy>()->SetNodeType("core");
-	  }
+	uint32_t numCoreNodes = topologyReader.GetNodes().GetN();
+	for (uint32_t i = 0; i < numCoreNodes; i++)
+	{
+            Ptr<Node> node_core = topologyReader.GetNodes().Get(i);
+
+            node_core->GetObject<ForwardingStrategy>()->SetNodeType("core");
+        }
   }
   else
   {
@@ -1086,18 +1089,21 @@ main (int argc, char *argv[24])
   // ***** CORE
   if(topologyImport.compare("Annotated")==0)
   {
-	  for (NodeContainer::Iterator node = topologyReader.GetNodes().Begin(); node != topologyReader.GetNodes().End(); ++node)
-	  {
+	uint32_t numCoreNodes = topologyReader.GetNodes().GetN();
+	for (uint32_t i = 0; i < numCoreNodes; i++)
+	{
+                Ptr<Node> node = topologyReader.GetNodes().Get(i);
+
 		  // ******** STREAM DI OUTPUT ***************
 		  Ptr<OutputStreamWrapper> streamInterest = asciiTraceHelper.CreateFileStream(filename_interestCore);
 		  Ptr<OutputStreamWrapper> streamData = asciiTraceHelper.CreateFileStream(filename_dataCore);
 
 		   // ***** ASSOCIAZIONE ALLE FUNZIONI CHE TRATTANO I VARI EVENTI DI TRACE *****
-		  (*node)->GetObject<ForwardingStrategy>()->TraceConnectWithoutContext("OutInterests", MakeBoundCallback(&InterestTrace, streamInterest));
-		  (*node)->GetObject<ForwardingStrategy>()->TraceConnectWithoutContext("InInterests", MakeBoundCallback(&InterestTrace, streamInterest));
-		  (*node)->GetObject<ForwardingStrategy>()->TraceConnectWithoutContext("AggregateInterests", MakeBoundCallback(&InterestTrace, streamInterest));
-		  (*node)->GetObject<ForwardingStrategy>()->TraceConnectWithoutContext("OutData", MakeBoundCallback(&DataTrace, streamData));
-		  (*node)->GetObject<ForwardingStrategy>()->TraceConnectWithoutContext("InData", MakeBoundCallback(&DataTrace, streamData));
+		  node->GetObject<ForwardingStrategy>()->TraceConnectWithoutContext("OutInterests", MakeBoundCallback(&InterestTrace, streamInterest));
+		  node->GetObject<ForwardingStrategy>()->TraceConnectWithoutContext("InInterests", MakeBoundCallback(&InterestTrace, streamInterest));
+		  node->GetObject<ForwardingStrategy>()->TraceConnectWithoutContext("AggregateInterests", MakeBoundCallback(&InterestTrace, streamInterest));
+		  node->GetObject<ForwardingStrategy>()->TraceConnectWithoutContext("OutData", MakeBoundCallback(&DataTrace, streamData));
+		  node->GetObject<ForwardingStrategy>()->TraceConnectWithoutContext("InData", MakeBoundCallback(&DataTrace, streamData));
 	  }
   }
   else
