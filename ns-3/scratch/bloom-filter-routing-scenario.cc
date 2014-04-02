@@ -181,7 +181,7 @@ main (int argc, char *argv[23])
   alphaStr = ss.str();
   ss.str("");
 
-  uint32_t plateau = 0;
+  //uint32_t plateau = 0;
   std::string plateauStr = "0";
 
   std::string catalogCardinalityStr;
@@ -263,19 +263,19 @@ main (int argc, char *argv[23])
   {
   case(1):
 	 simulationType = "Flooding";
-  	 ss << "_N=" << networkType << "_S=" << simulationType << "_C=" << cacheToCatalog  << "_A=" << alpha << "R_" << SeedManager::GetRun();
+  	 ss << "_N=" << networkType << "_S=" << simulationType << "_C=" << cacheToCatalog  << "_A=" << alpha << "_R=" << SeedManager::GetRun();
   	 stringScenario = ss.str();
   	 ss.str("");
      break;
   case(2):
  	 simulationType = "ShortestPath";
-   	 ss << "_N=" << networkType << "_S=" << simulationType << "_C=" << cacheToCatalog  << "_A=" << alpha << "R_" << SeedManager::GetRun();
+   	 ss << "_N=" << networkType << "_S=" << simulationType << "_C=" << cacheToCatalog  << "_A=" << alpha << "_R=" << SeedManager::GetRun();
    	 stringScenario = ss.str();
    	 ss.str("");
       break;
   case(3):
 	 simulationType = "BloomFilter";
-	 ss << "_N=" << networkType << "_S=" << simulationType << "_C=" << cacheToCatalog  << "_D=" << cellWidthBfFib << "_A=" << alpha << "R_" << SeedManager::GetRun();
+	 ss << "_N=" << networkType << "_S=" << simulationType << "_C=" << cacheToCatalog  << "_D=" << cellWidthBfFib << "_A=" << alpha << "_R=" << SeedManager::GetRun();
 	 stringScenario = ss.str();
      ss.str("");
      break;
@@ -836,7 +836,8 @@ main (int argc, char *argv[23])
  	    packet->AddTrailer (tail);
 
  	    // NB: Verificare se bisogna comporre una nuova stringa anteponendo '/' a ciascun nome
- 	    ndnGlobalRoutingHelper.AddOrigin (line, nd);
+ 	    if (simType==2)
+ 	    	ndnGlobalRoutingHelper.AddOrigin (line, nd);
 
  	    nd->GetObject<Repo> ()->Add (header, packet);
   	}
@@ -874,7 +875,8 @@ main (int argc, char *argv[23])
   		   packet->AddTrailer (tail);
 
   		   // NB: Verificare se bisogna comporre una nuova stringa anteponendo '/' a ciascun nome
-  	 	   ndnGlobalRoutingHelper.AddOrigin (line, nd);
+  	 	    if (simType==2)
+  	 	    	ndnGlobalRoutingHelper.AddOrigin (line, nd);
 
   		   nd->GetObject<Repo> ()->Add (header, packet);
   		}
@@ -1048,12 +1050,12 @@ main (int argc, char *argv[23])
   // **************************************************************************************************************************
 
   // **** Calculating the Shortest Paths per each content and populating the FIBs accordingly.
-  NS_LOG_UNCOND("Starting Djikstra and Populating FIBs\t" << Simulator::Now());
   if(simType == 2)
   {
-          ndnGlobalRoutingHelper.CalculateRoutes ();
+	  NS_LOG_UNCOND("Starting Djikstra and Populating FIBs\t" << Simulator::Now());
+      ndnGlobalRoutingHelper.CalculateRoutes ();
+      NS_LOG_UNCOND("Finishing Djikstra and Populating FIBs\t" << Simulator::Now());
   }
-  NS_LOG_UNCOND("Finishing Djikstra and Populating FIBs\t" << Simulator::Now());
 
 
 
@@ -1102,7 +1104,7 @@ void InterestAppTrace(Ptr<OutputStreamWrapper> stream, const std::string* header
 
 void DownloadTimeTrace(Ptr<OutputStreamWrapper> stream, const std::string* header, int64_t time_sent, int64_t downloadTime, uint32_t dist, std::string eventType, std::string nodeType)
 {
-	*stream->GetStream() << Simulator::Now().GetMicroSeconds() << time_sent << "\t" <<  eventType << "\t" << nodeType << "\t" << "--\t" << downloadTime << "\t" << dist << std::endl;
+	*stream->GetStream() << Simulator::Now().GetMicroSeconds() << "\t" << time_sent << "\t" <<  eventType << "\t" << nodeType << "\t" << "--\t" << downloadTime << "\t" << dist << std::endl;
 }
 
 

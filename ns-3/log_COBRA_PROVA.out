@@ -1,6 +1,29 @@
 Waf: Entering directory `/Users/michele/Desktop/Dottorato/Parigi/LINCS/COBRA/Simulatore/COBRA_SIM/ns-3/build'
 Waf: Leaving directory `/Users/michele/Desktop/Dottorato/Parigi/LINCS/COBRA/Simulatore/COBRA_SIM/ns-3/build'
-'build' finished successfully (0.628s)
+'build' finished successfully (0.629s)
 The total number of core nodes is:	2
-CHOSEN REPOSITORY ATTACHMENT:	0
-Command ['/Users/michele/Desktop/Dottorato/Parigi/LINCS/COBRA/Simulatore/COBRA_SIM/ns-3/build/scratch/COPY-bloom-filter-routing-scenario', '--alpha=1', '--lambda=1', '--contentCatalogFib=1000', '--desiredPfpFib=0.05', '--cellWidthBfFib=3', '--bfScope=fib', '--bfTypeFib=stable', '--bfFibInitMethod=optimal', '--cacheToCatalog=0.01', '--simType=3', '--ns3::ndn::ConsumerCbr::Randomize=uniform', '--ns3::ndn::ConsumerRtxZipf::LifeTime=2s', '--ns3::ndn::ConsumerRtxZipf::RetxTimer=25ms', '--clientPerc=80', '--networkType=Topo_PROVA_COBRA', '--topologyImport=Annotated', '--simDuration=100.0', '--RngRun=1', '--RngSeed=1'] terminated with signal SIGSEGV. Run it under a debugger to get more information (./waf --run <program> --command-template="gdb --args %s <args>").
+CHOSEN REPOSITORY ATTACHMENT:	1
+CHECK - 1
+Numero CLIENT PERC: 80
+Numero CORE NODES: 2
+Numero RAND REPOS: 1
+Numero CLIENT: 1
+Rand Client Attach: 1
+Rand Client Attach: 0
+CHOSEN CLIENT ATTACHMENT:	0
+CLIENT ID: 3
+REPO SIZE: 1000
+*** BF STABLE *** Number of Interfaces INIT:	2
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	6235
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	18729
+*** BF STABLE *** DECREM POS:	41
+*** BF STABLE *** Number of Interfaces INIT:	2
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	6235
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	18729
+*** BF STABLE *** DECREM POS:	41
+COSTRUTTORE APP!!
+Command ['/Users/michele/Desktop/Dottorato/Parigi/LINCS/COBRA/Simulatore/COBRA_SIM/ns-3/build/scratch/NEW-COPY-bloom-filter-routing-scenario', '--alpha=1', '--lambda=1', '--contentCatalogFib=1000', '--desiredPfpFib=0.05', '--cellWidthBfFib=3', '--bfScope=fib', '--bfTypeFib=stable', '--bfFibInitMethod=optimal', '--cacheToCatalog=0.01', '--simType=3', '--ns3::ndn::ConsumerCbr::Randomize=uniform', '--ns3::ndn::ConsumerRtxZipf::LifeTime=2s', '--ns3::ndn::ConsumerRtxZipf::RetxTimer=25ms', '--clientPerc=80', '--networkType=Topo_PROVA_COBRA', '--topologyImport=Annotated', '--simDuration=100.0', '--RngRun=1', '--RngSeed=1'] terminated with signal SIGSEGV. Run it under a debugger to get more information (./waf --run <program> --command-template="gdb --args %s <args>").

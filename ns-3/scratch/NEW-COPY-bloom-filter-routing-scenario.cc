@@ -950,7 +950,9 @@ main (int argc, char *argv[24])
    * - [ AGGR ] Aggregati ai nodi Core
    *
    */
-  std::string fnInterest;
+  std::string fnInterestClient;
+  std::string fnInterestProducer;
+  std::string fnInterestCore;
 
   //**** DATA
   /*
@@ -958,16 +960,18 @@ main (int argc, char *argv[24])
    * - [ FRW ] Inoltrati da nodi Core  (ad ogni FRW è associato un RX)
    *
    */
-  std::string fnData;
+  std::string fnDataClient;
+  std::string fnDataProducer;
+  std::string fnDataCore;
 
   //**** DATA RICEVUTI APP (Tracing a livello Applicativo)
   /*
    * - [ RX ] Ricevuti da nodi Client (compresi DATA provenienti da cache locale)
    */
-  std::string fnDataApp;
+  std::string fnDataAppClient;
 
   //**** INTEREST APP (Tracing a livello Applicativo)
-  std::string fnInterestApp;
+  std::string fnInterestAppClient;
   /*
    * - [ TX ] Generati a livello applicativo da nodi client
    * - [ RTX ] Ritrasmessi da nodi client
@@ -986,26 +990,57 @@ main (int argc, char *argv[24])
   std::string fnDwnTime;
 
   
+  // ******* INTEREST
 
-  ss << "RESULTS/" <<  simulationType << "/INTEREST/Interest" << stringScenario;
-  fnInterest = ss.str();
-  const char *filename_interest = fnInterest.c_str();
+  ss << "RESULTS/" <<  simulationType << "/INTEREST/InterestCLIENT" << stringScenario;
+  fnInterestClient = ss.str();
+  const char *filename_interestClient = fnInterestClient.c_str();
   ss.str("");
 
-  ss << "RESULTS/" <<  simulationType << "/DATA/Data" << stringScenario;
-  fnData = ss.str();
-  const char *filename_data = fnData.c_str();
+  ss << "RESULTS/" <<  simulationType << "/INTEREST/InterestCORE" << stringScenario;
+  fnInterestCore = ss.str();
+  const char *filename_interestCore = fnInterestCore.c_str();
   ss.str("");
+
+  ss << "RESULTS/" <<  simulationType << "/INTEREST/InterestPRODUCER" << stringScenario;
+  fnInterestProducer = ss.str();
+  const char *filename_interestProducer = fnInterestProducer.c_str();
+  ss.str("");
+
+
+  // ******* DATA
+
+  ss << "RESULTS/" <<  simulationType << "/DATA/DataCLIENT" << stringScenario;
+  fnDataClient = ss.str();
+  const char *filename_dataClient = fnDataClient.c_str();
+  ss.str("");
+
+  ss << "RESULTS/" <<  simulationType << "/DATA/DataCORE" << stringScenario;
+  fnDataCore = ss.str();
+  const char *filename_dataCore = fnDataCore.c_str();
+  ss.str("");
+
+  ss << "RESULTS/" <<  simulationType << "/DATA/DataPRODUCER" << stringScenario;
+  fnDataProducer = ss.str();
+  const char *filename_dataProducer = fnDataProducer.c_str();
+  ss.str("");
+
+
+  // ******** DATA APP
 
   ss << "RESULTS/" <<  simulationType << "/DATA/APP/DataAPP" << stringScenario;
-  fnDataApp = ss.str();
-  const char *filename_data_app = fnDataApp.c_str();
+  fnDataAppClient = ss.str();
+  const char *filename_data_appClient = fnDataAppClient.c_str();
   ss.str("");
 
+  // ******** INTEREST APP
+
   ss << "RESULTS/" <<  simulationType << "/INTEREST/APP/InterestAPP" << stringScenario;
-  fnInterestApp = ss.str();
-  const char *filename_interest_app = fnInterestApp.c_str();
+  fnInterestAppClient = ss.str();
+  const char *filename_interest_appClient = fnInterestAppClient.c_str();
   ss.str("");
+
+  // ******** DOWNLOAD
 
   ss << "RESULTS/" <<  simulationType << "/DOWNLOAD/APP/Download" << stringScenario;
   fnDwnTime = ss.str();
@@ -1015,12 +1050,13 @@ main (int argc, char *argv[24])
 
   std::stringstream fname;
   AsciiTraceHelper asciiTraceHelper;
-  for (NodeList::Iterator node = NodeList::Begin (); node != NodeList::End (); node ++)
-  {
 
+  //  ***** CLIENT
+  for (NodeContainer::Iterator node = clientNodes.Begin(); node != clientNodes.End(); ++node)
+  {
 	  // ******** STREAM DI OUTPUT ***************
-	  Ptr<OutputStreamWrapper> streamInterest = asciiTraceHelper.CreateFileStream(filename_interest);
-	  Ptr<OutputStreamWrapper> streamData = asciiTraceHelper.CreateFileStream(filename_data);
+	  Ptr<OutputStreamWrapper> streamInterest = asciiTraceHelper.CreateFileStream(filename_interestClient);
+	  Ptr<OutputStreamWrapper> streamData = asciiTraceHelper.CreateFileStream(filename_dataClient);
 
 	   // ***** ASSOCIAZIONE ALLE FUNZIONI CHE TRATTANO I VARI EVENTI DI TRACE *****
 	  (*node)->GetObject<ForwardingStrategy>()->TraceConnectWithoutContext("OutInterests", MakeBoundCallback(&InterestTrace, streamInterest));
@@ -1031,13 +1067,65 @@ main (int argc, char *argv[24])
   }
 
 
+  //  ***** PRODUCER
+  for (NodeContainer::Iterator node = repoNodes.Begin(); node != repoNodes.End(); ++node)
+  {
+	  // ******** STREAM DI OUTPUT ***************
+	  Ptr<OutputStreamWrapper> streamInterest = asciiTraceHelper.CreateFileStream(filename_interestProducer);
+	  Ptr<OutputStreamWrapper> streamData = asciiTraceHelper.CreateFileStream(filename_dataProducer);
+
+	   // ***** ASSOCIAZIONE ALLE FUNZIONI CHE TRATTANO I VARI EVENTI DI TRACE *****
+	  (*node)->GetObject<ForwardingStrategy>()->TraceConnectWithoutContext("OutInterests", MakeBoundCallback(&InterestTrace, streamInterest));
+	  (*node)->GetObject<ForwardingStrategy>()->TraceConnectWithoutContext("InInterests", MakeBoundCallback(&InterestTrace, streamInterest));
+	  (*node)->GetObject<ForwardingStrategy>()->TraceConnectWithoutContext("AggregateInterests", MakeBoundCallback(&InterestTrace, streamInterest));
+	  (*node)->GetObject<ForwardingStrategy>()->TraceConnectWithoutContext("OutData", MakeBoundCallback(&DataTrace, streamData));
+	  (*node)->GetObject<ForwardingStrategy>()->TraceConnectWithoutContext("InData", MakeBoundCallback(&DataTrace, streamData));
+  }
+
+
+  // ***** CORE
+  if(topologyImport.compare("Annotated")==0)
+  {
+	  for (NodeContainer::Iterator node = topologyReader.GetNodes().Begin(); node != topologyReader.GetNodes().End(); ++node)
+	  {
+		  // ******** STREAM DI OUTPUT ***************
+		  Ptr<OutputStreamWrapper> streamInterest = asciiTraceHelper.CreateFileStream(filename_interestCore);
+		  Ptr<OutputStreamWrapper> streamData = asciiTraceHelper.CreateFileStream(filename_dataCore);
+
+		   // ***** ASSOCIAZIONE ALLE FUNZIONI CHE TRATTANO I VARI EVENTI DI TRACE *****
+		  (*node)->GetObject<ForwardingStrategy>()->TraceConnectWithoutContext("OutInterests", MakeBoundCallback(&InterestTrace, streamInterest));
+		  (*node)->GetObject<ForwardingStrategy>()->TraceConnectWithoutContext("InInterests", MakeBoundCallback(&InterestTrace, streamInterest));
+		  (*node)->GetObject<ForwardingStrategy>()->TraceConnectWithoutContext("AggregateInterests", MakeBoundCallback(&InterestTrace, streamInterest));
+		  (*node)->GetObject<ForwardingStrategy>()->TraceConnectWithoutContext("OutData", MakeBoundCallback(&DataTrace, streamData));
+		  (*node)->GetObject<ForwardingStrategy>()->TraceConnectWithoutContext("InData", MakeBoundCallback(&DataTrace, streamData));
+	  }
+  }
+  else
+  {
+	  for (NodeContainer::Iterator node = coreNodes.Begin(); node != coreNodes.End(); ++node)
+	  {
+		  // ******** STREAM DI OUTPUT ***************
+		  Ptr<OutputStreamWrapper> streamInterest = asciiTraceHelper.CreateFileStream(filename_interestCore);
+		  Ptr<OutputStreamWrapper> streamData = asciiTraceHelper.CreateFileStream(filename_dataCore);
+
+		   // ***** ASSOCIAZIONE ALLE FUNZIONI CHE TRATTANO I VARI EVENTI DI TRACE *****
+		  (*node)->GetObject<ForwardingStrategy>()->TraceConnectWithoutContext("OutInterests", MakeBoundCallback(&InterestTrace, streamInterest));
+		  (*node)->GetObject<ForwardingStrategy>()->TraceConnectWithoutContext("InInterests", MakeBoundCallback(&InterestTrace, streamInterest));
+		  (*node)->GetObject<ForwardingStrategy>()->TraceConnectWithoutContext("AggregateInterests", MakeBoundCallback(&InterestTrace, streamInterest));
+		  (*node)->GetObject<ForwardingStrategy>()->TraceConnectWithoutContext("OutData", MakeBoundCallback(&DataTrace, streamData));
+		  (*node)->GetObject<ForwardingStrategy>()->TraceConnectWithoutContext("InData", MakeBoundCallback(&DataTrace, streamData));
+	  }
+  }
+
+
+
   // *****  App-Level Tracing -
 
   for (NodeContainer::Iterator node_app = clientNodes.Begin(); node_app != clientNodes.End(); ++node_app)
   {
 	  // ******** STREAM DI OUTPUT APP ***************
-      Ptr<OutputStreamWrapper> streamDataApp = asciiTraceHelper.CreateFileStream(filename_data_app);
-	  Ptr<OutputStreamWrapper> streamInterestApp = asciiTraceHelper.CreateFileStream(filename_interest_app);
+      Ptr<OutputStreamWrapper> streamDataApp = asciiTraceHelper.CreateFileStream(filename_data_appClient);
+	  Ptr<OutputStreamWrapper> streamInterestApp = asciiTraceHelper.CreateFileStream(filename_interest_appClient);
       Ptr<OutputStreamWrapper> streamDownloadTime = asciiTraceHelper.CreateFileStream(filename_download_time);
 
       // ***** ASSOCIAZIONE ALLE FUNZIONI CHE TRATTANO I VARI EVENTI DI TRACE *****
