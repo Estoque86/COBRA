@@ -250,7 +250,7 @@ AnnotatedTopologyReader::Read (void)
   NS_LOG_INFO ("Annotated topology created with " << m_nodes.GetN () << " nodes and " << LinksSize () << " links");
   topgen.close ();
 
-  ApplySettings ();
+  //ApplySettings ();
 
   return m_nodes;
 }
@@ -374,6 +374,11 @@ AnnotatedTopologyReader::ApplyDelayMetric ()
     }
 }
 
+void
+AnnotatedTopologyReader::ApplySettingsCall()
+{
+	ApplySettings();
+}
 
 void
 AnnotatedTopologyReader::ApplySettings ()

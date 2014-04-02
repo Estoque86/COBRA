@@ -45,6 +45,8 @@ public:
    */
   AnnotatedTopologyReader (const std::string &path="", double scale=1.0);
   virtual ~AnnotatedTopologyReader ();
+
+  void ApplySettingsCall();
         
   /**
    * \brief Main annotated topology reading function.

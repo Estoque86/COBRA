@@ -294,11 +294,11 @@ main (int argc, char *argv[24])
   AnnotatedTopologyReader topologyReader ("", 10);
 
   std::string linkRateCore ("10Gbps");
-  std::string linkDelayCore ("5ms");
+  std::string linkDelayCore ("5000us");
   std::string txBuffer("40");
 
   std::string linkRateEdge ("1Gbps");      // Links connecting core with repos and/or clients
-  std::string linkDelayEdge ("15ms");
+  std::string linkDelayEdge ("15000us");
 
   if(topologyImport.compare("Annotated")==0)
   {
@@ -434,25 +434,35 @@ main (int argc, char *argv[24])
 	  // Create Links between Core Nodes and Repos
 	  uint32_t linkCountRepos = 0;
 
-	  NS_LOG_UNCOND("CHECK - 1");
-	  NodeContainer n_links;
+	  Ptr<Node> attach;
+	  Ptr<Node> repo;
+
+	  //NodeContainer n_links;
 	  if(topologyImport.compare("Annotated")==0)
-		  n_links = NodeContainer (topologyReader.GetNodes().Get (repoAttachesID->operator[](i)), repoNodes.Get (i));
+	  {
+		  //n_links = NodeContainer (topologyReader.GetNodes().Get (repoAttachesID->operator[](i)), repoNodes.Get (i));
+		  attach  = topologyReader.GetNodes().Get (repoAttachesID->operator[](i));
+		  repo = repoNodes.Get (i);
+	  }
 	  else
-		  n_links = NodeContainer (coreNodes.Get (repoAttachesID->operator[](i)), repoNodes.Get (i));
+	  {
+		  //n_links = NodeContainer (coreNodes.Get (repoAttachesID->operator[](i)), repoNodes.Get (i));
+		  attach = coreNodes.Get (repoAttachesID->operator[](i));
+		  repo = repoNodes.Get (i);
+	  }
 
-	  NetDeviceContainer n_devs = p2p.Install (n_links);
+	  uint32_t idAttach = attach->GetId();
+	  uint32_t idRepo = repo->GetId();
+
+	  AnnotatedTopologyReader::Link link (attach, "core_2", repo, "repo1");
+	  link.SetAttribute("DataRate", linkRateEdge);
+	  link.SetAttribute("OSPF", "1");
+	  link.SetAttribute("Delay", linkDelayEdge);
+	  link.SetAttribute ("MaxPackets", txBuffer);
+	  topologyReader.AddLink(link);
+
+	  //NetDeviceContainer n_devs = p2p.Install (n_links);
 	  linkCountRepos++;
-
-	  PointerValue txQueue;
-
-	  n_devs.Get(0)->GetAttribute ("TxQueue", txQueue);
-	  NS_ASSERT (txQueue.Get<DropTailQueue> () != 0);
-	  txQueue.Get<DropTailQueue> ()->SetAttribute ("MaxPackets", StringValue (txBuffer));
-
-	  n_devs.Get(1)->GetAttribute ("TxQueue", txQueue);
-	  NS_ASSERT (txQueue.Get<DropTailQueue> () != 0);
-	  txQueue.Get<DropTailQueue> ()->SetAttribute ("MaxPackets", StringValue (txBuffer));
   }
 
 
@@ -563,29 +573,35 @@ main (int argc, char *argv[24])
 	  // Create Links between Core Nodes and Repos
 	  uint32_t linkCountClients = 0;
 
-	  NodeContainer n_links;
+	  Ptr<Node> attachClient;
+	  Ptr<Node> client;
+
+	  //NodeContainer n_links;
 	  if(topologyImport.compare("Annotated")==0)
-		 n_links = NodeContainer (topologyReader.GetNodes().Get (clientAttachesID->operator[](i)), clientNodes.Get (i));
+	  {
+		  //n_links = NodeContainer (topologyReader.GetNodes().Get (repoAttachesID->operator[](i)), repoNodes.Get (i));
+		  attachClient  = topologyReader.GetNodes().Get (clientAttachesID->operator[](i));
+		  client = clientNodes.Get (i);
+	  }
 	  else
-		 n_links = NodeContainer (coreNodes.Get (clientAttachesID->operator[](i)), clientNodes.Get (i));
+	  {
+		  //n_links = NodeContainer (coreNodes.Get (repoAttachesID->operator[](i)), repoNodes.Get (i));
+		  attachClient = coreNodes.Get (clientAttachesID->operator[](i));
+		  client = clientNodes.Get (i);
+	  }
 
-	  uint32_t ID = clientNodes.Get(i)->GetId();
-	  NS_LOG_UNCOND("CLIENT ID: " << ID);
+	  AnnotatedTopologyReader::Link link (attachClient, "core_1", client, "client");
+	  link.SetAttribute("DataRate", linkRateEdge);
+	  link.SetAttribute("OSPF", "1");
+	  link.SetAttribute("Delay", linkDelayEdge);
+	  link.SetAttribute ("MaxPackets", txBuffer);
+	  topologyReader.AddLink(link);
 
-	  NetDeviceContainer n_devs = p2p.Install (n_links);
+	  //NetDeviceContainer n_devs = p2p.Install (n_links);
 	  linkCountClients++;
-
-	  PointerValue txQueue;
-
-	  n_devs.Get(0)->GetAttribute ("TxQueue", txQueue);
-	  NS_ASSERT (txQueue.Get<DropTailQueue> () != 0);
-	  txQueue.Get<DropTailQueue> ()->SetAttribute ("MaxPackets", StringValue (txBuffer));
-
-	  n_devs.Get(1)->GetAttribute ("TxQueue", txQueue);
-	  NS_ASSERT (txQueue.Get<DropTailQueue> () != 0);
-	  txQueue.Get<DropTailQueue> ()->SetAttribute ("MaxPackets", StringValue (txBuffer));
   }
 
+  topologyReader.ApplySettingsCall();
 
   // *******************************************
 
