@@ -1202,7 +1202,7 @@ void InterestAppTrace(Ptr<OutputStreamWrapper> stream, const std::string* header
 
 void DownloadTimeTrace(Ptr<OutputStreamWrapper> stream, const std::string* header, int64_t time_sent, int64_t downloadTime, uint32_t dist, std::string eventType, std::string nodeType)
 {
-	*stream->GetStream() << Simulator::Now().GetMicroSeconds() << "\t" << time_sent << "\t" <<  eventType << "\t" << nodeType << "\t--" << downloadTime << "\t" << dist << std::endl;
+	*stream->GetStream() << Simulator::Now().GetMicroSeconds() << "\t" << time_sent << "\t" <<  eventType << "\t" << nodeType << "\t" << *header << "\t" << downloadTime << "\t" << dist << std::endl;
 }
 
 

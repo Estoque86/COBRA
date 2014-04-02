@@ -337,10 +337,10 @@ ConsumerRtxZipf::StartApplication () // Called at time specified by Start
 	  // do base stuff
 	  App::StartApplication ();
 
-	  uint32_t ID_NODO;
+	  //uint32_t ID_NODO;
 	  std::stringstream ss;
 
-	  std::string PATH_PREFIX = "/Users/michele/Desktop/Dottorato/Parigi/LINCS/COBRA/Simulatore/COBRA_SIM/RICHIESTE/";
+	  std::string PATH_PREFIX = "/media/DATI/tortelli/COBRA/Simulatore/COBRA_SIM/RICHIESTE/";
 
 	  // Metodo per recuperare le variabili globali settate con cmd line
 	  // DoubleValue av;
@@ -590,7 +590,7 @@ ConsumerRtxZipf::SendPacket ()
      		download_time->insert(std::pair<std::string,DownloadEntry_Chunk> (fullName, DownloadEntry_Chunk(Simulator::Now(), Simulator::Now(), MicroSeconds(0))));
 
      		// In the 'download_time_file' map, only the content name is inserted (without the chunk part).
-            download_time_file->insert(std::pair<std::string,DownloadEntry> (contentName, DownloadEntry(Simulator::Now(), Simulator::Now(),m_expChunk,0,0)) );
+            download_time_file->insert(std::pair<std::string,DownloadEntry> (contentName, DownloadEntry(Simulator::Now(), MicroSeconds(0),m_expChunk,0,0)) );
      	 }
      	 else
      	 {
@@ -723,8 +723,8 @@ ConsumerRtxZipf::OnContentObject (const Ptr<const ContentObject> &contentObject,
 	//  return;
   //}
 
-  uint32_t contentID = contentInfoSeqNum->find(seqStr)->second.contentID;
-  uint32_t chunkNum = contentInfoSeqNum->find(seqStr)->second.chunkNum;
+  //uint32_t contentID = contentInfoSeqNum->find(seqStr)->second.contentID;
+  //uint32_t chunkNum = contentInfoSeqNum->find(seqStr)->second.chunkNum;
 
   //NS_LOG_UNCOND("ON DATA - APP: Received CONTENT OBJECT with SeqNum\t" << seqNumRic << "\tand content ID: "<< contentID << "\tand chunk Num: "<< chunkNum << "\t" << Simulator::Now());
 
@@ -797,8 +797,21 @@ ConsumerRtxZipf::OnContentObject (const Ptr<const ContentObject> &contentObject,
           else
         	  incrementTime = (Simulator::Now() - download_time->find(cont_ric)->second.sentTimeChunk_New)+download_time->find(cont_ric)->second.incrementalTime;
 
+    	  NS_LOG_UNCOND("Incremental Time of Content: " << contentWithoutChunk << "\t" << incrementTime);
+
+            Time temp = download_time_file->find(contentWithoutChunk)->second.downloadTime;
+  
+            NS_LOG_UNCOND("Partial Download Time of Content BEFORE: " << contentWithoutChunk << "\t" << temp);
+ 
+
 	      download_time_file->find(contentWithoutChunk)->second.downloadTime+=incrementTime;
-          download_time_file->find(contentWithoutChunk)->second.distance+=dist;
+
+	       temp = download_time_file->find(contentWithoutChunk)->second.downloadTime;
+	      
+    	  NS_LOG_UNCOND("Partial Download Time of Content AFTER: " << contentWithoutChunk << "\t" << temp);
+     
+
+     download_time_file->find(contentWithoutChunk)->second.distance+=dist;
 	      download_time->erase(cont_ric);
       }
       else  // The received chunk is the LAST one. If rcvChunks == expChunks --> calculate Download Time;
@@ -815,9 +828,16 @@ ConsumerRtxZipf::OnContentObject (const Ptr<const ContentObject> &contentObject,
             //  else
             //	  incrementTime = (Simulator::Now() - download_time->find(cont_ric)->second.sentTimeChunk_New)+download_time->find(cont_ric)->second.incrementalTime;
 
+NS_LOG_UNCOND("Incremental Time Last Chunk:\t" << incrementTime);
+
     	      download_time_file->find(contentWithoutChunk)->second.downloadTime+=incrementTime;
               download_time_file->find(contentWithoutChunk)->second.distance+=dist;
     	      download_time->erase(cont_ric);
+
+	      Time temp = download_time_file->find(contentWithoutChunk)->second.downloadTime;
+	      
+    	  NS_LOG_UNCOND("Partial Download Time of Content: " << contentWithoutChunk << "\t" << temp);
+
 
 		      Time downloadTimeFinal = download_time_file->find(contentWithoutChunk)->second.downloadTime;
               Time firstChunkTime = download_time_file->find(contentWithoutChunk)->second.sentTimeFirst;
