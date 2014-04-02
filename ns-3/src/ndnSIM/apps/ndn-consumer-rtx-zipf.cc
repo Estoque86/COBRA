@@ -797,18 +797,18 @@ ConsumerRtxZipf::OnContentObject (const Ptr<const ContentObject> &contentObject,
           else
         	  incrementTime = (Simulator::Now() - download_time->find(cont_ric)->second.sentTimeChunk_New)+download_time->find(cont_ric)->second.incrementalTime;
 
-    	  NS_LOG_UNCOND("Incremental Time of Content: " << contentWithoutChunk << "\t" << incrementTime);
+    	  //NS_LOG_UNCOND("Incremental Time of Content: " << contentWithoutChunk << "\t" << incrementTime);
 
-            Time temp = download_time_file->find(contentWithoutChunk)->second.downloadTime;
+            //Time temp = download_time_file->find(contentWithoutChunk)->second.downloadTime;
   
-            NS_LOG_UNCOND("Partial Download Time of Content BEFORE: " << contentWithoutChunk << "\t" << temp);
+            //NS_LOG_UNCOND("Partial Download Time of Content BEFORE: " << contentWithoutChunk << "\t" << temp);
  
 
 	      download_time_file->find(contentWithoutChunk)->second.downloadTime+=incrementTime;
 
-	       temp = download_time_file->find(contentWithoutChunk)->second.downloadTime;
+	       //temp = download_time_file->find(contentWithoutChunk)->second.downloadTime;
 	      
-    	  NS_LOG_UNCOND("Partial Download Time of Content AFTER: " << contentWithoutChunk << "\t" << temp);
+    	  //NS_LOG_UNCOND("Partial Download Time of Content AFTER: " << contentWithoutChunk << "\t" << temp);
      
 
      download_time_file->find(contentWithoutChunk)->second.distance+=dist;
@@ -828,15 +828,15 @@ ConsumerRtxZipf::OnContentObject (const Ptr<const ContentObject> &contentObject,
             //  else
             //	  incrementTime = (Simulator::Now() - download_time->find(cont_ric)->second.sentTimeChunk_New)+download_time->find(cont_ric)->second.incrementalTime;
 
-NS_LOG_UNCOND("Incremental Time Last Chunk:\t" << incrementTime);
+        	  //NS_LOG_UNCOND("Incremental Time Last Chunk:\t" << incrementTime);
 
     	      download_time_file->find(contentWithoutChunk)->second.downloadTime+=incrementTime;
               download_time_file->find(contentWithoutChunk)->second.distance+=dist;
     	      download_time->erase(cont_ric);
 
-	      Time temp = download_time_file->find(contentWithoutChunk)->second.downloadTime;
+	      //Time temp = download_time_file->find(contentWithoutChunk)->second.downloadTime;
 	      
-    	  NS_LOG_UNCOND("Partial Download Time of Content: " << contentWithoutChunk << "\t" << temp);
+    	  //NS_LOG_UNCOND("Partial Download Time of Content: " << contentWithoutChunk << "\t" << temp);
 
 
 		      Time downloadTimeFinal = download_time_file->find(contentWithoutChunk)->second.downloadTime;
