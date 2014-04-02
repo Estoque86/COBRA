@@ -181,7 +181,7 @@ main (int argc, char *argv[24])
   alphaStr = ss.str();
   ss.str("");
 
-  uint32_t plateau = 0;
+  //uint32_t plateau = 0;
   std::string plateauStr = "0";
 
   std::string catalogCardinalityStr;

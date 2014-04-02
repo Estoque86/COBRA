@@ -1,29 +1,755 @@
-Waf: Entering directory `/Users/michele/Desktop/Dottorato/Parigi/LINCS/COBRA/Simulatore/COBRA_SIM/ns-3/build'
-Waf: Leaving directory `/Users/michele/Desktop/Dottorato/Parigi/LINCS/COBRA/Simulatore/COBRA_SIM/ns-3/build'
-'build' finished successfully (0.629s)
-The total number of core nodes is:	2
-CHOSEN REPOSITORY ATTACHMENT:	1
-CHECK - 1
+Waf: Entering directory `/media/DATI/tortelli/COBRA/Simulatore/COBRA_SIM/ns-3/build'
+Waf: Leaving directory `/media/DATI/tortelli/COBRA/Simulatore/COBRA_SIM/ns-3/build'
+'build' finished successfully (2.675s)
+The total number of core nodes is:	22
+CHOSEN REPOSITORY ATTACHMENT:	18
 Numero CLIENT PERC: 80
-Numero CORE NODES: 2
+Numero CORE NODES: 22
 Numero RAND REPOS: 1
-Numero CLIENT: 1
-Rand Client Attach: 1
+Numero CLIENT: 17
+Rand Client Attach: 11
+CHOSEN CLIENT ATTACHMENT:	11
+Rand Client Attach: 9
+CHOSEN CLIENT ATTACHMENT:	9
 Rand Client Attach: 0
 CHOSEN CLIENT ATTACHMENT:	0
-CLIENT ID: 3
+Rand Client Attach: 9
+Rand Client Attach: 19
+CHOSEN CLIENT ATTACHMENT:	19
+Rand Client Attach: 13
+CHOSEN CLIENT ATTACHMENT:	13
+Rand Client Attach: 13
+Rand Client Attach: 6
+CHOSEN CLIENT ATTACHMENT:	6
+Rand Client Attach: 3
+CHOSEN CLIENT ATTACHMENT:	3
+Rand Client Attach: 17
+CHOSEN CLIENT ATTACHMENT:	17
+Rand Client Attach: 13
+Rand Client Attach: 18
+Rand Client Attach: 10
+CHOSEN CLIENT ATTACHMENT:	10
+Rand Client Attach: 14
+CHOSEN CLIENT ATTACHMENT:	14
+Rand Client Attach: 13
+Rand Client Attach: 13
+Rand Client Attach: 21
+CHOSEN CLIENT ATTACHMENT:	21
+Rand Client Attach: 17
+Rand Client Attach: 12
+CHOSEN CLIENT ATTACHMENT:	12
+Rand Client Attach: 20
+CHOSEN CLIENT ATTACHMENT:	20
+Rand Client Attach: 13
+Rand Client Attach: 4
+CHOSEN CLIENT ATTACHMENT:	4
+Rand Client Attach: 19
+Rand Client Attach: 0
+Rand Client Attach: 13
+Rand Client Attach: 1
+CHOSEN CLIENT ATTACHMENT:	1
+Rand Client Attach: 9
+Rand Client Attach: 2
+CHOSEN CLIENT ATTACHMENT:	2
+Rand Client Attach: 18
+Rand Client Attach: 7
+CHOSEN CLIENT ATTACHMENT:	7
 REPO SIZE: 1000
-*** BF STABLE *** Number of Interfaces INIT:	2
+*** BF STABLE *** Number of Interfaces INIT:	3
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	6235
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	18729
+*** BF STABLE *** DECREM POS:	41
+*** BF STABLE *** Number of Interfaces INIT:	6
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	6235
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	18729
+*** BF STABLE *** DECREM POS:	41
+*** BF STABLE *** Number of Interfaces INIT:	3
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	6235
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	18729
+*** BF STABLE *** DECREM POS:	41
+*** BF STABLE *** Number of Interfaces INIT:	6
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	6235
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	18729
+*** BF STABLE *** DECREM POS:	41
+*** BF STABLE *** Number of Interfaces INIT:	6
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	6235
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	18729
+*** BF STABLE *** DECREM POS:	41
+*** BF STABLE *** Number of Interfaces INIT:	3
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	6235
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	18729
+*** BF STABLE *** DECREM POS:	41
+*** BF STABLE *** Number of Interfaces INIT:	3
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	6235
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	18729
+*** BF STABLE *** DECREM POS:	41
+*** BF STABLE *** Number of Interfaces INIT:	4
 *** BF STABLE *** Extract Optimum
 *** BF STABLE *** LUNGHEZZA FILTRO [bit]:	6235
 HASH FUNCTIONS:	4
 *** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	18729
 *** BF STABLE *** DECREM POS:	41
 *** BF STABLE *** Number of Interfaces INIT:	2
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	6235
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	18729
+*** BF STABLE *** DECREM POS:	41
+*** BF STABLE *** Number of Interfaces INIT:	4
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	6235
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	18729
+*** BF STABLE *** DECREM POS:	41
+*** BF STABLE *** Number of Interfaces INIT:	3
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	6235
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	18729
+*** BF STABLE *** DECREM POS:	41
+*** BF STABLE *** Number of Interfaces INIT:	3
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	6235
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	18729
+*** BF STABLE *** DECREM POS:	41
+*** BF STABLE *** Number of Interfaces INIT:	6
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	6235
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	18729
+*** BF STABLE *** DECREM POS:	41
+*** BF STABLE *** Number of Interfaces INIT:	3
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	6235
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	18729
+*** BF STABLE *** DECREM POS:	41
+*** BF STABLE *** Number of Interfaces INIT:	7
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	6235
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	18729
+*** BF STABLE *** DECREM POS:	41
+*** BF STABLE *** Number of Interfaces INIT:	5
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	6235
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	18729
+*** BF STABLE *** DECREM POS:	41
+*** BF STABLE *** Number of Interfaces INIT:	2
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	6235
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	18729
+*** BF STABLE *** DECREM POS:	41
+*** BF STABLE *** Number of Interfaces INIT:	5
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	6235
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	18729
+*** BF STABLE *** DECREM POS:	41
+*** BF STABLE *** Number of Interfaces INIT:	6
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	6235
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	18729
+*** BF STABLE *** DECREM POS:	41
+*** BF STABLE *** Number of Interfaces INIT:	3
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	6235
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	18729
+*** BF STABLE *** DECREM POS:	41
+*** BF STABLE *** Number of Interfaces INIT:	4
+*** BF STABLE *** Extract Optimum
+*** BF STABLE *** LUNGHEZZA FILTRO [bit]:	6235
+HASH FUNCTIONS:	4
+*** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	18729
+*** BF STABLE *** DECREM POS:	41
+*** BF STABLE *** Number of Interfaces INIT:	5
 *** BF STABLE *** Extract Optimum
 *** BF STABLE *** LUNGHEZZA FILTRO [bit]:	6235
 HASH FUNCTIONS:	4
 *** BF STABLE *** LUNGHEZZA FILTRO COUNT[bit]:	18729
 *** BF STABLE *** DECREM POS:	41
 COSTRUTTORE APP!!
-Command ['/Users/michele/Desktop/Dottorato/Parigi/LINCS/COBRA/Simulatore/COBRA_SIM/ns-3/build/scratch/NEW-COPY-bloom-filter-routing-scenario', '--alpha=1', '--lambda=1', '--contentCatalogFib=1000', '--desiredPfpFib=0.05', '--cellWidthBfFib=3', '--bfScope=fib', '--bfTypeFib=stable', '--bfFibInitMethod=optimal', '--cacheToCatalog=0.01', '--simType=3', '--ns3::ndn::ConsumerCbr::Randomize=uniform', '--ns3::ndn::ConsumerRtxZipf::LifeTime=2s', '--ns3::ndn::ConsumerRtxZipf::RetxTimer=25ms', '--clientPerc=80', '--networkType=Topo_PROVA_COBRA', '--topologyImport=Annotated', '--simDuration=100.0', '--RngRun=1', '--RngSeed=1'] terminated with signal SIGSEGV. Run it under a debugger to get more information (./waf --run <program> --command-template="gdb --args %s <args>").
+COSTRUTTORE APP!!
+COSTRUTTORE APP!!
+COSTRUTTORE APP!!
+COSTRUTTORE APP!!
+COSTRUTTORE APP!!
+COSTRUTTORE APP!!
+COSTRUTTORE APP!!
+COSTRUTTORE APP!!
+COSTRUTTORE APP!!
+COSTRUTTORE APP!!
+COSTRUTTORE APP!!
+COSTRUTTORE APP!!
+COSTRUTTORE APP!!
+COSTRUTTORE APP!!
+COSTRUTTORE APP!!
+COSTRUTTORE APP!!
+START APPLICATION!! 
+START APPLICATION!! 
+START APPLICATION!! 
+START APPLICATION!! 
+START APPLICATION!! 
+START APPLICATION!! 
+START APPLICATION!! 
+START APPLICATION!! 
+START APPLICATION!! 
+START APPLICATION!! 
+START APPLICATION!! 
+START APPLICATION!! 
+START APPLICATION!! 
+START APPLICATION!! 
+START APPLICATION!! 
+START APPLICATION!! 
+START APPLICATION!! 
+NODE:	35	 APP-LAYER RECEIVED DATA:	/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_0	2062073
+NODE:	26	 APP-LAYER RECEIVED DATA:	/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_0	2062079
+NODE:	32	 APP-LAYER RECEIVED DATA:	/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_0	2062129
+NODE:	33	 APP-LAYER RECEIVED DATA:	/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_0	2062627
+NODE:	36	 APP-LAYER RECEIVED DATA:	/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_0	2064073
+NODE:	30	 APP-LAYER RECEIVED DATA:	/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_0	2064579
+NODE:	29	 APP-LAYER RECEIVED DATA:	/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_0	2064627
+NODE:	39	 APP-LAYER RECEIVED DATA:	/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_0	2065127
+NODE:	37	 APP-LAYER RECEIVED DATA:	/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_0	2065382
+NODE:	28	 APP-LAYER RECEIVED DATA:	/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_0	2066182
+NODE:	24	 APP-LAYER RECEIVED DATA:	/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_0	2066696
+NODE:	31	 APP-LAYER RECEIVED DATA:	/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_0	2067452
+NODE:	34	 APP-LAYER RECEIVED DATA:	/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_0	2069606
+NODE:	38	 APP-LAYER RECEIVED DATA:	/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_0	2069740
+NODE:	23	 APP-LAYER RECEIVED DATA:	/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_0	2070663
+NODE:	27	 APP-LAYER RECEIVED DATA:	/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_0	2081127
+NODE:	25	 APP-LAYER RECEIVED DATA:	/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_0	2084682
+NODE:	29	 APP-LAYER RECEIVED DATA:	/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_0	92204118
+NODE:	24	 APP-LAYER RECEIVED DATA:	/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_0	93743370
+NODE:	39	 APP-LAYER RECEIVED DATA:	/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_0	95823791
+NODE:	31	 APP-LAYER RECEIVED DATA:	/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_0	97860450
+NODE:	26	 APP-LAYER RECEIVED DATA:	/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_5	99084716
+Node #1
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_3
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_4
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_5
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_6
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_7
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_8
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_9
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_0
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_1
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_2
+
+Node #2
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_4
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_5
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_6
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_7
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_8
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_9
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_4
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_0
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_1
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_2
+
+Node #3
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_5
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_6
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_7
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_8
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_9
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_0
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_1
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_2
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_3
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_4
+
+Node #4
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_4
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_5
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_3
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_2
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_6
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_7
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_8
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_3
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_2
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_9
+
+Node #5
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_3
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_1
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_2
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_2
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_9
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_6
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_4
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_7
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_8
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_3
+
+Node #6
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_1
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_0
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_1
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_0
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_5
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_6
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_7
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_8
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_9
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_3
+
+Node #7
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_7
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_1
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_2
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_8
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_3
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_9
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_4
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_0
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_1
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_0
+
+Node #8
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_1
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_2
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_3
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_4
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_0
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_1
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_2
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_3
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_4
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_5
+
+Node #9
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_0
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_1
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_4
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_6
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_7
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_0
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_8
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_9
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_3
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_5
+
+Node #10
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_1
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_4
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_2
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_3
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_4
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_5
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_6
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_7
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_8
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_9
+
+Node #11
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_0
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_1
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_2
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_3
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_4
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_0
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_1
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_2
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_3
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_4
+
+Node #12
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_4
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_5
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_6
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_7
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_8
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_9
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_0
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_1
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_2
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_3
+
+Node #13
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_4
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_2
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_5
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_1
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_6
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_2
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_7
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_8
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_3
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_9
+
+Node #14
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_4
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_3
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_0
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_1
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_2
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_3
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_4
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_5
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_6
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_7
+
+Node #15
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_3
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_1
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_0
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_3
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_7
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_8
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_1
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_2
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_0
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_9
+
+Node #16
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_9
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_0
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_1
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_3
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_1
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_5
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_6
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_7
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_8
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_0
+
+Node #17
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_2
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_2
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_3
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_4
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_3
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_2
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_4
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_3
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_4
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_0
+
+Node #18
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_7
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_8
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_9
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_0
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_1
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_2
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_3
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_4
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_0
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_1
+
+Node #19
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_9
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_6
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_0
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_1
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_4
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_7
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_2
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_8
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_3
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_3
+
+Node #20
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_1
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_2
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_3
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_4
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_5
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_6
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_7
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_8
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_9
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_0
+
+Node #21
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_1
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_5
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_6
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_4
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_7
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_8
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_9
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_2
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_0
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_3
+
+Node #22
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_5
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_4
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_6
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_0
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_7
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_1
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_8
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_2
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_9
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_3
+
+Node #23
+
+Node #24
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_4
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_5
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_6
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_7
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_8
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_9
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_0
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_1
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_2
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_3
+
+Node #25
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_0
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_1
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_2
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_3
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_4
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_5
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_6
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_7
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_8
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_9
+
+Node #26
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_3
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_4
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_5
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_6
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_7
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_8
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_9
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_0
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_1
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_2
+
+Node #27
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_6
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_7
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_8
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_9
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_0
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_1
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_2
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_3
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_4
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_5
+
+Node #28
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_3
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_4
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_0
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_1
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_2
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_3
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_4
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_5
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_6
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_7
+
+Node #29
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_0
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_1
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_2
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_3
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_4
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_0
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_1
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_2
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_3
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_4
+
+Node #30
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_5
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_6
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_7
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_8
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_9
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_2
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_3
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_4
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_0
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_1
+
+Node #31
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_7
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_8
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_9
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_0
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_1
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_2
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_3
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_4
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_0
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_1
+
+Node #32
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_2
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_3
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_4
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_0
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_1
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_2
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_3
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_4
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_0
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_1
+
+Node #33
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_3
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_4
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_5
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_6
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_7
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_8
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_9
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_0
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_1
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_2
+
+Node #34
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_0
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_1
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_2
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_3
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_4
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_5
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_6
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_7
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_8
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_9
+
+Node #35
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_3
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_4
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_0
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_1
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_2
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_3
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_4
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_0
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_1
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_2
+
+Node #36
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_1
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_2
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_3
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_4
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_5
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_6
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_7
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_8
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_9
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_0
+
+Node #37
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_0
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_1
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_2
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_3
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_4
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_3
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_4
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_0
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_1
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_2
+
+Node #38
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_3
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_4
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_5
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_6
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_7
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_8
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_9
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_0
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_1
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_2
+
+Node #39
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_5
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_6
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_7
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_8
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_9
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_1
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_2
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_3
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_4
+/http:/crh0003.urh.uiuc.edu/~c-cook/images/tmnt.gif/s_0
+
+Node #40
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_1
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_2
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_3
+/http:/das-www.harvard.edu/users/students/Yasuhiro_Endo/face2.xbm/s_4
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_0
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_1
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_2
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_3
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_4
+/http:/www.mediabridge.com/nyc/shopping/miscellaneous.html/s_5
+
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!
+DISTRUTTORE BLOOM STABLE!

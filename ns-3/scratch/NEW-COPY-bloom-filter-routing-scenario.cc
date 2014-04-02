@@ -451,8 +451,8 @@ main (int argc, char *argv[24])
 		  repo = repoNodes.Get (i);
 	  }
 
-	  uint32_t idAttach = attach->GetId();
-	  uint32_t idRepo = repo->GetId();
+	  //uint32_t idAttach = attach->GetId();
+	  //uint32_t idRepo = repo->GetId();
 
 	  AnnotatedTopologyReader::Link link (attach, "core_2", repo, "repo1");
 	  link.SetAttribute("DataRate", linkRateEdge);
@@ -1222,27 +1222,27 @@ main (int argc, char *argv[24])
 
 void InterestTrace(Ptr<OutputStreamWrapper> stream, Ptr<const Interest> header, Ptr<const Face> face, std::string eventType, std::string nodeType)
 {
-	*stream->GetStream() << Simulator::Now().GetMicroSeconds() << "\t" <<  eventType << "\t" << face->GetId() << "\t" << nodeType << "--\t"  << std::endl;
+	*stream->GetStream() << Simulator::Now().GetMicroSeconds() << "\t" <<  eventType << "\t" << face->GetId() <<  "\t--"  << std::endl;
 }
 
 void DataTrace(Ptr<OutputStreamWrapper> stream, Ptr<const ContentObject> header, Ptr<const Face> face, std::string eventType, std::string nodeType)
 {
-	*stream->GetStream() << Simulator::Now().GetMicroSeconds() << "\t" <<  eventType << "\t" << face->GetId() << "\t" << nodeType << "\t--"  << std::endl;
+	*stream->GetStream() << Simulator::Now().GetMicroSeconds() << "\t" <<  eventType << "\t" << face->GetId() << "\t--"  << std::endl;
 }
 
 void DataAppTrace(Ptr<OutputStreamWrapper> stream, Ptr<const ContentObject> header, std::string eventType, std::string nodeType)
 {
-	*stream->GetStream() << Simulator::Now().GetMicroSeconds() << "\t" <<  eventType << "\t" << nodeType << "\t--"  << std::endl;
+	*stream->GetStream() << Simulator::Now().GetMicroSeconds() << "\t" <<  eventType << "\t--"  << std::endl;
 }
 
 void InterestAppTrace(Ptr<OutputStreamWrapper> stream, const std::string* header, int64_t time_sent, std::string eventType, std::string nodeType)
 {
-	*stream->GetStream() << Simulator::Now().GetMicroSeconds() << "\t" << time_sent << "\t" <<  eventType << "\t" << nodeType << "\t--" << std::endl;
+	*stream->GetStream() << Simulator::Now().GetMicroSeconds() << "\t" << time_sent << "\t" <<  eventType << "\t--" << std::endl;
 }
 
 void DownloadTimeTrace(Ptr<OutputStreamWrapper> stream, const std::string* header, int64_t time_sent, int64_t downloadTime, uint32_t dist, std::string eventType, std::string nodeType)
 {
-	*stream->GetStream() << Simulator::Now().GetMicroSeconds() << "\t" << time_sent << "\t" <<  eventType << "\t" << nodeType << "\t" << *header << "\t" << downloadTime << "\t" << dist << std::endl;
+	*stream->GetStream() << Simulator::Now().GetMicroSeconds() << "\t" << time_sent << "\t" <<  eventType << "\t" << "--" << "\t" << downloadTime << "\t" << dist << std::endl;
 }
 
 
