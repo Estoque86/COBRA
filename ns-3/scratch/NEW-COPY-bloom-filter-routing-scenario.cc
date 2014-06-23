@@ -120,7 +120,7 @@ main (int argc, char *argv[24])
   	  	  	  	  	  	  	  	  	  		 // 2 = BEST ROUTE
   	  	  	  	  	  	  	  	  	    	 // 3 = BF
 
-  double simDuration = 100.0;					 // Duration of the Simulation [s].
+  double simDuration = 200.0;					 // Duration of the Simulation [s].
 
   std::string networkType = "";              // Type of simulated network (Network Name)
   std::string topologyImport = "";			 // How to create the network (Annotated or Adjacency)
