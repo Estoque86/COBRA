@@ -25,8 +25,8 @@
 #include "ns3/callback.h"
 #include "ns3/object.h"
 #include "ns3/traced-callback.h"
-#include "/media/DATI/tortelli/COBRA/Simulatore/COBRA_SIM/ns-3/src/ndnSIM/model/bloom-filter/ndn-bloom-filter-base.h"
-#include "/media/DATI/tortelli/COBRA/Simulatore/COBRA_SIM/ns-3/src/ndnSIM/model/repo/ndn-repo.h"
+#include "/Users/michele/Desktop/Dottorato/Parigi/LINCS/COBRA/Simulatore/COBRA_SIM/ns-3/src/ndnSIM/model/bloom-filter/ndn-bloom-filter-base.h"
+#include "/Users/michele/Desktop/Dottorato/Parigi/LINCS/COBRA/Simulatore/COBRA_SIM/ns-3/src/ndnSIM/model/repo/ndn-repo.h"
 #include <map>
 
 
